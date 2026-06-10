@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\" -Recurse | Where-Object { $_.FullName -notmatch \"node_modules|\\\\.next\" } | Select-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world_courtage\" -Recurse | Where-Object { $_.FullName -notmatch \"node_modules|\\\\.next\" } | Select-Object FullName)",
+      "PowerShell(npm config list)",
+      "PowerShell(npm config get proxy)",
+      "PowerShell(npm config get https-proxy)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\node_modules\" -Directory | Select-Object Name | Where-Object { $_.Name -match \"tailwind|shadcn|radix|lucide|clsx|class-variance\" })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\" | Where-Object { $_.Name -match \"tailwind|postcss|components.json\" } | Select-Object Name; Get-Content \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\global.css\" -TotalCount 10)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\" -Name | Where-Object { $_ -match \"tailwind|postcss\" })",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\node_modules\" -Directory | Where-Object { $_.Name -match \"tailwind\" } | Select-Object Name)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\node_modules\\\\tailwindcss\" -Name | Where-Object { $_ -match \"postcss\" })",
+      "PowerShell($pkg = Get-Content \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\node_modules\\\\tailwindcss\\\\package.json\" | ConvertFrom-Json; $pkg.exports | ConvertTo-Json -Depth 3)"
+    ]
+  }
+}
