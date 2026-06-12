@@ -229,85 +229,87 @@ function QuotesSection() {
 
 // ── TrustPilot block ──────────────────────────────────────────────────────────
 
-function TrustPilotStar({ filled = true }) {
+// TrustPilot star box — fill: 0–1 controls how much of the square is green
+function TpStarBox({ fill = 1 }) {
+  const clip = Math.round((1 - fill) * 100);
   return (
-    <div
-      className={`w-11 h-11 flex items-center justify-center rounded-[2px] ${filled ? "bg-[#00b67a]" : "bg-[#dcdce6]"}`}
-    >
-      <svg viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg" className="w-7 h-7">
-        <polygon
-          fill="white"
-          points="30,5 37.5,22.5 57,22.5 42,35 48,54 30,43 12,54 18,35 3,22.5 22.5,22.5"
+    <div className="relative w-[72px] h-[72px] lg:w-20 lg:h-20 rounded-[3px] overflow-hidden shrink-0">
+      <div className="absolute inset-0 bg-[#dcdce6]" />
+      {fill > 0 && (
+        <div
+          className="absolute inset-0 bg-[#00b67a]"
+          style={{ clipPath: `inset(0 ${clip}% 0 0)` }}
         />
-      </svg>
+      )}
+      <div className="absolute inset-0 flex items-center justify-center">
+        <svg viewBox="0 0 120 115" xmlns="http://www.w3.org/2000/svg" className="w-[58%] h-[58%]">
+          <polygon
+            fill="white"
+            points="60,8.7 74.9,48.8 117.6,48.8 83.4,73.1 96.4,113.1 60,88.8 23.6,113.1 36.6,73.1 2.4,48.8 45.1,48.8"
+          />
+        </svg>
+      </div>
     </div>
   );
 }
 
 function TrustPilotBlock() {
-  const score = 4.8;
   const reviewCount = 247;
+  // 4.8 = 4 full + 1 at 80 %
+  const starFills = [1, 1, 1, 1, 0.8];
 
   return (
-    <section className="w-full py-14 lg:py-20">
+    <section className="w-full py-14 lg:py-20 bg-[var(--color-light)]">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="rounded-[20px] bg-[var(--color-blue-navy)] text-white px-8 py-12 lg:px-16 lg:py-16 flex flex-col lg:flex-row items-center justify-between gap-10">
+        <div className="max-w-lg">
 
-          {/* Left — score */}
-          <div className="flex flex-col items-center lg:items-start gap-5 text-center lg:text-left">
-            {/* Trustpilot wordmark */}
-            <div className="flex items-center gap-2.5">
-              <TrustPilotStar filled />
-              <span className="text-[26px] font-semibold tracking-tight text-white">
-                Trustpilot
-              </span>
-            </div>
+          {/* Heading */}
+          <p className="text-[28px] lg:text-[36px] font-normal leading-snug text-[#131212]">
+            New World Courtage est noté
+          </p>
+          <p className="text-[42px] lg:text-[56px] font-bold leading-[1.05] text-[#131212] mb-5">
+            Excellent
+          </p>
 
-            <div className="flex flex-col gap-2">
-              <p className="text-[52px] lg:text-[64px] font-bold leading-none text-white">
-                {score}
-              </p>
-              <p className="text-[15px] text-white/70">
-                Noté <strong className="text-white">Excellent</strong> sur {reviewCount} avis vérifiés
-              </p>
-            </div>
+          {/* Review count */}
+          <p className="text-[17px] text-[#00b67a] mb-6">
+            Basé sur {reviewCount} avis
+          </p>
 
-            <div className="flex items-center gap-1.5">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <TrustPilotStar key={i} filled />
-              ))}
-            </div>
+          {/* Stars */}
+          <div className="flex items-center gap-2 mb-7">
+            {starFills.map((fill, i) => (
+              <TpStarBox key={i} fill={fill} />
+            ))}
           </div>
 
-          {/* Right — description + CTA */}
-          <div className="flex flex-col gap-6 max-w-md text-center lg:text-left">
-            <p className={`text-[22px] lg:text-[28px] leading-[1.35] text-white ${libreCaslon.className}`}>
-              <em>
-                &ldquo;La satisfaction de nos clients est notre meilleure
-                récompense.&rdquo;
-              </em>
-            </p>
-            <p className="text-[14px] text-white/70 leading-relaxed">
-              Tous nos avis sont collectés et vérifiés par Trustpilot, la plateforme
-              d&apos;avis indépendante de référence. Consultez l&apos;ensemble de nos
-              évaluations directement sur leur site.
-            </p>
-            <div>
-              <Button
-                asChild
-                className="bg-[#00b67a] hover:bg-[#00a366] text-white font-semibold rounded-full px-6 h-11 gap-2"
-              >
-                <a
-                  href="https://www.trustpilot.com/review/newworldcourtage.fr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Voir nos avis sur Trustpilot
-                  <ExternalLink size={14} />
-                </a>
-              </Button>
-            </div>
+          {/* Trustpilot wordmark */}
+          <div className="flex items-center gap-2 mb-8">
+            <svg viewBox="0 0 120 115" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+              <polygon
+                fill="#00b67a"
+                points="60,8.7 74.9,48.8 117.6,48.8 83.4,73.1 96.4,113.1 60,88.8 23.6,113.1 36.6,73.1 2.4,48.8 45.1,48.8"
+              />
+            </svg>
+            <span className="text-[24px] font-normal text-[#131212] tracking-[-0.01em]">
+              Trustpilot
+            </span>
           </div>
+
+          {/* CTA */}
+          <Button
+            asChild
+            className="bg-[#00b67a] hover:bg-[#00a366] text-white font-semibold rounded-full px-6 h-11 gap-2"
+          >
+            <a
+              href="https://www.trustpilot.com/review/newworldcourtage.fr"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Voir tous nos avis
+              <ExternalLink size={14} />
+            </a>
+          </Button>
 
         </div>
       </div>
