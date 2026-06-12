@@ -27,10 +27,10 @@ export default function Home() {
       <main>
         <h1 className="sr-only">Comparez les meilleures assurances en France</h1>
         <Hero />
+        <RealCustomers />
         <Partners />
         <Testimonials />
         <OurProcess />
-        <RealCustomers />
         <FinishedScrolling />
       </main>
       <Footer />
