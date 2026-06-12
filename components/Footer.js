@@ -46,7 +46,7 @@ function FooterLogo() {
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#131212] text-white mt-4">
+    <footer className="w-full bg-[var(--color-blue-navy)] text-white mt-4">
       <div className="px-4 lg:px-12 2xl:px-24 py-14">
 
         {/* Top — logo + columns */}
@@ -73,7 +73,7 @@ export default function Footer() {
           {/* Link columns */}
           {LINKS.map(({ heading, items }) => (
             <div key={heading} className="flex flex-col gap-4">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-white/40">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-white/60">
                 {heading}
               </p>
               <ul className="flex flex-col">
@@ -91,7 +91,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/60">
           <p>© {new Date().getFullYear()} New World Courtage. Tous droits réservés.</p>
           <p>Courtier en assurances immatriculé à l&apos;ORIAS</p>
         </div>
