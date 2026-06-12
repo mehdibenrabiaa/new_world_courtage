@@ -111,8 +111,9 @@ function MobileDrawer({ open, onClose }) {
           aria-label="Navigation menu"
         >
           <div className="flex items-center justify-between px-5 h-24 border-b border-gray-200 shrink-0">
-            <Link href="/" onClick={onClose}>
-              <Image src="/logo.svg" alt="Logo" width={197} height={35} priority unoptimized />
+            <Link href="/" onClick={onClose} className="flex items-center gap-2">
+              <Image src="/logo.png" alt="Logo" width={0} height={0} sizes="100vw" priority className="h-8 w-auto" />
+              <span className="text-base font-semibold text-[#131212]">NWC</span>
             </Link>
             <Dialog.Close asChild>
               <button aria-label="Close menu" className="flex items-center justify-center p-1.5 rounded-md hover:bg-gray-100">
@@ -168,8 +169,9 @@ export default function Navbar() {
         <div className="px-4 lg:px-12 2xl:px-24 h-full flex items-center">
 
           {/* Logo */}
-          <Link href="/" className="shrink-0 mr-4 lg:mr-10">
-            <Image src="/logo.svg" alt="Logo" width={197} height={35} priority unoptimized />
+          <Link href="/" className="shrink-0 mr-4 lg:mr-10 flex items-center gap-2">
+            <Image src="/logo.png" alt="Logo" width={0} height={0} sizes="100vw" priority className="h-8 w-auto" />
+            <span className="text-base font-semibold text-[#131212]">NWC</span>
           </Link>
 
           {/* Desktop primary nav — Radix NavigationMenu */}
