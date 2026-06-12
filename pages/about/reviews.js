@@ -277,15 +277,15 @@ function TrustPilotBlock() {
                 <TpStarBox key={i} fill={fill} />
               ))}
             </div>
-            <div className="flex flex-col gap-0.5">
-              <p className="text-[16px] font-bold text-[#131212]">
+            <div className="flex flex-col gap-0">
+              <p className="text-[19px] font-bold text-[#131212]">
                 TrustScore {score} sur 5
               </p>
               <a
                 href="https://www.trustpilot.com/review/newworldcourtage.fr"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[16px] text-[var(--color-brand)] underline hover:text-[var(--color-brand-hover)]"
+                className="text-[19px] text-[var(--color-brand)] underline hover:text-[var(--color-brand-hover)]"
               >
                 Basé sur {reviewCount} avis
               </a>
