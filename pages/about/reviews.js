@@ -260,14 +260,14 @@ function TrustPilotBlock() {
 
   return (
     <section className="w-full border-t border-gray-200 border-b-2 border-b-[#00b67a] py-8">
-      <div className="px-4 lg:px-12 2xl:px-24 flex justify-center">
+      <div className="px-4 lg:px-12 2xl:px-24">
         <div className="inline-flex flex-col gap-2">
 
           {/* Trustpilot wordmark */}
           <img
             src="/Trustpilot_Logo_(2022).svg"
             alt="Trustpilot"
-            className="h-6 w-auto"
+            className="h-8 w-auto"
           />
 
           {/* Stars + score */}
@@ -278,14 +278,14 @@ function TrustPilotBlock() {
               ))}
             </div>
             <div className="flex flex-col gap-0.5">
-              <p className="text-[14px] font-bold text-[#131212]">
+              <p className="text-[16px] font-bold text-[#131212]">
                 TrustScore {score} sur 5
               </p>
               <a
                 href="https://www.trustpilot.com/review/newworldcourtage.fr"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-[13px] text-[var(--color-brand)] underline hover:text-[var(--color-brand-hover)]"
+                className="text-[16px] text-[var(--color-brand)] underline hover:text-[var(--color-brand-hover)]"
               >
                 Basé sur {reviewCount} avis
               </a>
