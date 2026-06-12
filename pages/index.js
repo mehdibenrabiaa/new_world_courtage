@@ -45,6 +45,37 @@ export default function Home() {
           content="Comparez les meilleures offres d'assurance et économisez."
         />
         <meta name="twitter:image" content="https://www.newworldcourtage.fr/hero.jpg" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "InsuranceAgency",
+              name: "New World Courtage",
+              url: "https://www.newworldcourtage.fr",
+              logo: "https://www.newworldcourtage.fr/hero.jpg",
+              description:
+                "New World Courtage est un courtier en assurance indépendant. Comparez gratuitement les meilleures offres d'assurance auto, habitation, santé et décennale.",
+              telephone: "+33800000000",
+              email: "contact@newworldcourtage.fr",
+              address: {
+                "@type": "PostalAddress",
+                addressCountry: "FR",
+              },
+              areaServed: {
+                "@type": "Country",
+                name: "France",
+              },
+              priceRange: "Gratuit",
+              knowsAbout: [
+                "Assurance Auto",
+                "Assurance Habitation",
+                "Assurance Santé",
+                "Assurance Décennale",
+              ],
+            }),
+          }}
+        />
       </Head>
       <main>
         <h1 className="sr-only">
