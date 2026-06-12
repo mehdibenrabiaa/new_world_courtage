@@ -287,7 +287,7 @@ function TrustPilotBlock() {
                 rel="noopener noreferrer"
                 className="text-[13px] text-[var(--color-brand)] underline hover:text-[var(--color-brand-hover)]"
               >
-                Lire nos {reviewCount} avis
+                Basé sur {reviewCount} avis
               </a>
             </div>
           </div>
