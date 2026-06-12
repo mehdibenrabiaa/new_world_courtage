@@ -264,12 +264,11 @@ function TrustPilotBlock() {
         <div className="inline-flex flex-col gap-2">
 
           {/* Trustpilot wordmark */}
-          <div className="flex items-center gap-1.5">
-            <svg viewBox="0 0 120 115" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
-              <polygon fill="#00b67a" points="60,8.7 74.9,48.8 117.6,48.8 83.4,73.1 96.4,113.1 60,88.8 23.6,113.1 36.6,73.1 2.4,48.8 45.1,48.8"/>
-            </svg>
-            <span className="text-[16px] font-normal text-[#131212] tracking-[-0.01em]">Trustpilot</span>
-          </div>
+          <img
+            src="/Trustpilot_Logo_(2022).svg"
+            alt="Trustpilot"
+            className="h-6 w-auto"
+          />
 
           {/* Stars + score */}
           <div className="flex items-center gap-4">
