@@ -17,7 +17,7 @@ function MegaMenuContent({ item }) {
         <div className="grid grid-cols-3 gap-6 max-w-3xl">
           {item.sections.map((section) => (
             <div key={section.heading}>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2.5">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[#131212] mb-2.5">
                 {section.heading}
               </p>
               <ul className="space-y-0.5">
@@ -59,7 +59,7 @@ function MobilePanel({ item, onBack }) {
       <div className="pb-4">
         {item.sections.map((section) => (
           <div key={section.heading} className="px-5 pt-4">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400 mb-2">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-[#131212] mb-2">
               {section.heading}
             </p>
             {section.links.map((link) => (

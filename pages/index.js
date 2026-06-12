@@ -3,6 +3,7 @@ import Hero from '../components/Hero'
 import Testimonials from '../components/Testimonials'
 import Partners from '../components/Partners'
 import OurProcess from '../components/OurProcess'
+import RealCustomers from '../components/RealCustomers'
 import FinishedScrolling from '../components/FinishedScrolling'
 
 export default function Home() {
@@ -28,6 +29,7 @@ export default function Home() {
         <Partners />
         <Testimonials />
         <OurProcess />
+        <RealCustomers />
         <FinishedScrolling />
       </main>
     </>
