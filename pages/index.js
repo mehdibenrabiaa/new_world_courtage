@@ -5,6 +5,7 @@ import Partners from '../components/Partners'
 import OurProcess from '../components/OurProcess'
 import RealCustomers from '../components/RealCustomers'
 import FinishedScrolling from '../components/FinishedScrolling'
+import Footer from '../components/Footer'
 
 export default function Home() {
   return (
@@ -32,6 +33,7 @@ export default function Home() {
         <RealCustomers />
         <FinishedScrolling />
       </main>
+      <Footer />
     </>
   )
 }

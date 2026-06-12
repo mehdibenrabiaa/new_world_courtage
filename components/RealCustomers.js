@@ -71,19 +71,42 @@ export default function RealCustomers() {
             </Card>
 
             {/* Row 2 — 1/4 · 2/4 · 1/4 */}
-            <Card className="lg:col-span-1 rounded-[10px]">
-              <CardContent className="p-6 h-full">
-                <p className="text-sm text-gray-500">Placeholder</p>
+            <Card className="lg:col-span-1 rounded-[10px] bg-[var(--color-blue-sky)] min-h-[280px] cursor-pointer">
+              <CardContent className="p-6 h-full flex flex-col justify-between">
+                <p className="text-[15px] font-normal text-[#131212] leading-[1.4]">
+                  &ldquo;Je n&apos;aurais jamais pensé trouver une meilleure offre aussi rapidement. L&apos;équipe a été d&apos;une grande aide du début à la fin.&rdquo;
+                </p>
+                <div className="flex flex-col gap-0.5 mt-3">
+                  <p className={`text-[20px] lg:text-[26px] leading-snug text-[#131212] ${libreCaslon.className}`}>Sophie</p>
+                  <p className="text-[14px] font-bold text-[#131212]">Cliente New World Courtage</p>
+                </div>
               </CardContent>
             </Card>
-            <Card className="lg:col-span-2 rounded-[10px]">
-              <CardContent className="p-6 h-full">
-                <p className="text-sm text-gray-500">Placeholder</p>
+            <Card className="lg:col-span-2 rounded-[10px] bg-white min-h-[280px] cursor-pointer">
+              <CardContent className="p-6 h-full flex flex-col justify-between">
+                <p className={`text-[26px] lg:text-[30px] text-[#131212] leading-[1.3] ${libreCaslon.className}`}>
+                  &ldquo;Rapide, clair et sans mauvaise surprise. Exactement ce dont j&apos;avais besoin.&rdquo;
+                </p>
+                <div className="flex flex-col gap-0.5">
+                  <p className={`text-[20px] lg:text-[26px] leading-snug text-[#131212] ${libreCaslon.className}`}>Lucas</p>
+                  <p className="text-[14px] font-bold text-[#131212]">Client New World Courtage</p>
+                </div>
               </CardContent>
             </Card>
-            <Card className="lg:col-span-1 rounded-[10px]">
-              <CardContent className="p-6 h-full">
-                <p className="text-sm text-gray-500">Placeholder</p>
+            <Card className="lg:col-span-1 rounded-[10px] overflow-hidden relative min-h-[280px] cursor-pointer"
+              style={{ backgroundImage: "url(/section2.jpg)", backgroundSize: "cover", backgroundPosition: "center" }}
+            >
+              <div className="absolute inset-0 bg-black/40 rounded-[10px]" />
+              <CardContent className="relative z-10 p-6 h-full flex flex-col justify-end">
+                <div className="flex flex-col gap-2">
+                  <p className="text-[15px] font-normal text-white leading-[1.4]">
+                    Un accompagnement humain et des conseils vraiment personnalisés.
+                  </p>
+                  <div className="flex flex-col gap-0.5 mt-3">
+                    <p className={`text-[20px] lg:text-[26px] leading-snug text-white ${libreCaslon.className}`}>Marie</p>
+                    <p className="text-[14px] font-bold text-white">Cliente New World Courtage</p>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
