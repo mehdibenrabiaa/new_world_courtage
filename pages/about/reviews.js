@@ -2,6 +2,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { Libre_Caslon_Text } from "next/font/google";
 import { Star, ChevronRight, ExternalLink } from "lucide-react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import Footer from "../../components/Footer";
 
 const libreCaslon = Libre_Caslon_Text({
@@ -182,19 +184,21 @@ const QUOTES = [
 
 function QuoteCard({ name, location, score, text, date }) {
   return (
-    <div className="bg-white rounded-[12px] p-6 flex flex-col gap-4 border border-gray-100 shadow-sm">
-      <StarRow score={score} size={16} />
-      <p className="text-[14.5px] text-gray-700 leading-relaxed flex-1">
-        &ldquo;{text}&rdquo;
-      </p>
-      <div className="pt-3 border-t border-gray-100 flex items-end justify-between gap-2">
-        <div>
-          <p className={`text-[16px] text-[#131212] ${libreCaslon.className}`}>{name}</p>
-          <p className="text-[12px] text-gray-400">{location}</p>
+    <Card className="rounded-[12px] flex flex-col">
+      <CardContent className="pt-6 flex flex-col gap-4 h-full">
+        <StarRow score={score} size={16} />
+        <p className="text-[14.5px] text-gray-700 leading-relaxed flex-1">
+          &ldquo;{text}&rdquo;
+        </p>
+        <div className="pt-3 border-t border-gray-100 flex items-end justify-between gap-2">
+          <div>
+            <p className={`text-[16px] text-[#131212] ${libreCaslon.className}`}>{name}</p>
+            <p className="text-[12px] text-gray-400">{location}</p>
+          </div>
+          <p className="text-[11px] text-gray-400 shrink-0">{date}</p>
         </div>
-        <p className="text-[11px] text-gray-400 shrink-0">{date}</p>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -289,15 +293,19 @@ function TrustPilotBlock() {
               évaluations directement sur leur site.
             </p>
             <div>
-              <a
-                href="https://www.trustpilot.com/review/newworldcourtage.fr"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#00b67a] hover:bg-[#00a366] transition-colors text-white font-semibold text-[14px] px-6 py-3 rounded-full"
+              <Button
+                asChild
+                className="bg-[#00b67a] hover:bg-[#00a366] text-white font-semibold rounded-full px-6 h-11 gap-2"
               >
-                Voir nos avis sur Trustpilot
-                <ExternalLink size={14} />
-              </a>
+                <a
+                  href="https://www.trustpilot.com/review/newworldcourtage.fr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Voir nos avis sur Trustpilot
+                  <ExternalLink size={14} />
+                </a>
+              </Button>
             </div>
           </div>
 
