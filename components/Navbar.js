@@ -1,12 +1,23 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import * as NavMenu from '@radix-ui/react-navigation-menu'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Menu, X, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import CtaButton from '@/components/CtaButton'
 import { NAV_ITEMS } from './navData'
+
+function LogoText() {
+  return (
+    <span className="flex items-center gap-2.5">
+      <span className="w-[10px] h-[50px] rounded-none bg-[var(--color-brand)] shrink-0" />
+      <span className="flex flex-col leading-[0.95] tracking-[-0.02em]">
+        <span className="text-[25px] font-bold text-[#131212] block">New World</span>
+        <span className="text-[19px] font-light text-[#131212] block">Courtage</span>
+      </span>
+    </span>
+  )
+}
 
 // ── Mega-menu content (renders inside Radix Viewport) ─────────────────────
 
@@ -111,9 +122,8 @@ function MobileDrawer({ open, onClose }) {
           aria-label="Navigation menu"
         >
           <div className="flex items-center justify-between px-5 h-24 border-b border-gray-200 shrink-0">
-            <Link href="/" onClick={onClose} className="flex items-center gap-2">
-              <Image src="/logo.png" alt="Logo" width={0} height={0} sizes="100vw" priority className="h-8 w-auto" />
-              <span className="text-base font-semibold text-[#131212]">NWC</span>
+            <Link href="/" onClick={onClose}>
+              <LogoText />
             </Link>
             <Dialog.Close asChild>
               <button aria-label="Close menu" className="flex items-center justify-center p-1.5 rounded-md hover:bg-gray-100">
@@ -169,9 +179,8 @@ export default function Navbar() {
         <div className="px-4 lg:px-12 2xl:px-24 h-full flex items-center">
 
           {/* Logo */}
-          <Link href="/" className="shrink-0 mr-4 lg:mr-10 flex items-center gap-2">
-            <Image src="/logo.png" alt="Logo" width={0} height={0} sizes="100vw" priority className="h-8 w-auto" />
-            <span className="text-base font-semibold text-[#131212]">NWC</span>
+          <Link href="/" className="shrink-0 mr-4 lg:mr-10">
+            <LogoText />
           </Link>
 
           {/* Desktop primary nav — Radix NavigationMenu */}
