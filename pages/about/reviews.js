@@ -233,7 +233,7 @@ function QuotesSection() {
 function TpStarBox({ fill = 1 }) {
   const clip = Math.round((1 - fill) * 100);
   return (
-    <div className="relative w-[72px] h-[72px] lg:w-20 lg:h-20 rounded-[3px] overflow-hidden shrink-0">
+    <div className="relative w-11 h-11 rounded-[3px] overflow-hidden shrink-0">
       <div className="absolute inset-0 bg-[#dcdce6]" />
       {fill > 0 && (
         <div
@@ -259,39 +259,39 @@ function TrustPilotBlock() {
   const starFills = [1, 1, 1, 1, 0.8];
 
   return (
-    <section className="w-full py-14 lg:py-20 bg-[var(--color-light)]">
+    <section className="w-full py-10 lg:py-14 bg-[var(--color-light)]">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="max-w-lg">
+        <div className="max-w-sm">
 
           {/* Heading */}
-          <p className="text-[28px] lg:text-[36px] font-normal leading-snug text-[#131212]">
+          <p className="text-[16px] font-normal text-[#131212]">
             New World Courtage est noté
           </p>
-          <p className="text-[42px] lg:text-[56px] font-bold leading-[1.05] text-[#131212] mb-5">
+          <p className="text-[28px] lg:text-[34px] font-bold leading-tight text-[#131212] mb-3">
             Excellent
           </p>
 
           {/* Review count */}
-          <p className="text-[17px] text-[#00b67a] mb-6">
+          <p className="text-[13px] text-[#00b67a] mb-4">
             Basé sur {reviewCount} avis
           </p>
 
           {/* Stars */}
-          <div className="flex items-center gap-2 mb-7">
+          <div className="flex items-center gap-1.5 mb-4">
             {starFills.map((fill, i) => (
               <TpStarBox key={i} fill={fill} />
             ))}
           </div>
 
           {/* Trustpilot wordmark */}
-          <div className="flex items-center gap-2 mb-8">
-            <svg viewBox="0 0 120 115" xmlns="http://www.w3.org/2000/svg" className="w-8 h-8">
+          <div className="flex items-center gap-1.5 mb-6">
+            <svg viewBox="0 0 120 115" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
               <polygon
                 fill="#00b67a"
                 points="60,8.7 74.9,48.8 117.6,48.8 83.4,73.1 96.4,113.1 60,88.8 23.6,113.1 36.6,73.1 2.4,48.8 45.1,48.8"
               />
             </svg>
-            <span className="text-[24px] font-normal text-[#131212] tracking-[-0.01em]">
+            <span className="text-[16px] font-normal text-[#131212] tracking-[-0.01em]">
               Trustpilot
             </span>
           </div>
