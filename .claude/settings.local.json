@@ -11,7 +11,8 @@
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\" -Name | Where-Object { $_ -match \"tailwind|postcss\" })",
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\node_modules\" -Directory | Where-Object { $_.Name -match \"tailwind\" } | Select-Object Name)",
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\node_modules\\\\tailwindcss\" -Name | Where-Object { $_ -match \"postcss\" })",
-      "PowerShell($pkg = Get-Content \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\node_modules\\\\tailwindcss\\\\package.json\" | ConvertFrom-Json; $pkg.exports | ConvertTo-Json -Depth 3)"
+      "PowerShell($pkg = Get-Content \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\node_modules\\\\tailwindcss\\\\package.json\" | ConvertFrom-Json; $pkg.exports | ConvertTo-Json -Depth 3)",
+      "PowerShell($timestamp = Get-Date -Format \"yyyy-MM-dd_HH-mm\"; Copy-Item -Path \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\" -Destination \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world_backup_$timestamp\" -Recurse -Exclude \"node_modules\",\".next\")"
     ]
   }
 }

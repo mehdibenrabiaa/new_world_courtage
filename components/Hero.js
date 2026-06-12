@@ -76,9 +76,9 @@ export default function Hero() {
             {/* Headline — top left */}
             <div className="bg-white pl-0 pr-4 sm:pr-8 py-4 sm:py-6 w-full lg:w-fit lg:rounded-br-[20px]">
               <p
-                className={`text-[8vw] sm:text-[42px] lg:text-[55px] text-[#131212] leading-[1.1] ${libreCaslon.className}`}
+                className={`text-[7vw] sm:text-[42px] lg:text-[55px] text-[#131212] leading-[1.1] ${libreCaslon.className}`}
               >
-                <span className="block">Une approche <em className={`italic ${libreCaslon.className}`}>humaine</em></span>
+                <span className="block whitespace-nowrap">Une approche <em className={`italic ${libreCaslon.className}`}>humaine</em></span>
                 <span className="block">de l&apos;assurance.</span>
               </p>
             </div>
@@ -104,7 +104,7 @@ export default function Hero() {
                       <Link href={href} className="flex items-center w-full gap-3">
                         <span className="shrink-0 text-[var(--color-brand)]"><Icon /></span>
                         <span className="text-sm font-semibold text-[#131212]">{label}</span>
-                        <img src="/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="shrink-0 invert ml-auto" />
+                        <img src="/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="shrink-0 ml-auto" />
                       </Link>
                     </Button>
                   ))}

@@ -45,7 +45,7 @@ export default function OurProcess() {
         <div className="rounded-[20px] bg-[var(--color-light)] px-8 py-10 lg:px-14 lg:py-14">
 
           {/* Header */}
-          <div className="flex flex-col gap-5 mb-10 lg:mb-14 max-w-2xl mx-auto text-center">
+          <div className="flex flex-col gap-5 mb-10 lg:mb-14 max-w-4xl mx-auto text-center">
             <h2
               className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}
             >
