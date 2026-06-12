@@ -254,62 +254,44 @@ function TpStarBox({ fill = 1 }) {
 }
 
 function TrustPilotBlock() {
+  const score = 4.8;
   const reviewCount = 247;
-  // 4.8 = 4 full + 1 at 80 %
   const starFills = [1, 1, 1, 1, 0.8];
 
   return (
-    <section className="w-full py-10 lg:py-14 bg-[var(--color-light)]">
+    <section className="w-full border-t border-gray-200 border-b-2 border-b-[#00b67a] py-5">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="max-w-sm">
-
-          {/* Heading */}
-          <p className="text-[16px] font-normal text-[#131212]">
-            New World Courtage est noté
-          </p>
-          <p className="text-[28px] lg:text-[34px] font-bold leading-tight text-[#131212] mb-3">
-            Excellent
-          </p>
-
-          {/* Review count */}
-          <p className="text-[13px] text-[#00b67a] mb-4">
-            Basé sur {reviewCount} avis
-          </p>
-
-          {/* Stars */}
-          <div className="flex items-center gap-1.5 mb-4">
-            {starFills.map((fill, i) => (
-              <TpStarBox key={i} fill={fill} />
-            ))}
-          </div>
+        <div className="inline-flex flex-col gap-2">
 
           {/* Trustpilot wordmark */}
-          <div className="flex items-center gap-1.5 mb-6">
+          <div className="flex items-center gap-1.5">
             <svg viewBox="0 0 120 115" xmlns="http://www.w3.org/2000/svg" className="w-5 h-5">
-              <polygon
-                fill="#00b67a"
-                points="60,8.7 74.9,48.8 117.6,48.8 83.4,73.1 96.4,113.1 60,88.8 23.6,113.1 36.6,73.1 2.4,48.8 45.1,48.8"
-              />
+              <polygon fill="#00b67a" points="60,8.7 74.9,48.8 117.6,48.8 83.4,73.1 96.4,113.1 60,88.8 23.6,113.1 36.6,73.1 2.4,48.8 45.1,48.8"/>
             </svg>
-            <span className="text-[16px] font-normal text-[#131212] tracking-[-0.01em]">
-              Trustpilot
-            </span>
+            <span className="text-[16px] font-normal text-[#131212] tracking-[-0.01em]">Trustpilot</span>
           </div>
 
-          {/* CTA */}
-          <Button
-            asChild
-            className="bg-[#00b67a] hover:bg-[#00a366] text-white font-semibold rounded-full px-6 h-11 gap-2"
-          >
-            <a
-              href="https://www.trustpilot.com/review/newworldcourtage.fr"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Voir tous nos avis
-              <ExternalLink size={14} />
-            </a>
-          </Button>
+          {/* Stars + score */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
+              {starFills.map((fill, i) => (
+                <TpStarBox key={i} fill={fill} />
+              ))}
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <p className="text-[14px] font-bold text-[#131212]">
+                TrustScore {score} sur 5
+              </p>
+              <a
+                href="https://www.trustpilot.com/review/newworldcourtage.fr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[13px] text-[var(--color-brand)] underline hover:text-[var(--color-brand-hover)]"
+              >
+                Lire nos {reviewCount} avis
+              </a>
+            </div>
+          </div>
 
         </div>
       </div>
