@@ -19,9 +19,9 @@ export default function Home() {
           content="Comparez les meilleures offres d'assurance auto, habitation, santé et décennale. Obtenez des devis gratuits en quelques minutes et économisez sur votre assurance."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://www.votresite.fr/" />
+        <link rel="canonical" href="https://www.newworldcourtage.fr/" />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://www.votresite.fr/" />
+        <meta property="og:url" content="https://www.newworldcourtage.fr/" />
         <meta
           property="og:title"
           content="Assurance Auto, Habitation, Santé & Décennale — Comparez et économisez"
@@ -31,6 +31,10 @@ export default function Home() {
           content="Comparez les meilleures offres d'assurance auto, habitation, santé et décennale. Obtenez des devis gratuits en quelques minutes."
         />
         <meta property="og:locale" content="fr_FR" />
+        <meta property="og:site_name" content="New World Courtage" />
+        <meta property="og:image" content="https://www.newworldcourtage.fr/hero.jpg" />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
@@ -40,6 +44,7 @@ export default function Home() {
           name="twitter:description"
           content="Comparez les meilleures offres d'assurance et économisez."
         />
+        <meta name="twitter:image" content="https://www.newworldcourtage.fr/hero.jpg" />
       </Head>
       <main>
         <h1 className="sr-only">
