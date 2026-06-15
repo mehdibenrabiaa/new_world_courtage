@@ -319,7 +319,6 @@ export default function ReviewsPage() {
         <Breadcrumb />
         <FeaturedReview />
         <TrustPilotBlock />
-        <QuotesSection />
       </main>
 
       <Footer />
