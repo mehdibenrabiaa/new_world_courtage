@@ -162,14 +162,23 @@ function ExpertCard({ source, quote, href }) {
 
 function ExpertsSection() {
   return (
-    <section className={`${cx} py-10 lg:py-16`}>
-      <h2 className={`text-[28px] lg:text-[36px] leading-[1.2] text-[#131212] mb-8 ${libreCaslon.className}`}>
-        <em>What the experts are saying</em>
-      </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-        {EXPERTS.map((e) => (
-          <ExpertCard key={e.id} {...e} />
-        ))}
+    <section className="w-full py-4">
+      <div className="px-4 lg:px-12 2xl:px-24">
+        <div className="rounded-[20px] bg-[var(--color-light)] px-4 py-10 lg:px-8 lg:py-14">
+          <div className="flex flex-col gap-4 max-w-2xl mb-10 lg:mb-14">
+            <h2 className={`text-[8vw] sm:text-[42px] lg:text-[48px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}>
+              What the <em className={`italic ${libreCaslon.className}`}>experts</em> are saying
+            </h2>
+            <p className="text-base text-gray-600 leading-relaxed">
+              Des médias et spécialistes indépendants qui parlent de nous.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {EXPERTS.map((e) => (
+              <ExpertCard key={e.id} {...e} />
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
