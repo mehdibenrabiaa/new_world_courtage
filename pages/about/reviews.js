@@ -85,7 +85,7 @@ function FeaturedReview() {
 
       {/* Review content */}
       <section className="w-full py-10 lg:py-14">
-        <Container className="flex flex-col gap-6 max-w-3xl mx-auto">
+        <Container className="flex flex-col gap-6 max-w-3xl mx-auto !px-0">
           <div className="flex flex-col gap-1">
             <p className="text-[17px] font-semibold text-[#131212]">Catherine D.</p>
             <p className="text-[13px] text-gray-400">Cliente depuis 2024 &middot; Lyon, Auvergne-Rhône-Alpes</p>
