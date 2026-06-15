@@ -278,7 +278,7 @@ function TrustPilotBlock() {
                 <TpStarBox key={i} fill={fill} />
               ))}
             </div>
-            <div className="flex flex-col gap-0">
+            <div className="flex flex-col gap-0 border border-gray-200 px-4 py-2">
               <p className="text-[19px] font-bold text-[#131212]">
                 TrustScore {score} sur 5
               </p>
