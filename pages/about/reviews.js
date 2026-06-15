@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Libre_Caslon_Text } from "next/font/google";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import Footer from "../../components/Footer";
 
 const libreCaslon = Libre_Caslon_Text({
@@ -142,9 +143,9 @@ const EXPERTS = [
 
 function ExpertCard({ source, quote, href }) {
   return (
-    <div className="flex flex-col bg-[#f5f5f0] rounded-[8px] overflow-hidden">
-      <div className="h-[4px] bg-[var(--color-brand)] w-full" />
-      <div className="flex flex-col gap-4 p-6 flex-1">
+    <Card className="rounded-[10px] overflow-hidden border-0 shadow-sm flex flex-col">
+      <div className="h-[4px] bg-[var(--color-brand)] w-full shrink-0" />
+      <CardContent className="p-6 flex flex-col gap-4 h-full">
         <p className="text-[15px] font-bold text-[#131212]">{source}</p>
         <p className="text-[15px] text-gray-700 leading-relaxed flex-1">{quote}</p>
         <a
@@ -155,8 +156,8 @@ function ExpertCard({ source, quote, href }) {
         >
           Read more
         </a>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }
 
@@ -165,8 +166,8 @@ function ExpertsSection() {
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
         <div className="rounded-[20px] bg-[var(--color-light)] px-4 py-10 lg:px-8 lg:py-14">
-          <div className="flex flex-col gap-4 max-w-2xl mb-10 lg:mb-14">
-            <h2 className={`text-[8vw] sm:text-[42px] lg:text-[48px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}>
+          <div className="flex flex-col gap-5 max-w-4xl mx-auto text-center mb-10 lg:mb-14">
+            <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}>
               What the <em className={`italic ${libreCaslon.className}`}>experts</em> are saying
             </h2>
             <p className="text-base text-gray-600 leading-relaxed">
