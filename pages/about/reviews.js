@@ -233,7 +233,7 @@ function QuotesSection() {
 function TpStarBox({ fill = 1 }) {
   const clip = Math.round((1 - fill) * 100);
   return (
-    <div className="relative w-11 h-11 rounded-[3px] overflow-hidden shrink-0">
+    <div className="relative w-11 h-11 overflow-hidden shrink-0">
       <div className="absolute inset-0 bg-[#dcdce6]" />
       {fill > 0 && (
         <div
