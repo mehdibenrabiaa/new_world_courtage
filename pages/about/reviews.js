@@ -53,17 +53,17 @@ function FeaturedReview() {
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
         <div className="flex flex-col gap-0.5">
           <p className="text-[17px] font-semibold text-[#131212]">Catherine D.</p>
-          <p className="text-[13px] text-gray-400">
+          <p className="text-[14px] text-gray-400">
             Cliente depuis 2024 &middot; Lyon, Auvergne-Rhône-Alpes
           </p>
         </div>
         <blockquote className="flex flex-col gap-3">
-          <p className="text-[18px] lg:text-[22px] leading-[1.4] text-[#131212]">
+          <p className="text-[20px] lg:text-[24px] leading-[1.4] text-[#131212]">
             &ldquo;Je cherchais une assurance habitation depuis plusieurs semaines sans
             trouver d&apos;offre adaptée à mon budget. L&apos;équipe de New World
             Courtage a compris mes besoins dès le premier appel.&rdquo;
           </p>
-          <p className="text-[15px] text-gray-500 leading-relaxed">
+          <p className="text-[16px] text-gray-500 leading-relaxed">
             En moins de 48 heures, ils m&apos;ont présenté trois offres comparées,
             clairement expliquées, avec les avantages et les limites de chacune.
             J&apos;ai pu poser toutes mes questions sans me sentir pressée. Le
