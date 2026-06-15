@@ -38,20 +38,20 @@ function HeroSection() {
             />
           </picture>
 
-          {/* Dark overlay */}
-          <div className="absolute inset-0 bg-black/40" />
-
           {/* Content */}
-          <div className="relative z-10 h-full flex flex-col justify-center items-center gap-8 px-4 lg:px-12 text-center">
+          <div className="relative z-10 h-full flex flex-col justify-between">
 
-            {/* Headline */}
-            <h1 className={`text-[7vw] sm:text-[38px] lg:text-[52px] text-white leading-[1.15] max-w-3xl ${libreCaslon.className}`}>
-              Le bon contrat d&apos;assurance auto commence par un{" "}
-              <em className={`italic ${libreCaslon.className}`}>simple devis.</em>
-            </h1>
+            {/* Headline — top center white box */}
+            <div className="bg-white px-6 sm:px-10 py-4 sm:py-6 w-full lg:w-fit lg:rounded-b-[20px] lg:mx-auto text-center">
+              <h1 className={`text-[7vw] sm:text-[38px] lg:text-[48px] text-[#131212] leading-[1.15] ${libreCaslon.className}`}>
+                Le bon contrat d&apos;assurance auto commence par un{" "}
+                <em className={`italic ${libreCaslon.className}`}>simple devis.</em>
+              </h1>
+            </div>
 
-            {/* Form bar */}
-            <div className="bg-[var(--color-light)] rounded-xl px-5 py-4 flex flex-col md:flex-row md:items-center gap-3 w-full max-w-2xl">
+            {/* Form bar — bottom */}
+            <div className="px-4 lg:px-8 pb-6">
+            <div className="bg-[var(--color-light)] rounded-xl px-5 py-4 flex flex-col md:flex-row md:items-center gap-3 w-full lg:w-fit lg:mx-auto">
 
               {/* Insurance type */}
               <Select defaultValue="auto">
@@ -91,6 +91,7 @@ function HeroSection() {
                 Get started
               </Button>
 
+            </div>
             </div>
           </div>
 
