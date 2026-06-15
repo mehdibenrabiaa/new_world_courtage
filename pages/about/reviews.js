@@ -173,7 +173,7 @@ function ExpertsSection() {
               Des médias et spécialistes indépendants qui parlent de nous.
             </p>
           </div>
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-5 max-w-2xl mx-auto w-full">
             {EXPERTS.map((e) => (
               <ExpertCard key={e.id} {...e} />
             ))}
