@@ -61,34 +61,41 @@ function Breadcrumb() {
 
 function FeaturedReview() {
   return (
-    <section className="w-full py-10 lg:py-16">
-      <div className="px-4 lg:px-12 2xl:px-24 flex flex-col gap-6 max-w-3xl">
-        <h1 className="text-[42px] lg:text-[58px] font-bold leading-[1.05] text-[#131212]">
-          Customer reviews
+    <>
+      {/* Orange hero box with title at bottom-left */}
+      <div className="w-full bg-[var(--color-brand)] px-4 lg:px-12 2xl:px-24 pt-16 pb-8 flex items-end">
+        <h1 className="text-[48px] lg:text-[68px] font-bold leading-[1.0] text-white">
+          Customer Reviews
         </h1>
-        <div className="flex flex-col gap-1">
-          <p className="text-[17px] font-semibold text-[#131212]">Catherine D.</p>
-          <p className="text-[13px] text-gray-400">Cliente depuis 2024 &middot; Lyon, Auvergne-Rhône-Alpes</p>
-        </div>
-        <blockquote className="flex flex-col gap-3">
-          <p className="text-[22px] leading-[1.4] text-[#131212]">
-            &ldquo;Je cherchais une assurance habitation depuis plusieurs semaines sans
-            trouver d&apos;offre adaptée à mon budget. L&apos;équipe de New World
-            Courtage a compris mes besoins dès le premier appel.&rdquo;
-          </p>
-          <p className="text-[15px] text-gray-500 leading-relaxed">
-            En moins de 48 heures, ils m&apos;ont présenté trois offres comparées,
-            clairement expliquées, avec les avantages et les limites de chacune.
-            J&apos;ai pu poser toutes mes questions sans me sentir pressée. Le
-            conseiller a été patient, professionnel et vraiment à l&apos;écoute.
-            J&apos;ai finalement souscrit une formule qui me protège bien mieux que
-            mon ancienne assurance, pour 20&nbsp;% moins cher. Je recommande sans
-            hésitation à toute personne qui souhaite gagner du temps et faire de
-            vraies économies.
-          </p>
-        </blockquote>
       </div>
-    </section>
+
+      {/* Review content */}
+      <section className="w-full py-10 lg:py-14">
+        <div className="px-4 lg:px-12 2xl:px-24 flex flex-col gap-6 max-w-3xl">
+          <div className="flex flex-col gap-1">
+            <p className="text-[17px] font-semibold text-[#131212]">Catherine D.</p>
+            <p className="text-[13px] text-gray-400">Cliente depuis 2024 &middot; Lyon, Auvergne-Rhône-Alpes</p>
+          </div>
+          <blockquote className="flex flex-col gap-3">
+            <p className="text-[22px] leading-[1.4] text-[#131212]">
+              &ldquo;Je cherchais une assurance habitation depuis plusieurs semaines sans
+              trouver d&apos;offre adaptée à mon budget. L&apos;équipe de New World
+              Courtage a compris mes besoins dès le premier appel.&rdquo;
+            </p>
+            <p className="text-[15px] text-gray-500 leading-relaxed">
+              En moins de 48 heures, ils m&apos;ont présenté trois offres comparées,
+              clairement expliquées, avec les avantages et les limites de chacune.
+              J&apos;ai pu poser toutes mes questions sans me sentir pressée. Le
+              conseiller a été patient, professionnel et vraiment à l&apos;écoute.
+              J&apos;ai finalement souscrit une formule qui me protège bien mieux que
+              mon ancienne assurance, pour 20&nbsp;% moins cher. Je recommande sans
+              hésitation à toute personne qui souhaite gagner du temps et faire de
+              vraies économies.
+            </p>
+          </blockquote>
+        </div>
+      </section>
+    </>
   );
 }
 
