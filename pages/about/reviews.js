@@ -37,7 +37,7 @@ function StarRow({ score = 5, size = 18 }) {
 
 function Breadcrumb() {
   return (
-    <nav aria-label="Fil d'ariane" className="px-4 lg:px-12 2xl:px-24 pt-6 pb-2">
+    <nav aria-label="Fil d'ariane" className="px-8 lg:px-20 2xl:px-36 pt-6 pb-2">
       <ol className="flex items-center gap-1.5 flex-wrap text-sm text-gray-500">
         <li>
           <Link href="/" className="hover:text-[var(--color-brand)] transition-colors">
@@ -63,7 +63,7 @@ function FeaturedReview() {
   return (
     <>
       {/* Orange hero box with title at bottom-left */}
-      <div className="mx-4 lg:mx-12 2xl:mx-24 bg-[var(--color-brand)] px-8 lg:px-12 pt-[120px] pb-5 flex items-end">
+      <div className="mx-8 lg:mx-20 2xl:mx-36 bg-[var(--color-brand)] px-8 lg:px-12 pt-[120px] pb-5 flex items-end">
         <h1 className="text-[20px] font-bold leading-[1.0] text-white">
           Customer Reviews
         </h1>
