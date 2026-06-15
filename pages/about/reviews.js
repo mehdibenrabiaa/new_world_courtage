@@ -63,8 +63,8 @@ function FeaturedReview() {
   return (
     <>
       {/* Orange hero box with title at bottom-left */}
-      <div className="mx-4 lg:mx-12 2xl:mx-24 bg-[var(--color-brand)] px-8 lg:px-12 pt-20 pb-10 flex items-end">
-        <h1 className="text-[32px] lg:text-[42px] font-bold leading-[1.0] text-white">
+      <div className="mx-4 lg:mx-12 2xl:mx-24 bg-[var(--color-brand)] px-8 lg:px-12 pt-[120px] pb-5 flex items-end">
+        <h1 className="text-[20px] font-bold leading-[1.0] text-white">
           Customer Reviews
         </h1>
       </div>
