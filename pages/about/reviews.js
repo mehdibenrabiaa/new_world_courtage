@@ -111,7 +111,7 @@ function TrustPilotBlock() {
 
   return (
     <section className={`${cx} py-8`}>
-      <div className="max-w-3xl border-y border-[#00b67a] py-5 flex justify-center">
+      <div className="max-w-3xl mx-auto border-y border-[#00b67a] py-5 flex justify-center">
         <div className="flex flex-col items-start gap-0">
           <img
             src="/Trustpilot_Logo_(2022).svg"
