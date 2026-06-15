@@ -143,8 +143,7 @@ const EXPERTS = [
 
 function ExpertCard({ source, quote, href }) {
   return (
-    <Card className="rounded-[10px] overflow-hidden border-0 shadow-sm flex flex-col">
-      <div className="h-[4px] bg-[var(--color-brand)] w-full shrink-0" />
+    <Card className="rounded-[10px] border-t-4 border-t-[var(--color-brand)] shadow-sm flex flex-col">
       <CardContent className="p-6 flex flex-col gap-4 h-full">
         <p className="text-[15px] font-bold text-[#131212]">{source}</p>
         <p className="text-[15px] text-gray-700 leading-relaxed flex-1">{quote}</p>
