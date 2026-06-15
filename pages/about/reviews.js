@@ -13,6 +13,16 @@ const libreCaslon = Libre_Caslon_Text({
   display: "swap",
 });
 
+// ── Shared container ──────────────────────────────────────────────────────────
+
+function Container({ children, className = "" }) {
+  return (
+    <div className={`px-12 lg:px-28 2xl:px-44 ${className}`}>
+      {children}
+    </div>
+  );
+}
+
 // ── Stars ─────────────────────────────────────────────────────────────────────
 
 function StarRow({ score = 5, size = 18 }) {
@@ -37,7 +47,8 @@ function StarRow({ score = 5, size = 18 }) {
 
 function Breadcrumb() {
   return (
-    <nav aria-label="Fil d'ariane" className="px-12 lg:px-28 2xl:px-44 pt-6 pb-2">
+    <nav aria-label="Fil d'ariane">
+      <Container className="pt-6 pb-2">
       <ol className="flex items-center gap-1.5 flex-wrap text-sm text-gray-500">
         <li>
           <Link href="/" className="hover:text-[var(--color-brand)] transition-colors">
@@ -53,6 +64,7 @@ function Breadcrumb() {
         <li><ChevronRight size={13} className="text-gray-300" /></li>
         <li className="text-[#131212] font-medium">Avis clients</li>
       </ol>
+      </Container>
     </nav>
   );
 }
@@ -63,15 +75,17 @@ function FeaturedReview() {
   return (
     <>
       {/* Orange hero box with title at bottom-left */}
-      <div className="mx-12 lg:mx-28 2xl:mx-44 bg-[var(--color-brand)] px-8 lg:px-12 pt-[120px] pb-5 flex items-end">
+      <Container>
+      <div className="bg-[var(--color-brand)] px-8 lg:px-12 pt-[120px] pb-5 flex items-end">
         <h1 className="text-[20px] font-bold leading-[1.0] text-white">
           Customer Reviews
         </h1>
       </div>
+      </Container>
 
       {/* Review content */}
       <section className="w-full py-10 lg:py-14">
-        <div className="px-4 lg:px-12 2xl:px-24 flex flex-col gap-6 max-w-3xl">
+        <Container className="flex flex-col gap-6 max-w-3xl">
           <div className="flex flex-col gap-1">
             <p className="text-[17px] font-semibold text-[#131212]">Catherine D.</p>
             <p className="text-[13px] text-gray-400">Cliente depuis 2024 &middot; Lyon, Auvergne-Rhône-Alpes</p>
@@ -93,7 +107,7 @@ function FeaturedReview() {
               vraies économies.
             </p>
           </blockquote>
-        </div>
+        </Container>
       </section>
     </>
   );
@@ -191,7 +205,7 @@ function QuoteCard({ name, location, score, text, date }) {
 function QuotesSection() {
   return (
     <section className="w-full py-10 lg:py-16 bg-[var(--color-light)]">
-      <div className="px-4 lg:px-12 2xl:px-24">
+      <Container>
         <div className="flex flex-col gap-3 mb-10">
           <h2
             className={`text-[32px] lg:text-[42px] leading-[1.15] text-[#131212] ${libreCaslon.className}`}
@@ -208,7 +222,7 @@ function QuotesSection() {
             <QuoteCard key={q.id} {...q} />
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
@@ -246,7 +260,7 @@ function TrustPilotBlock() {
 
   return (
     <section className="w-full py-8">
-      <div className="px-4 lg:px-12 2xl:px-24 flex justify-center">
+      <Container className="flex justify-center">
         <div className="inline-flex flex-col items-start gap-2 border-y-2 border-[#00b67a] py-1">
 
           {/* Trustpilot wordmark */}
@@ -279,7 +293,7 @@ function TrustPilotBlock() {
           </div>
 
         </div>
-      </div>
+      </Container>
     </section>
   );
 }
