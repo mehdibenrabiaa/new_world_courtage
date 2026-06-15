@@ -261,7 +261,7 @@ function TrustPilotBlock() {
   return (
     <section className="w-full py-8">
       <Container className="max-w-3xl mx-auto !px-0">
-        <div className="flex flex-col items-start gap-2 border-y-2 border-[#00b67a] py-5 w-full">
+        <div className="flex flex-col items-center gap-2 border-y-2 border-[#00b67a] py-5 w-full">
 
           {/* Trustpilot wordmark */}
           <img
