@@ -3,7 +3,6 @@ import Link from "next/link";
 import { Libre_Caslon_Text } from "next/font/google";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import Footer from "../../components/Footer";
 
 const libreCaslon = Libre_Caslon_Text({
@@ -143,17 +142,21 @@ const EXPERTS = [
 
 function ExpertCard({ source, quote, href }) {
   return (
-    <Card className="rounded-[12px] bg-[var(--color-light)] shadow-none border-0 border-t-4 border-t-[var(--color-brand)] flex flex-col">
-      <CardContent className="pt-5 pb-6 flex flex-col gap-4 h-full">
+    <div className="flex flex-col bg-[#f5f5f0] rounded-[8px] overflow-hidden">
+      <div className="h-[4px] bg-[var(--color-brand)] w-full" />
+      <div className="flex flex-col gap-4 p-6 flex-1">
         <p className="text-[15px] font-bold text-[#131212]">{source}</p>
         <p className="text-[15px] text-gray-700 leading-relaxed flex-1">{quote}</p>
-        <Button variant="link" asChild className="h-auto p-0 text-[14px] font-normal text-[var(--color-brand)] justify-start underline w-fit">
-          <a href={href} target="_blank" rel="noopener noreferrer">
-            Read more
-          </a>
-        </Button>
-      </CardContent>
-    </Card>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-[14px] text-[var(--color-brand)] underline hover:text-[var(--color-brand-hover)] w-fit"
+        >
+          Read more
+        </a>
+      </div>
+    </div>
   );
 }
 
