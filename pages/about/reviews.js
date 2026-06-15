@@ -112,13 +112,13 @@ function TrustPilotBlock() {
   return (
     <section className={`${cx} py-8`}>
       <div className="max-w-3xl mx-auto border-y border-[#00b67a] py-5 flex justify-center">
-        <div className="flex flex-col items-center sm:items-start gap-0">
+        <div className="w-fit flex flex-col items-start gap-0">
           <img
             src="/Trustpilot_Logo_(2022).svg"
             alt="Trustpilot"
             className="h-8 w-auto"
           />
-          <div className="flex flex-wrap items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
             <div className="flex items-center gap-1">
               {starFills.map((fill, i) => (
                 <TpStarBox key={i} fill={fill} />
