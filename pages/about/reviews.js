@@ -50,7 +50,7 @@ function Hero() {
 function FeaturedReview() {
   return (
     <section className={`${cx} py-10 lg:py-14`}>
-      <div className="max-w-3xl flex flex-col gap-6">
+      <div className="max-w-3xl mx-auto flex flex-col gap-6">
         <div className="flex flex-col gap-0.5">
           <p className="text-[17px] font-semibold text-[#131212]">Catherine D.</p>
           <p className="text-[13px] text-gray-400">
