@@ -1,8 +1,17 @@
 import Head from "next/head";
 import Link from "next/link";
+import { Libre_Caslon_Text } from "next/font/google";
 import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 import Footer from "../../components/Footer";
+
+const libreCaslon = Libre_Caslon_Text({
+  subsets: ["latin"],
+  weight: ["400"],
+  style: ["normal", "italic"],
+  display: "swap",
+});
 
 // Shared horizontal padding applied to every section
 const cx = "px-4 sm:px-8 lg:px-28 2xl:px-44";
@@ -74,6 +83,90 @@ function FeaturedReview() {
             vraies économies.
           </p>
         </blockquote>
+      </div>
+    </section>
+  );
+}
+
+// ── Expert quotes ─────────────────────────────────────────────────────────────
+
+const EXPERTS = [
+  {
+    id: 1,
+    source: "Le Monde",
+    quote: (
+      <>
+        &ldquo;New World Courtage se distingue par{" "}
+        <strong>la transparence de ses comparatifs</strong> et la qualité de
+        l&apos;accompagnement proposé à chaque assuré.&rdquo;
+      </>
+    ),
+    href: "#",
+  },
+  {
+    id: 2,
+    source: "Capital",
+    quote: (
+      <>
+        &ldquo;Un courtier qui{" "}
+        <strong>simplifie vraiment le marché de l&apos;assurance</strong> en
+        France, avec des conseils personnalisés et des tarifs négociés.&rdquo;
+      </>
+    ),
+    href: "#",
+  },
+  {
+    id: 3,
+    source: "BFM Business",
+    quote: (
+      <>
+        &ldquo;Là où les comparateurs s&apos;arrêtent,{" "}
+        <strong>New World Courtage prend le relais</strong> pour trouver
+        l&apos;offre la plus adaptée à chaque profil.&rdquo;
+      </>
+    ),
+    href: "#",
+  },
+  {
+    id: 4,
+    source: "Les Échos",
+    quote: (
+      <>
+        &ldquo;Le modèle du courtage indépendant{" "}
+        <strong>génère en moyenne 20 à 30&nbsp;% d&apos;économies</strong> pour
+        les particuliers qui font appel à ces experts.&rdquo;
+      </>
+    ),
+    href: "#",
+  },
+];
+
+function ExpertCard({ source, quote, href }) {
+  return (
+    <Card className="rounded-[12px] bg-[var(--color-light)] shadow-none border-0 border-t-4 border-t-[var(--color-brand)] flex flex-col">
+      <CardContent className="pt-5 pb-6 flex flex-col gap-4 h-full">
+        <p className="text-[15px] font-bold text-[#131212]">{source}</p>
+        <p className="text-[15px] text-gray-700 leading-relaxed flex-1">{quote}</p>
+        <Button variant="link" asChild className="h-auto p-0 text-[14px] font-normal text-[var(--color-brand)] justify-start underline w-fit">
+          <a href={href} target="_blank" rel="noopener noreferrer">
+            Read more
+          </a>
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+function ExpertsSection() {
+  return (
+    <section className={`${cx} py-10 lg:py-16`}>
+      <h2 className={`text-[28px] lg:text-[36px] leading-[1.2] text-[#131212] mb-8 ${libreCaslon.className}`}>
+        <em>What the experts are saying</em>
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {EXPERTS.map((e) => (
+          <ExpertCard key={e.id} {...e} />
+        ))}
       </div>
     </section>
   );
@@ -169,6 +262,7 @@ export default function ReviewsPage() {
         <Hero />
         <FeaturedReview />
         <TrustPilotBlock />
+        <ExpertsSection />
       </main>
 
       <Footer />
