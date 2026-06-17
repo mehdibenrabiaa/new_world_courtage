@@ -37,7 +37,7 @@ export default function Partners() {
             {LOGOS.map(({ id, name, src }) => (
               <div
                 key={id}
-                className="flex items-center justify-center rounded-xl px-4 py-3 h-[72px] w-full sm:w-[145px] sm:h-[80px] border border-gray-300 transition-all duration-300"
+                className="flex items-center justify-center rounded-md px-4 py-3 h-[72px] w-full sm:w-[145px] sm:h-[80px] border border-gray-300 transition-all duration-300"
               >
                 <img src={src} alt={name} className="h-full w-auto object-contain max-h-10" />
               </div>

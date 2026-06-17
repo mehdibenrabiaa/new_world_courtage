@@ -109,7 +109,7 @@ export default function Hero() {
                     <Link key={id} href={href} className="lg:shrink-0">
                       <Card className="shadow-none rounded-xl w-full lg:w-[124px] lg:h-[124px] aspect-square lg:aspect-auto flex flex-col items-center justify-center gap-2 lg:gap-2 px-1 border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
                         <img src={icon} alt="" width={42} height={42} aria-hidden="true" className="shrink-0 sm:w-11 sm:h-11" />
-                        <span className="text-[15px] sm:text-[14px] lg:text-[16px] font-semibold text-[#131212] text-center leading-tight">{label}</span>
+                        <span className="text-[15px] sm:text-[14px] lg:text-[16px] font-medium text-[#131212] text-center leading-tight">{label}</span>
                       </Card>
                     </Link>
                   ))}

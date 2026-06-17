@@ -130,7 +130,7 @@ function MobileDrawer({ open, onClose }) {
                 <button
                   key={item.id}
                   onClick={() => setActivePanel(item)}
-                  className="w-full text-left px-5 py-3.5 text-base font-semibold text-[#131212] hover:bg-gray-50"
+                  className="w-full text-left px-5 py-3.5 text-base font-medium text-[#131212] hover:bg-gray-50"
                 >
                   {item.label}
                 </button>
@@ -141,7 +141,7 @@ function MobileDrawer({ open, onClose }) {
               <Link href="/a-propos/" onClick={onClose} className="block px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-[#131212]">
                 À propos
               </Link>
-              <a href="tel:+33800000000" className="flex items-center gap-3 px-5 py-3 text-base font-semibold text-[#131212] hover:bg-gray-50">
+              <a href="tel:+33800000000" className="flex items-center gap-3 px-5 py-3 text-base font-medium text-[#131212] hover:bg-gray-50">
                 <Phone size={16} className="text-[var(--color-brand)]" />
                 0 800 000 000
               </a>
@@ -177,7 +177,7 @@ export default function Navbar() {
               {NAV_ITEMS.map((item) => (
                 <NavMenu.Item key={item.id}>
                   <NavMenu.Trigger onPointerDown={(e) => e.preventDefault()} asChild>
-                    <Button variant="link" className="px-5 py-2 text-base font-semibold data-[state=open]:text-[var(--color-brand)] hover:no-underline">
+                    <Button variant="link" className="px-5 py-2 text-base font-medium data-[state=open]:text-[var(--color-brand)] hover:no-underline">
                       {item.label}
                     </Button>
                   </NavMenu.Trigger>
@@ -192,7 +192,7 @@ export default function Navbar() {
 
           {/* Utility — desktop */}
           <div className="hidden lg:flex items-center gap-3 ml-auto shrink-0">
-            <Button variant="link" asChild className="px-5 py-2 text-base font-semibold hover:no-underline hover:text-[#131212]">
+            <Button variant="link" asChild className="px-5 py-2 text-base font-medium hover:no-underline hover:text-[#131212]">
               <Link href="/a-propos/">À propos</Link>
             </Button>
             <CtaButton href="/life-insurance/start" />

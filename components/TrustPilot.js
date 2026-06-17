@@ -44,7 +44,7 @@ export default function TrustPilot({
                 <TpStarBox key={i} fill={fill} />
               ))}
             </div>
-            <div className="flex flex-col gap-0 py-2">
+            <div className="flex flex-col gap-0">
               <p className="text-[16px] font-bold text-[#131212]">
                 TrustScore {score} sur 5
               </p>
