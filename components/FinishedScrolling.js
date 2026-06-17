@@ -26,7 +26,7 @@ export default function FinishedScrolling() {
                 <em className={`block italic ${libreCaslon.className}`}>Obtiens ton devis.</em>
               </h2>
 
-              <p className="text-base text-gray-600 max-w-lg leading-relaxed">
+              <p className="text-base text-gray-600 max-w-lg leading-[26px] sm:leading-6">
                 Trouvez l&apos;assurance qu&apos;il vous faut et économisez en comparant les offres des assureurs les plus fiables.
               </p>
             </div>

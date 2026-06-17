@@ -50,7 +50,7 @@ export default function OurProcess() {
             >
               Nous rendons le processus <em className={`italic ${libreCaslon.className}`}>simple.</em>
             </h2>
-            <p className="text-base text-gray-600 leading-relaxed">
+            <p className="text-base text-gray-600 leading-[26px] sm:leading-6">
               New World Courtage propose des devis gratuits adaptés à vos besoins, avec l&apos;accompagnement d&apos;agents agréés, afin de vous aider à obtenir rapidement une couverture d&apos;assurance et à reprendre le cours de votre vie.
             </p>
           </div>
@@ -67,7 +67,7 @@ export default function OurProcess() {
                     {id}
                   </Badge>
                   <h3 className={`text-[22px] leading-snug text-[#131212] ${libreCaslon.className}`}>{title}</h3>
-                  <p className="text-[15px] text-[#131212] leading-relaxed">{description}</p>
+                  <p className="text-base text-[#131212] leading-[26px] sm:leading-6">{description}</p>
                 </CardContent>
               </Card>
             ))}

@@ -6,6 +6,8 @@ import OurProcess from "../components/OurProcess";
 import RealCustomers from "../components/RealCustomers";
 import TrustPilot from "../components/TrustPilot";
 import FinishedScrolling from "../components/FinishedScrolling";
+import SocialMedia from "../components/SocialMedia";
+import FAQ from "../components/FAQ";
 import Footer from "../components/Footer";
 
 export default function Home() {
@@ -88,7 +90,9 @@ export default function Home() {
         <RealCustomers />
         <Testimonials />
         <OurProcess />
+        <SocialMedia />
         <FinishedScrolling />
+        <FAQ className="px-4 lg:px-12 2xl:px-24" />
       </main>
       <Footer />
     </>

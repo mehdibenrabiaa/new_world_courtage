@@ -21,7 +21,7 @@ export default function RealCustomers() {
             >
               <em className={`italic ${libreCaslon.className}`}>Vrais</em> clients, vraies histoires.
             </h2>
-            <p className="text-base text-gray-600 leading-relaxed">
+            <p className="text-base text-gray-600 leading-[26px] sm:leading-6">
               New World Courtage vous aide à comparer les options d&apos;assurance et à trouver la bonne protection rapidement grâce à des devis gratuits et un accompagnement d&apos;experts.
             </p>
           </div>
@@ -35,7 +35,7 @@ export default function RealCustomers() {
               <div className="absolute inset-0 bg-black/40 rounded-[10px]" />
               <CardContent className="relative z-10 p-6 h-full flex flex-col justify-end">
                 <div className="flex flex-col gap-2">
-                  <p className="text-[15px] font-normal text-white leading-[1.4]">
+                  <p className="text-base font-normal text-white leading-[26px] sm:leading-6">
                     Je me suis senti écouté et compris tout au long du processus.
                   </p>
                   <div className="flex flex-col gap-0.5 mt-3">
@@ -48,7 +48,7 @@ export default function RealCustomers() {
             <Card className="lg:col-span-1 rounded-[10px] bg-[var(--color-blue-sky)] min-h-[280px] cursor-pointer">
               <CardContent className="p-6 h-full flex flex-col justify-end">
                 <div className="flex flex-col gap-2">
-                  <p className="text-[15px] font-normal text-[#131212] leading-[1.4]">
+                  <p className="text-base font-normal text-[#131212] leading-[26px] sm:leading-6">
                     &ldquo;C&apos;était un processus simple et sans stress. Toutes mes questions ont trouvé une réponse. Je me suis sentie écoutée et comprise. Si vous hésitez encore, ne le faites plus — vous ne regretterez pas d&apos;avoir choisi ce service.&rdquo;
                   </p>
                   <div className="flex flex-col gap-0.5 mt-3">
@@ -73,7 +73,7 @@ export default function RealCustomers() {
             {/* Row 2 — 1/4 · 2/4 · 1/4 */}
             <Card className="lg:col-span-1 rounded-[10px] bg-[var(--color-blue-sky)] min-h-[280px] cursor-pointer">
               <CardContent className="p-6 h-full flex flex-col justify-between">
-                <p className="text-[15px] font-normal text-[#131212] leading-[1.4]">
+                <p className="text-base font-normal text-[#131212] leading-[26px] sm:leading-6">
                   &ldquo;Je n&apos;aurais jamais pensé trouver une meilleure offre aussi rapidement. L&apos;équipe a été d&apos;une grande aide du début à la fin.&rdquo;
                 </p>
                 <div className="flex flex-col gap-0.5 mt-3">
@@ -99,7 +99,7 @@ export default function RealCustomers() {
               <div className="absolute inset-0 bg-black/40 rounded-[10px]" />
               <CardContent className="relative z-10 p-6 h-full flex flex-col justify-end">
                 <div className="flex flex-col gap-2">
-                  <p className="text-[15px] font-normal text-white leading-[1.4]">
+                  <p className="text-base font-normal text-white leading-[26px] sm:leading-6">
                     Un accompagnement humain et des conseils vraiment personnalisés.
                   </p>
                   <div className="flex flex-col gap-0.5 mt-3">

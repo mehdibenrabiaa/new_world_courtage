@@ -200,7 +200,7 @@ export default function Navbar() {
 
           {/* Mobile right — Get a Quote (sm) + hamburger */}
           <div className="lg:hidden ml-auto flex items-center gap-2 shrink-0">
-            <CtaButton href="/life-insurance/start" className="text-sm" />
+            <CtaButton href="/life-insurance/start" />
             <Button variant="ghost" size="icon" onClick={() => setDrawerOpen(true)} aria-label="Open menu">
               <Menu size={22} />
             </Button>

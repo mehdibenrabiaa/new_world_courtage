@@ -41,7 +41,7 @@ export default function Testimonials() {
               </h2>
 
               {/* Paragraph */}
-              <p className="text-base text-[#131212] max-w-lg leading-relaxed">
+              <p className="text-base text-[#131212] max-w-lg leading-[26px] sm:leading-6">
                 New World Courtage propose des devis gratuits adaptés à vos besoins, avec l&apos;accompagnement d&apos;agents agréés, pour vous aider à obtenir rapidement une couverture d&apos;assurance et vous permettre de reprendre le cours de votre vie.
               </p>
             </div>

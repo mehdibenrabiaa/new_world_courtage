@@ -28,7 +28,7 @@ export default function Partners() {
             <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}>
               Plus de <em className={`italic ${libreCaslon.className}`}>100 compagnies</em> partenaires.
             </h2>
-            <p className="text-base text-gray-600 leading-relaxed">
+            <p className="text-base text-gray-600 leading-[26px] sm:leading-6">
               Nous comparons les offres de plus de 100 assureurs pour vous trouver la meilleure protection au meilleur prix.
             </p>
           </div>
