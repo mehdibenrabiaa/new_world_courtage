@@ -4,6 +4,7 @@ import Testimonials from "../components/Testimonials";
 import Partners from "../components/Partners";
 import OurProcess from "../components/OurProcess";
 import RealCustomers from "../components/RealCustomers";
+import TrustPilot from "../components/TrustPilot";
 import FinishedScrolling from "../components/FinishedScrolling";
 import Footer from "../components/Footer";
 
@@ -83,6 +84,7 @@ export default function Home() {
         </h1>
         <Hero />
         <Partners />
+        <TrustPilot />
         <RealCustomers />
         <Testimonials />
         <OurProcess />

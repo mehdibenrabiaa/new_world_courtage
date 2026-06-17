@@ -36,7 +36,7 @@ const LINKS = [
 function FooterLogo() {
   return (
     <Image
-      src="/nwc_logo_2.svg"
+      src="/nwc_logo.svg"
       alt="New World Courtage"
       width={182}
       height={223}

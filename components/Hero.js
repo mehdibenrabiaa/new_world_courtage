@@ -99,7 +99,7 @@ export default function Hero() {
               <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 w-full lg:w-fit lg:mx-auto">
 
                 {/* Label */}
-                <p className="font-semibold text-[14px] sm:text-[16px] text-[#131212] whitespace-nowrap shrink-0">
+                <p className="font-semibold text-[17px] sm:text-[19px] text-[#131212] whitespace-nowrap shrink-0">
                   Que recherchez-vous ?
                 </p>
 
@@ -107,7 +107,7 @@ export default function Hero() {
                 <div className="grid grid-cols-3 lg:flex lg:flex-row gap-2">
                   {CATEGORIES.map(({ id, label, href, icon }) => (
                     <Link key={id} href={href} className="lg:shrink-0">
-                      <Card className="border-0 shadow-none rounded-xl w-full lg:w-[124px] lg:h-[124px] aspect-square lg:aspect-auto flex flex-col items-center justify-center gap-2 lg:gap-2 px-2 hover:bg-gray-50 transition-colors cursor-pointer">
+                      <Card className="border-0 shadow-none rounded-xl w-full lg:w-[124px] lg:h-[124px] aspect-square lg:aspect-auto flex flex-col items-center justify-center gap-2 lg:gap-2 px-2 hover:bg-gray-50 hover:-translate-y-1 hover:shadow-md transition-all duration-200 cursor-pointer">
                         <img src={icon} alt="" width={42} height={42} aria-hidden="true" className="shrink-0 sm:w-11 sm:h-11" />
                         <span className="text-[15px] sm:text-[14px] lg:text-[16px] font-semibold text-[#131212] text-center leading-tight">{label}</span>
                       </Card>

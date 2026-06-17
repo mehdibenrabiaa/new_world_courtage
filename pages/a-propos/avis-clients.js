@@ -5,6 +5,7 @@ import { ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Footer from "../../components/Footer";
+import TrustPilot from "../../components/TrustPilot";
 
 const libreCaslon = Libre_Caslon_Text({
   subsets: ["latin"],
@@ -13,10 +14,7 @@ const libreCaslon = Libre_Caslon_Text({
   display: "swap",
 });
 
-// Shared horizontal padding applied to every section
 const cx = "px-4 sm:px-8 lg:px-28 2xl:px-44";
-
-// ── Breadcrumb ────────────────────────────────────────────────────────────────
 
 function Breadcrumb() {
   return (
@@ -29,7 +27,7 @@ function Breadcrumb() {
         </li>
         <li><ChevronRight size={13} className="text-gray-300" /></li>
         <li>
-          <Link href="/about/" className="hover:text-[var(--color-brand)] transition-colors">
+          <Link href="/a-propos/" className="hover:text-[var(--color-brand)] transition-colors">
             À propos
           </Link>
         </li>
@@ -40,21 +38,17 @@ function Breadcrumb() {
   );
 }
 
-// ── Hero ──────────────────────────────────────────────────────────────────────
-
 function Hero() {
   return (
     <div className={cx}>
-      <div className="bg-[var(--color-brand)] px-8 pt-16 lg:pt-[120px] pb-5 flex items-end">
-        <h1 className="text-[20px] font-bold leading-none text-white">
-          Customer Reviews
+      <div className="bg-[var(--color-brand)] px-10 pt-20 lg:pt-[140px] pb-8 flex items-end">
+        <h1 className="text-[24px] lg:text-[30px] font-semibold leading-none text-white">
+          Avis clients
         </h1>
       </div>
     </div>
   );
 }
-
-// ── Featured review ───────────────────────────────────────────────────────────
 
 function FeaturedReview() {
   return (
@@ -87,8 +81,6 @@ function FeaturedReview() {
     </section>
   );
 }
-
-// ── Expert quotes ─────────────────────────────────────────────────────────────
 
 const EXPERTS = [
   {
@@ -153,7 +145,7 @@ function ExpertCard({ source, quote, href }) {
           rel="noopener noreferrer"
           className="text-[14px] text-[var(--color-brand)] underline hover:text-[var(--color-brand-hover)] w-fit"
         >
-          Read more
+          Lire l&apos;article
         </a>
       </CardContent>
     </Card>
@@ -167,7 +159,7 @@ function ExpertsSection() {
         <div className="rounded-[20px] bg-[var(--color-light)] px-4 py-10 lg:px-8 lg:py-14">
           <div className="flex flex-col gap-5 max-w-4xl mx-auto text-center mb-10 lg:mb-14">
             <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}>
-              What the <em className={`italic ${libreCaslon.className}`}>experts</em> are saying
+              Ce que disent les <em className={`italic ${libreCaslon.className}`}>experts.</em>
             </h2>
             <p className="text-base text-gray-600 leading-relaxed">
               Des médias et spécialistes indépendants qui parlent de nous.
@@ -184,79 +176,7 @@ function ExpertsSection() {
   );
 }
 
-// ── TrustPilot ────────────────────────────────────────────────────────────────
-
-function TpStarBox({ fill = 1 }) {
-  const clip = Math.round((1 - fill) * 100);
-  return (
-    <div className="relative w-9 h-9 sm:w-11 sm:h-11 overflow-hidden shrink-0">
-      <div className="absolute inset-0 bg-[#dcdce6]" />
-      {fill > 0 && (
-        <div
-          className="absolute inset-0 bg-[#00b67a]"
-          style={{ clipPath: `inset(0 ${clip}% 0 0)` }}
-        />
-      )}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <svg viewBox="0 0 120 115" xmlns="http://www.w3.org/2000/svg" className="w-[58%] h-[58%]">
-          <polygon
-            fill="white"
-            points="60,8.7 74.9,48.8 117.6,48.8 83.4,73.1 96.4,113.1 60,88.8 23.6,113.1 36.6,73.1 2.4,48.8 45.1,48.8"
-          />
-        </svg>
-      </div>
-    </div>
-  );
-}
-
-function TrustPilotBlock() {
-  const score = 4.8;
-  const reviewCount = 247;
-  const starFills = [1, 1, 1, 1, 0.8];
-
-  return (
-    <section className={`${cx} py-8`}>
-      <div className="max-w-3xl mx-auto border-y border-[#00b67a] py-5 flex justify-center">
-        <div className="w-fit flex flex-col items-start gap-0">
-          <img
-            src="/Trustpilot_Logo_(2022).svg"
-            alt="Trustpilot"
-            className="h-8 w-auto"
-          />
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-            <div className="flex items-center gap-1">
-              {starFills.map((fill, i) => (
-                <TpStarBox key={i} fill={fill} />
-              ))}
-            </div>
-            <div className="flex flex-col gap-0 py-2">
-              <p className="text-[16px] font-bold text-[#131212]">
-                TrustScore {score} sur 5
-              </p>
-              <Button
-                variant="link"
-                asChild
-                className="h-auto p-0 text-[16px] font-normal text-[var(--color-brand)] justify-start underline"
-              >
-                <a
-                  href="https://www.trustpilot.com/review/newworldcourtage.fr"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  Basé sur {reviewCount} avis
-                </a>
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ── Page ──────────────────────────────────────────────────────────────────────
-
-export default function ReviewsPage() {
+export default function AvisClientsPage() {
   return (
     <>
       <Head>
@@ -266,14 +186,14 @@ export default function ReviewsPage() {
           content="Découvrez les avis de nos clients sur New World Courtage. Plus de 247 avis vérifiés et une note Excellent sur Trustpilot."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://www.newworldcourtage.fr/about/reviews" />
+        <link rel="canonical" href="https://www.newworldcourtage.fr/a-propos/avis-clients/" />
       </Head>
 
       <main>
         <Breadcrumb />
         <Hero />
         <FeaturedReview />
-        <TrustPilotBlock />
+        <TrustPilot className={cx} />
         <ExpertsSection />
       </main>
 

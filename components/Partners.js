@@ -1,4 +1,5 @@
 import { Libre_Caslon_Text } from "next/font/google";
+import CtaButton from "@/components/CtaButton";
 
 const libreCaslon = Libre_Caslon_Text({
   subsets: ["latin"],
@@ -32,15 +33,22 @@ export default function Partners() {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-8">
+          <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-3 lg:gap-4 sm:max-w-[640px] sm:mx-auto">
             {LOGOS.map(({ id, name, src }) => (
               <div
                 key={id}
-                className="flex items-center justify-center bg-white rounded-xl px-6 py-4 h-[72px] w-[140px] grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
+                className="flex items-center justify-center rounded-xl px-4 py-3 h-[72px] w-full sm:w-[145px] sm:h-[80px] border border-gray-300 transition-all duration-300"
               >
                 <img src={src} alt={name} className="h-full w-auto object-contain max-h-10" />
               </div>
             ))}
+          </div>
+
+          <div className="flex justify-center mt-8">
+            <CtaButton
+              href="/a-propos/nos-partenaires/"
+              label="En savoir sur tous nos partenaires"
+            />
           </div>
 
         </div>
