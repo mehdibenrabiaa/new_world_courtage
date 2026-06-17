@@ -61,13 +61,11 @@ function Hero() {
 
 function ContentBlock({ heading, children }) {
   return (
-    <div className="flex flex-col gap-2">
-      <h3 className={`text-[22px] leading-snug text-[#131212] ${libreCaslon.className}`}>
+    <div>
+      <h3 className={`!text-[22px] !leading-snug !text-[#131212] !mt-0 ${libreCaslon.className}`}>
         {heading}
       </h3>
-      <p className="text-base font-normal leading-[26px] sm:leading-6 text-gray-700 text-left">
-        {children}
-      </p>
+      <p className="!mt-2">{children}</p>
     </div>
   );
 }
@@ -166,10 +164,10 @@ export default function AProposPage() {
         <Hero />
         <QuickNav />
         <div className={`${cx} py-8 pb-16`}>
-          <div className="max-w-3xl lg:max-w-4xl 2xl:max-w-5xl mx-auto px-3 sm:px-0 flex flex-col gap-12">
+          <div className="max-w-3xl lg:max-w-4xl 2xl:max-w-5xl mx-auto px-3 sm:px-0 flex flex-col gap-12 prose prose-gray max-w-none prose-headings:font-normal prose-a:text-[var(--color-brand)] prose-a:no-underline hover:prose-a:text-[var(--color-brand-hover)]">
 
             {/* Intro paragraphs */}
-            <div className="text-base font-normal leading-[26px] sm:leading-6 text-gray-700 text-left flex flex-col gap-4">
+            <div>
               <p>New World Courtage réinvente l&apos;expérience de l&apos;assurance en proposant une plateforme unique et intégrée. Désormais, les consommateurs peuvent comparer les offres des plus grands assureurs, bénéficier de conseils d&apos;experts impartiaux, souscrire à leurs polices et gérer l&apos;ensemble de leur portefeuille en toute simplicité.</p>
               <p>Grâce à notre technologie propriétaire connectée aux leaders du marché (assurance vie, invalidité, habitation et auto), nous offrons un parcours numérique fluide et performant, tant pour les assurés que pour les compagnies d&apos;assurance.</p>
               <p>Depuis 2014, nos guides, nos outils digitaux et nos spécialistes ont accompagné des millions de personnes dans leurs démarches, totalisant plus de 200 milliards de dollars de capitaux assurés. En 2023, Policygenius a été acquis par Zinnia, un acteur majeur des technologies et services numériques appliqués à l&apos;assurance.</p>
@@ -201,13 +199,13 @@ export default function AProposPage() {
               <h2 className={`text-[33px] leading-tight text-[#131212] ${libreCaslon.className}`}>
                 Comment nous gagnons notre argent
               </h2>
-              <p className="text-base font-normal leading-[26px] sm:leading-6 text-gray-700 text-left">
+              <p>
                 Nous sommes un courtier en assurance indépendant : nous percevons une commission de la part des compagnies d&apos;assurance pour chaque vente réalisée. Ces commissions sont déjà intégrées dans le prix des polices d&apos;assurance, de sorte que vous ne payez rien de plus en passant par nous. Notre rémunération peut varier selon plusieurs facteurs — type et montant du produit, assureur concerné ou volume d&apos;affaires — mais nous ne favorisons jamais un assureur au détriment d&apos;un autre en raison de la commission. Notre mission, c&apos;est de défendre vos intérêts, pas les nôtres.
               </p>
             </div>
 
             {/* Blue info boxes */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="not-prose grid grid-cols-1 lg:grid-cols-2 gap-4">
               <Card className="bg-[var(--color-light)] border-0 shadow-none rounded-xl">
                 <CardContent className="p-8 flex flex-col gap-4">
                   <h3 className="text-[20px] font-semibold text-[#131212] leading-snug">
@@ -236,9 +234,9 @@ export default function AProposPage() {
               <h2 className={`text-[33px] leading-tight text-[#131212] ${libreCaslon.className}`}>
                 Nos agréments
               </h2>
-              <p className="text-base font-normal leading-[26px] sm:leading-6 text-gray-700">
+              <p>
                 Tout intermédiaire en assurance est tenu par la loi d&apos;être immatriculé auprès de l&apos;ORIAS dans chaque territoire où il exerce son activité. Vous pouvez consulter nos agréments{" "}
-                <a href="https://www.orias.fr" target="_blank" rel="noopener noreferrer" className="text-[var(--color-brand)] underline hover:text-[var(--color-brand-hover)] transition-colors">ici</a>.
+                <a href="https://www.orias.fr" target="_blank" rel="noopener noreferrer">ici</a>.
               </p>
             </div>
 

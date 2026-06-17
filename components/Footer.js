@@ -36,12 +36,11 @@ const LINKS = [
 function FooterLogo() {
   return (
     <Image
-      src="/nwc_logo.svg"
+      src="/nwc_logo_white.svg"
       alt="New World Courtage"
       width={182}
       height={223}
       className="h-12 w-auto"
-      style={{ filter: "brightness(0) invert(1)" }}
     />
   );
 }

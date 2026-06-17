@@ -10,10 +10,14 @@ function Separator({ className, orientation = "horizontal", decorative = true, .
       decorative={decorative}
       orientation={orientation}
       className={cn(
-        "shrink-0 bg-border",
-        orientation === "horizontal" ? "h-px w-full" : "h-full w-px",
+        "shrink-0",
+        orientation === "horizontal" ? "w-full" : "h-full",
         className
       )}
+      style={{
+        backgroundColor: "#d1d5db",
+        ...(orientation === "horizontal" ? { height: "1px" } : { width: "1px" }),
+      }}
       {...props}
     />
   )

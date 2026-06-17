@@ -32,7 +32,18 @@
       "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" push origin main)",
       "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" pull --rebase origin main)",
       "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" stash)",
-      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" stash pop)"
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" stash pop)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" add global.css)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" stash drop)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" diff --cached --stat)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" diff --cached -- components/Footer.js components/ui/button.jsx global.css)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" pull origin main)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" add components/OurProcess.js pages/a-propos/index.js package.json package-lock.json)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" add public/icons/ public/illustrations/)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)",
+      "Bash(npm install *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\admin\\Desktop\\new world courtage\\illustrations"

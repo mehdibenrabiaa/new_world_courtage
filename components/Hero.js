@@ -67,57 +67,53 @@ export default function Hero() {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="relative">
+        <div className="relative w-full min-h-[920px] lg:h-[75vw] lg:max-h-[90vh] lg:min-h-[600px] overflow-hidden rounded-none lg:rounded-xl">
+          <picture className="absolute inset-0 w-full h-full">
+            <source media="(max-width: 1023px)" srcSet="/hero-mobile.jpg" />
+            <img
+              src="/hero.jpg"
+              alt="Protégez ce qui compte le plus pour vous."
+              width={1600}
+              height={900}
+              decoding="sync"
+              loading="eager"
+              fetchpriority="high"
+              className="w-full h-full object-cover object-top"
+            />
+          </picture>
 
-          {/* ── Hero image ── */}
-          <div className="relative w-full h-[55vw] lg:h-[75vw] max-h-[90vh] min-h-[220px] lg:min-h-[600px] overflow-hidden rounded-none lg:rounded-xl">
-            <picture className="absolute inset-0 w-full h-full">
-              <img
-                src="/hero.jpg"
-                alt="Protégez ce qui compte le plus pour vous."
-                width={1600}
-                height={900}
-                decoding="sync"
-                loading="eager"
-                fetchpriority="high"
-                className="w-full h-full object-cover object-top"
-              />
-            </picture>
-
-            <div className="relative z-10 h-full flex flex-col">
-              {/* Headline — top left */}
-              <div className="bg-white pl-4 sm:pl-6 pr-8 sm:pr-12 py-4 sm:py-6 w-full sm:w-[90%] rounded-br-none sm:rounded-br-[9999px]">
-                <p
-                  ref={titleRef}
-                  className={`sm:text-[36px] lg:text-[55px] text-[#131212] leading-[1.1] ${libreCaslon.className}`}
-                >
-                  <span className="block">Comparez. Choisissez.</span>
-                  <span className="block"><em className={`italic ${libreCaslon.className}`}>Soyez couvert.</em></span>
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* ── Category picker — below image on mobile, overlaid at bottom on desktop ── */}
-          <div className="mt-3 lg:mt-0 lg:absolute lg:bottom-6 lg:left-8 lg:right-8">
-            <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 lg:w-fit lg:mx-auto">
-              <p className="font-semibold text-[20px] sm:text-[22px] text-[#131212] whitespace-nowrap shrink-0">
-                Que recherchez-vous ?
+          <div className="relative z-10 h-full flex flex-col">
+            {/* Headline — top left */}
+            <div className="bg-white pl-4 sm:pl-6 pr-8 sm:pr-12 py-4 sm:py-6 w-full sm:w-[90%] rounded-br-none sm:rounded-br-[9999px]">
+              <p
+                ref={titleRef}
+                className={`sm:text-[36px] lg:text-[55px] text-[#131212] leading-[1.1] ${libreCaslon.className}`}
+              >
+                <span className="block">Comparez. Choisissez.</span>
+                <span className="block"><em className={`italic ${libreCaslon.className}`}>Soyez couvert.</em></span>
               </p>
-              <div className="flex flex-col lg:flex-row gap-2">
-                {CATEGORIES.map(({ id, label, href, icon }) => (
-                  <Link key={id} href={href} className="lg:shrink-0">
-                    <Card className="shadow-none rounded-xl w-full lg:w-[124px] lg:h-[124px] flex flex-row items-center lg:flex-col lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-1 lg:py-0 border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
-                      <img src={icon} alt="" width={42} height={42} aria-hidden="true" className="shrink-0 w-8 h-8 lg:w-11 lg:h-11" />
-                      <span className="flex-1 lg:flex-none text-[16px] font-medium text-[#131212] lg:text-center leading-tight">{label}</span>
-                      <img src="/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="lg:hidden shrink-0 opacity-40" />
-                    </Card>
-                  </Link>
-                ))}
+            </div>
+
+            {/* Bottom bar */}
+            <div className="mt-[300px] lg:mt-auto px-4 lg:px-8 pb-6">
+              <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 w-full lg:w-fit lg:mx-auto">
+                <p className="font-semibold text-[17px] sm:text-[19px] text-[#131212] whitespace-nowrap shrink-0">
+                  Que recherchez-vous ?
+                </p>
+                <div className="flex flex-col lg:flex-row gap-2">
+                  {CATEGORIES.map(({ id, label, href, icon }) => (
+                    <Link key={id} href={href} className="lg:shrink-0">
+                      <Card className="shadow-none rounded-xl w-full lg:w-[124px] lg:h-[124px] flex flex-row items-center lg:flex-col lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-1 lg:py-0 border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+                        <img src={icon} alt="" width={42} height={42} aria-hidden="true" className="shrink-0 w-8 h-8 lg:w-11 lg:h-11" />
+                        <span className="flex-1 lg:flex-none text-[16px] font-medium text-[#131212] lg:text-center leading-tight">{label}</span>
+                        <img src="/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="lg:hidden shrink-0 opacity-40" />
+                      </Card>
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </section>

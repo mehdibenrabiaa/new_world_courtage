@@ -26,7 +26,7 @@ const STEPS = [
   {
     id: 3,
     icon: "/illustrations/step3.svg",
-    title: "Comparez les offres",
+    title: "Mettez-vous en relation avec un expert",
     description: "Visualisez en un coup d'œil les garanties et tarifs de plus de 100 compagnies partenaires, sans engagement.",
   },
   {
