@@ -108,8 +108,8 @@ export default function Hero() {
                   {CATEGORIES.map(({ id, label, href, icon }) => (
                     <Link key={id} href={href} className="lg:shrink-0">
                       <Card className="border-0 shadow-none rounded-xl w-full lg:w-[124px] lg:h-[124px] aspect-square lg:aspect-auto flex flex-col items-center justify-center gap-2 lg:gap-2 px-2 hover:bg-gray-50 transition-colors cursor-pointer">
-                        <img src={icon} alt="" width={34} height={34} aria-hidden="true" className="shrink-0 sm:w-11 sm:h-11" />
-                        <span className="text-[13px] sm:text-[14px] lg:text-[16px] font-semibold text-[#131212] text-center leading-tight">{label}</span>
+                        <img src={icon} alt="" width={42} height={42} aria-hidden="true" className="shrink-0 sm:w-11 sm:h-11" />
+                        <span className="text-[15px] sm:text-[14px] lg:text-[16px] font-semibold text-[#131212] text-center leading-tight">{label}</span>
                       </Card>
                     </Link>
                   ))}
