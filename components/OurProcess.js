@@ -59,8 +59,8 @@ export default function OurProcess() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             {STEPS.map(({ id, icon, title, description }) => (
               <Card key={id} className="w-full">
-                <CardHeader className="p-5 pb-0">
-                  <img src={icon} alt="" width={120} height={120} aria-hidden="true" className="w-[120px] h-[120px] object-contain" />
+                <CardHeader className="p-5 pb-0 flex items-center">
+                  <img src={icon} alt="" width={80} height={80} aria-hidden="true" className="w-[80px] h-[80px] object-contain" />
                 </CardHeader>
                 <CardContent className="p-5 flex flex-col gap-4">
                   <Badge className="w-8 h-8 p-0 flex items-center justify-center rounded-full bg-[#131212] border-transparent text-white text-sm">
