@@ -1,10 +1,10 @@
 @import "tailwindcss";
 
 :root {
-  --color-brand: #eb6424;
-  --color-brand-hover: #e44e08;
-  --color-light: #f7f5f3;
-  --color-jungle-green: #226f54;
+  --color-brand: #2057a7;
+  --color-brand-hover: #0052ce;
+  --color-light: #f3f5f7;
+  --color-jungle-green: #f36942;
   --color-blue-sky: #c3dfdf;
   --color-blue-navy: #172436;
 }

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Phone, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,13 +35,14 @@ const LINKS = [
 
 function FooterLogo() {
   return (
-    <span className="flex items-center gap-2.5">
-      <span className="w-[10px] h-[50px] rounded-none bg-[var(--color-brand)] shrink-0" />
-      <span className="flex flex-col leading-[0.95] tracking-[-0.02em]">
-        <span className="text-[25px] font-bold text-white block">New World</span>
-        <span className="text-[19px] font-light text-white block">Courtage</span>
-      </span>
-    </span>
+    <Image
+      src="/nwc_logo_2.svg"
+      alt="New World Courtage"
+      width={182}
+      height={223}
+      className="h-12 w-auto"
+      style={{ filter: "brightness(0) invert(1)" }}
+    />
   );
 }
 

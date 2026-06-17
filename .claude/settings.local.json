@@ -12,7 +12,30 @@
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\node_modules\" -Directory | Where-Object { $_.Name -match \"tailwind\" } | Select-Object Name)",
       "PowerShell(Get-ChildItem \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\node_modules\\\\tailwindcss\" -Name | Where-Object { $_ -match \"postcss\" })",
       "PowerShell($pkg = Get-Content \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\\\\node_modules\\\\tailwindcss\\\\package.json\" | ConvertFrom-Json; $pkg.exports | ConvertTo-Json -Depth 3)",
-      "PowerShell($timestamp = Get-Date -Format \"yyyy-MM-dd_HH-mm\"; Copy-Item -Path \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\" -Destination \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world_backup_$timestamp\" -Recurse -Exclude \"node_modules\",\".next\")"
+      "PowerShell($timestamp = Get-Date -Format \"yyyy-MM-dd_HH-mm\"; Copy-Item -Path \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world\" -Destination \"C:\\\\Users\\\\ebenrabiaa\\\\Desktop\\\\nextjs\\\\new_world_backup_$timestamp\" -Recurse -Exclude \"node_modules\",\".next\")",
+      "PowerShell(git clone https://github.com/mehdibenrabiaa/new_world_courtage_wireframe \"C:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage_wireframe\")",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\nwc_logo_2.svg\" \"C:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\\\\public\\\\nwc_logo_2.svg\")",
+      "Bash(ls \"C:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\illustrations\")",
+      "Read(//c/Users/admin/Desktop/new world courtage/illustrations/**)",
+      "Bash(cp \"C:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\illustrations\\\\auto.svg\" \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\\\\public\\\\illustrations\\\\auto.svg\")",
+      "Bash(cp \"C:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\illustrations\\\\health.svg\" \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\\\\public\\\\illustrations\\\\health.svg\")",
+      "Bash(cp \"C:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\illustrations\\\\building.svg\" \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\\\\public\\\\illustrations\\\\building.svg\")",
+      "Bash(cp \"C:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\illustrations\\\\plan.svg\" \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\\\\public\\\\illustrations\\\\plan.svg\")",
+      "Bash(cp \"C:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\illustrations\\\\home.svg\" \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\\\\public\\\\illustrations\\\\home.svg\")",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" status)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" remote -v)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" log --oneline -5)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" add components/CtaButton.js components/Hero.js components/Navbar.js components/OurProcess.js components/Partners.js components/RealCustomers.js public/illustrations/ public/nwc_logo.svg)",
+      "Bash(git -C 'c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage' commit -m ' *)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" config user.email \"todds496@gmail.com\")",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" config user.name \"mehdibenrabiaa\")",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" push origin main)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" pull --rebase origin main)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" stash)",
+      "Bash(git -C \"c:\\\\Users\\\\admin\\\\Desktop\\\\new world courtage\\\\new_world_courtage\" stash pop)"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\admin\\Desktop\\new world courtage\\illustrations"
     ]
   }
 }
