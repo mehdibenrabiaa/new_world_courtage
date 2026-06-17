@@ -10,7 +10,7 @@ import { NAV_ITEMS } from './navData'
 
 function Logo() {
   return (
-    <Image src="/nwc_logo.svg" alt="New World Courtage" width={182} height={223} className="h-12 w-auto" priority />
+    <Image src="/nwc_logo.svg" alt="New World Courtage" width={182} height={223} className="h-9 w-auto" priority />
   )
 }
 

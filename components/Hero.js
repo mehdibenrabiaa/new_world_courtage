@@ -1,7 +1,7 @@
+import { useEffect, useRef } from "react";
 import { Libre_Caslon_Text } from "next/font/google";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import CtaButton from "@/components/CtaButton";
+import { Card } from "@/components/ui/card";
 
 const libreCaslon = Libre_Caslon_Text({
   subsets: ["latin"],
@@ -10,24 +10,65 @@ const libreCaslon = Libre_Caslon_Text({
   display: "swap",
 });
 
+function useMobileFitText() {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const fit = () => {
+      el.style.fontSize = "";
+      if (window.innerWidth >= 640) return;
+
+      const maxW = el.offsetWidth;
+      if (!maxW) return;
+      const lines = [...el.children];
+
+      lines.forEach((s) => (s.style.whiteSpace = "nowrap"));
+
+      let lo = 8, hi = 120;
+      while (hi - lo > 0.25) {
+        const mid = (lo + hi) / 2;
+        el.style.fontSize = `${mid}px`;
+        const widest = Math.max(...lines.map((s) => s.scrollWidth));
+        widest <= maxW ? (lo = mid) : (hi = mid);
+      }
+
+      lines.forEach((s) => (s.style.whiteSpace = ""));
+      el.style.fontSize = `${Math.floor(lo)}px`;
+    };
+
+    fit();
+    const ro = new ResizeObserver(fit);
+    ro.observe(el.parentElement);
+    window.addEventListener("resize", fit);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", fit);
+    };
+  }, []);
+
+  return ref;
+}
+
 const CATEGORIES = [
-  { id: "auto", label: "Auto", href: "/assurance-auto/", icon: "/illustrations/auto.svg" },
-  { id: "habitation", label: "Habitation", href: "/assurance-habitation/", icon: "/illustrations/home.svg" },
-  { id: "sante", label: "Santé", href: "/assurance-sante/", icon: "/illustrations/health.svg" },
-  { id: "decennale", label: "Décennale", href: "/assurance-decennale/", icon: "/illustrations/building.svg" },
+  { id: "auto", label: "Auto", href: "/assurance-auto/", icon: "/icons/car.svg" },
+  { id: "habitation", label: "Habitation", href: "/assurance-habitation/", icon: "/icons/home.svg" },
+  { id: "sante", label: "Santé", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
+  { id: "decennale", label: "Décennale", href: "/assurance-decennale/", icon: "/icons/building.svg" },
+  { id: "moto", label: "Moto", href: "/assurance-moto/", icon: "/icons/motorcycle.svg" },
+  { id: "poids-lourd", label: "Poids lourd", href: "/assurance-poids-lourd/", icon: "/icons/truck.svg" },
 ];
 
 export default function Hero() {
+  const titleRef = useMobileFitText();
+
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
         <div className="relative w-full h-[75vw] max-h-[90vh] min-h-[600px] overflow-hidden rounded-none lg:rounded-xl">
           <picture className="absolute inset-0 w-full h-full">
-            <source
-              media="(max-width: 767px)"
-              srcSet="/hero.png"
-              type="image/png"
-            />
             <img
               src="/hero.jpg"
               alt="Protégez ce qui compte le plus pour vous."
@@ -42,42 +83,36 @@ export default function Hero() {
 
           <div className="relative z-10 h-full flex flex-col justify-between">
             {/* Headline — top left */}
-            <div className="bg-white pl-0 pr-4 sm:pr-8 py-4 sm:py-6 w-full lg:w-fit lg:rounded-br-[20px]">
+            <div className="bg-white pl-4 sm:pl-6 pr-8 sm:pr-12 py-4 sm:py-6 w-full sm:w-[90%] rounded-br-none sm:rounded-br-[9999px]">
               <p
-                className={`text-[7vw] sm:text-[42px] lg:text-[55px] text-[#131212] leading-[1.1] ${libreCaslon.className}`}
+                ref={titleRef}
+                className={`sm:text-[36px] lg:text-[55px] text-[#131212] leading-[1.1] ${libreCaslon.className}`}
               >
-                <span className="block whitespace-nowrap">Une approche <em className={`italic ${libreCaslon.className}`}>humaine</em></span>
-                <span className="block">de l&apos;assurance.</span>
+                <span className="block">Comparer vos assurances</span>
+                <span className="block sm:inline">n&apos;a jamais été </span>
+                <span className="block sm:inline">aussi <em className={`italic ${libreCaslon.className}`}>facile.</em></span>
               </p>
             </div>
 
             {/* Bottom bar */}
             <div className="px-4 lg:px-8 pb-6">
-              <div className="bg-[var(--color-light)] rounded-xl px-5 py-4 flex flex-col lg:flex-row lg:items-center gap-3 w-full lg:w-fit lg:mx-auto">
+              <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 w-full lg:w-fit lg:mx-auto">
 
                 {/* Label */}
-                <p className="font-semibold text-[16px] text-[#131212] whitespace-nowrap shrink-0">
+                <p className="font-semibold text-[14px] sm:text-[16px] text-[#131212] whitespace-nowrap shrink-0">
                   Que recherchez-vous ?
                 </p>
 
-                {/* Category buttons + CTA */}
-                <div className="flex flex-col md:flex-row md:items-center gap-3 w-full lg:w-auto overflow-x-auto">
+                {/* 3-col on mobile, single row on lg */}
+                <div className="grid grid-cols-3 lg:flex lg:flex-row gap-2">
                   {CATEGORIES.map(({ id, label, href, icon }) => (
-                    <Button
-                      key={id}
-                      variant="outline"
-                      asChild
-                      className="bg-white border-0 shadow-none rounded-lg px-4 py-3 h-auto w-full md:w-auto md:shrink-0 hover:bg-white"
-                    >
-                      <Link href={href} className="flex items-center w-full gap-3">
-                        <img src={icon} alt="" width={32} height={32} aria-hidden="true" className="shrink-0" />
-                        <span className="text-sm font-semibold text-[#131212]">{label}</span>
-                        <img src="/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="shrink-0 ml-auto" />
-                      </Link>
-                    </Button>
+                    <Link key={id} href={href} className="lg:shrink-0">
+                      <Card className="border-0 shadow-none rounded-xl w-full lg:w-[108px] lg:h-[108px] aspect-square lg:aspect-auto flex flex-col items-center justify-center gap-1.5 lg:gap-2 px-1 hover:bg-gray-50 transition-colors cursor-pointer">
+                        <img src={icon} alt="" width={28} height={28} aria-hidden="true" className="shrink-0 sm:w-9 sm:h-9" />
+                        <span className="text-[11px] sm:text-[13px] lg:text-[15px] font-semibold text-[#131212] text-center leading-tight">{label}</span>
+                      </Card>
+                    </Link>
                   ))}
-
-                  <CtaButton className="self-start md:self-center shrink-0" />
                 </div>
 
               </div>
