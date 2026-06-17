@@ -34,8 +34,8 @@ function PageBreadcrumb() {
 
 function Hero() {
   return (
-    <div className={cx}>
-      <div className="flex overflow-hidden rounded-b-2xl">
+    <div className="w-full py-4 px-4 lg:px-12 2xl:px-24">
+      <div className="flex overflow-hidden rounded-[20px]">
 
         {/* Left — brand bg + title */}
         <div className="flex-1 bg-[var(--color-brand)] px-10 pt-20 lg:pt-[140px] pb-20 flex items-end">
@@ -80,8 +80,8 @@ const NAV_ITEMS = [
 
 function QuickNav() {
   return (
-    <div className={`${cx} relative z-10 -mt-12 pb-6`}>
-      <div className="mx-4 sm:mx-10 lg:mx-20 border border-gray-200 rounded-lg overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-gray-200 bg-white">
+    <div className="px-4 lg:px-12 2xl:px-24 relative z-10 -mt-12 pb-6">
+      <div className="mx-4 sm:mx-8 lg:mx-16 border border-gray-200 rounded-lg overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-gray-200 bg-white">
         {NAV_ITEMS.map(({ label, href, icon: Icon }) => (
           <Link
             key={href}
