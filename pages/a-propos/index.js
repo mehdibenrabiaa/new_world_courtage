@@ -4,6 +4,7 @@ import { Libre_Caslon_Text } from "next/font/google";
 import { Handshake, Newspaper, Settings, Phone } from "lucide-react";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import SocialMedia from "../../components/SocialMedia";
 import Footer from "../../components/Footer";
 
@@ -81,7 +82,7 @@ const NAV_ITEMS = [
 function QuickNav() {
   return (
     <div className="px-4 lg:px-12 2xl:px-24 relative z-10 -mt-12 pb-6">
-      <div className="mx-4 sm:mx-8 lg:mx-16 border border-gray-200 rounded-lg overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-gray-200 bg-white">
+      <div className="max-w-5xl mx-auto border border-gray-200 rounded-lg overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-gray-200 bg-white">
         {NAV_ITEMS.map(({ label, href, icon: Icon }) => (
           <Link
             key={href}
@@ -176,6 +177,7 @@ export default function AProposPage() {
 
             {/* Ce qui nous distingue */}
             <div className="flex flex-col gap-12">
+              <Separator />
               <h2 className={`text-[33px] leading-tight text-[#131212] ${libreCaslon.className}`}>
                 Ce qui nous distingue
               </h2>
@@ -195,6 +197,7 @@ export default function AProposPage() {
 
             {/* Comment nous gagnons notre argent */}
             <div className="flex flex-col gap-4">
+              <Separator />
               <h2 className={`text-[33px] leading-tight text-[#131212] ${libreCaslon.className}`}>
                 Comment nous gagnons notre argent
               </h2>
@@ -229,6 +232,7 @@ export default function AProposPage() {
 
             {/* Nos agréments */}
             <div className="flex flex-col gap-4">
+              <Separator />
               <h2 className={`text-[33px] leading-tight text-[#131212] ${libreCaslon.className}`}>
                 Nos agréments
               </h2>

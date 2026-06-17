@@ -1,5 +1,6 @@
 import { Libre_Caslon_Text } from "next/font/google";
 import CtaButton from "@/components/CtaButton";
+import { Separator } from "@/components/ui/separator";
 
 const libreCaslon = Libre_Caslon_Text({
   subsets: ["latin"],
@@ -33,13 +34,11 @@ export default function Partners() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:flex sm:flex-wrap sm:justify-center gap-3 lg:gap-4 sm:max-w-[640px] sm:mx-auto">
-            {LOGOS.map(({ id, name, src }) => (
-              <div
-                key={id}
-                className="flex items-center justify-center rounded-md px-4 py-3 h-[72px] w-full sm:w-[145px] sm:h-[80px] border border-gray-300 transition-all duration-300"
-              >
-                <img src={src} alt={name} className="h-full w-auto object-contain max-h-10" />
+          <div className="flex items-center justify-center overflow-x-auto py-2">
+            {LOGOS.map(({ id, name, src }, i) => (
+              <div key={id} className="flex items-center h-10 shrink-0">
+                {i > 0 && <Separator orientation="vertical" className="mx-4 lg:mx-8" />}
+                <img src={src} alt={name} className="h-8 lg:h-10 w-auto object-contain max-w-[80px] lg:max-w-[110px]" />
               </div>
             ))}
           </div>
