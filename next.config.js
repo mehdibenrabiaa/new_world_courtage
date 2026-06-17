@@ -2,6 +2,9 @@
 const nextConfig = {
   compress: true,
   poweredByHeader: false,
+  experimental: {
+    optimizeCss: true,
+  },
   async headers() {
     return [
       {
