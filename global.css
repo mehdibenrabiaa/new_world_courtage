@@ -1,17 +1,40 @@
 @import "tailwindcss";
 
-/* ── Wireframe palette ────────────────────────────────────────────────────── */
-
 :root {
-  --color-brand: #9ca3af;
-  --color-brand-hover: #6b7280;
-  --color-light: #f3f4f6;
-  --color-jungle-green: #6b7280;
-  --color-blue-sky: #d1d5db;
-  --color-blue-navy: #374151;
+  --color-brand: #eb6424;
+  --color-brand-hover: #e44e08;
+  --color-light: #f7f5f3;
+  --color-jungle-green: #226f54;
+  --color-blue-sky: #c3dfdf;
+  --color-blue-navy: #172436;
 }
 
-/* ── Body ─────────────────────────────────────────────────────────────────── */
+@keyframes nav-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes drawer-slide-in {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes overlay-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 body {
   margin: 0 auto;
@@ -24,38 +47,4 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   hyphens: none;
-  filter: grayscale(1);
-  background-color: #ffffff;
-}
-
-/* ── Image placeholders ───────────────────────────────────────────────────── */
-
-img {
-  opacity: 0.15;
-  background-color: #d1d5db;
-}
-
-/* ── Wireframe element borders ────────────────────────────────────────────── */
-
-section,
-nav,
-footer,
-header {
-  outline: 1px dashed #d1d5db;
-  outline-offset: -1px;
-}
-
-/* ── Animations ───────────────────────────────────────────────────────────── */
-
-@keyframes nav-fade-in {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-@keyframes drawer-slide-in {
-  from { transform: translateX(-100%); }
-  to   { transform: translateX(0); }
-}
-@keyframes overlay-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
 }
