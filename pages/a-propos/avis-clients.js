@@ -1,7 +1,6 @@
 import Head from "next/head";
-import Link from "next/link";
 import { Libre_Caslon_Text } from "next/font/google";
-import { ChevronRight } from "lucide-react";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import Footer from "../../components/Footer";
@@ -16,25 +15,23 @@ const libreCaslon = Libre_Caslon_Text({
 
 const cx = "px-4 sm:px-8 lg:px-28 2xl:px-44";
 
-function Breadcrumb() {
+function PageBreadcrumb() {
   return (
-    <nav aria-label="Fil d'ariane" className={`${cx} pt-6 pb-2`}>
-      <ol className="flex items-center gap-1.5 flex-wrap text-sm text-gray-500">
-        <li>
-          <Link href="/" className="hover:text-[var(--color-brand)] transition-colors">
-            Accueil
-          </Link>
-        </li>
-        <li><ChevronRight size={13} className="text-gray-300" /></li>
-        <li>
-          <Link href="/a-propos/" className="hover:text-[var(--color-brand)] transition-colors">
-            À propos
-          </Link>
-        </li>
-        <li><ChevronRight size={13} className="text-gray-300" /></li>
-        <li className="text-[#131212] font-medium">Avis clients</li>
-      </ol>
-    </nav>
+    <Breadcrumb className={`${cx} pt-6 pb-2`}>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/a-propos/">À propos</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbPage>Avis clients</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
   );
 }
 
@@ -190,7 +187,7 @@ export default function AvisClientsPage() {
       </Head>
 
       <main>
-        <Breadcrumb />
+        <PageBreadcrumb />
         <Hero />
         <FeaturedReview />
         <TrustPilot className={cx} />

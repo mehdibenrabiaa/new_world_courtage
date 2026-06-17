@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import * as NavMenu from '@radix-ui/react-navigation-menu'
-import * as Dialog from '@radix-ui/react-dialog'
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Menu, X, Phone } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import CtaButton from '@/components/CtaButton'
@@ -107,59 +107,52 @@ function MobileDrawer({ open, onClose }) {
   }, [open])
 
   return (
-    <Dialog.Root open={open} onOpenChange={(v) => !v && onClose()}>
-      <Dialog.Portal>
-        <Dialog.Overlay
-          className="fixed inset-0 z-50 bg-black/50 [animation:overlay-fade-in_0.2s_ease]"
-        />
-        <Dialog.Content
-          className="fixed left-0 top-0 z-50 h-full w-[min(480px,100vw)] bg-white shadow-2xl flex flex-col overflow-hidden [animation:drawer-slide-in_0.28s_ease]"
-          aria-label="Navigation menu"
-        >
-          <div className="flex items-center justify-between px-5 h-24 border-b border-gray-200 shrink-0">
-            <Link href="/" onClick={onClose}>
-              <Logo />
-            </Link>
-            <Dialog.Close asChild>
-              <button aria-label="Close menu" className="flex items-center justify-center p-1.5 rounded-md hover:bg-gray-100">
-                <X size={22} />
-              </button>
-            </Dialog.Close>
-          </div>
+    <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
+      <SheetContent side="left" aria-label="Navigation menu">
+        <SheetTitle className="sr-only">Menu de navigation</SheetTitle>
+        <SheetHeader className="px-5 h-24 border-b border-gray-200">
+          <Link href="/" onClick={onClose}>
+            <Logo />
+          </Link>
+          <SheetClose asChild>
+            <button aria-label="Close menu" className="flex items-center justify-center p-1.5 rounded-md hover:bg-gray-100">
+              <X size={22} />
+            </button>
+          </SheetClose>
+        </SheetHeader>
 
-          <div className="flex-1 overflow-y-auto">
-            {activePanel ? (
-              <MobilePanel item={activePanel} onBack={() => setActivePanel(null)} />
-            ) : (
-              <div className="py-2">
-                {NAV_ITEMS.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setActivePanel(item)}
-                    className="w-full text-left px-5 py-3.5 text-base font-semibold text-[#131212] hover:bg-gray-50"
-                  >
-                    {item.label}
-                  </button>
-                ))}
+        <div className="flex-1 overflow-y-auto">
+          {activePanel ? (
+            <MobilePanel item={activePanel} onBack={() => setActivePanel(null)} />
+          ) : (
+            <div className="py-2">
+              {NAV_ITEMS.map((item) => (
+                <button
+                  key={item.id}
+                  onClick={() => setActivePanel(item)}
+                  className="w-full text-left px-5 py-3.5 text-base font-semibold text-[#131212] hover:bg-gray-50"
+                >
+                  {item.label}
+                </button>
+              ))}
 
-                <div className="h-px bg-gray-200 mx-5 my-2" />
+              <div className="h-px bg-gray-200 mx-5 my-2" />
 
-                <Link href="/about/" onClick={onClose} className="block px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-[#131212]">
-                  À propos
-                </Link>
-                <a href="tel:+33800000000" className="flex items-center gap-3 px-5 py-3 text-base font-semibold text-[#131212] hover:bg-gray-50">
-                  <Phone size={16} className="text-[var(--color-brand)]" />
-                  0 800 000 000
-                </a>
-                <Link href="/life-insurance/start" onClick={onClose} className="block mx-5 mt-3 mb-2 py-3.5 text-center text-base font-bold text-white bg-[var(--color-brand)] rounded-full hover:bg-[var(--color-brand-hover)] transition-colors">
-                  Obtenir un devis
-                </Link>
-              </div>
-            )}
-          </div>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog.Root>
+              <Link href="/a-propos/" onClick={onClose} className="block px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-[#131212]">
+                À propos
+              </Link>
+              <a href="tel:+33800000000" className="flex items-center gap-3 px-5 py-3 text-base font-semibold text-[#131212] hover:bg-gray-50">
+                <Phone size={16} className="text-[var(--color-brand)]" />
+                0 800 000 000
+              </a>
+              <Link href="/life-insurance/start" onClick={onClose} className="block mx-5 mt-3 mb-2 py-3.5 text-center text-base font-bold text-white bg-[var(--color-brand)] rounded-full hover:bg-[var(--color-brand-hover)] transition-colors">
+                Obtenir un devis
+              </Link>
+            </div>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
   )
 }
 
@@ -200,7 +193,7 @@ export default function Navbar() {
           {/* Utility — desktop */}
           <div className="hidden lg:flex items-center gap-3 ml-auto shrink-0">
             <Button variant="link" asChild className="px-5 py-2 text-base font-semibold hover:no-underline hover:text-[#131212]">
-              <Link href="/about/">À propos</Link>
+              <Link href="/a-propos/">À propos</Link>
             </Button>
             <CtaButton href="/life-insurance/start" />
           </div>
