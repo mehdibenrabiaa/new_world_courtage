@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import * as NavMenu from '@radix-ui/react-navigation-menu'
 import * as Dialog from '@radix-ui/react-dialog'
@@ -7,15 +8,9 @@ import { Button } from '@/components/ui/button'
 import CtaButton from '@/components/CtaButton'
 import { NAV_ITEMS } from './navData'
 
-function LogoText() {
+function Logo() {
   return (
-    <span className="flex items-center gap-2.5">
-      <span className="w-[10px] h-[50px] rounded-none bg-[var(--color-brand)] shrink-0" />
-      <span className="flex flex-col leading-[0.95] tracking-[-0.02em]">
-        <span className="text-[25px] font-bold text-[#131212] block">New World</span>
-        <span className="text-[19px] font-light text-[#131212] block">Courtage</span>
-      </span>
-    </span>
+    <Image src="/nwc_logo.svg" alt="New World Courtage" width={182} height={223} className="h-12 w-auto" priority />
   )
 }
 
@@ -123,7 +118,7 @@ function MobileDrawer({ open, onClose }) {
         >
           <div className="flex items-center justify-between px-5 h-24 border-b border-gray-200 shrink-0">
             <Link href="/" onClick={onClose}>
-              <LogoText />
+              <Logo />
             </Link>
             <Dialog.Close asChild>
               <button aria-label="Close menu" className="flex items-center justify-center p-1.5 rounded-md hover:bg-gray-100">
@@ -180,7 +175,7 @@ export default function Navbar() {
 
           {/* Logo */}
           <Link href="/" className="shrink-0 mr-4 lg:mr-10">
-            <LogoText />
+            <Logo />
           </Link>
 
           {/* Desktop primary nav — Radix NavigationMenu */}

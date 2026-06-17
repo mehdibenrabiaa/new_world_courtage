@@ -60,12 +60,12 @@ export default function RealCustomers() {
             </Card>
             <Card className="lg:col-span-2 rounded-[10px] bg-[var(--color-brand)] min-h-[280px] cursor-pointer">
               <CardContent className="p-6 h-full flex flex-col justify-between">
-                <p className={`text-[26px] lg:text-[30px] text-[#131212] leading-[1.3] ${libreCaslon.className}`}>
+                <p className={`text-[26px] lg:text-[30px] text-white leading-[1.3] ${libreCaslon.className}`}>
                   &ldquo;Le processus de demande était simple et l&apos;équipe était disponible à chaque étape du parcours.&rdquo;
                 </p>
                 <div className="flex flex-col gap-0.5">
-                  <p className={`text-[20px] lg:text-[26px] leading-snug text-[#131212] ${libreCaslon.className}`}>Mark</p>
-                  <p className="text-[14px] font-bold text-[#131212]">Client New World Courtage</p>
+                  <p className={`text-[20px] lg:text-[26px] leading-snug text-white ${libreCaslon.className}`}>Mark</p>
+                  <p className="text-[14px] font-bold text-white">Client New World Courtage</p>
                 </div>
               </CardContent>
             </Card>
