@@ -1,6 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
-<svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M20 21.5L19.3505 15.9795C19.1506 14.2804 17.7107 13 16 13H8C6.28928 13 4.84936 14.2804 4.64948 15.9795L4 21.5" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round"/>
-<path opacity="0.5" d="M8 13V18C8 19.8856 8 20.8284 8.58579 21.4142C9.17157 22 10.1144 22 12 22C13.8856 22 14.8284 22 15.4142 21.4142C16 20.8284 16 19.8856 16 18V13" stroke="#1C274C" stroke-width="1.5"/>
-<circle cx="12" cy="6" r="4" stroke="#1C274C" stroke-width="1.5"/>
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 28.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 800 800" style="enable-background:new 0 0 800 800;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:none;stroke:#F36942;stroke-width:50;stroke-linecap:round;stroke-miterlimit:133.3333;}
+	
+		.st1{opacity:0.5;fill:none;stroke:#F36942;stroke-width:50;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:133.3333;enable-background:new    ;}
+	.st2{fill:none;stroke:#F36942;stroke-width:50;stroke-miterlimit:133.3333;}
+</style>
+<path class="st0" d="M666.7,716.7l-21.6-184c-6.7-56.6-54.7-99.3-111.7-99.3H266.7c-57,0-105,42.7-111.7,99.3l-21.6,184"/>
+<path class="st1" d="M266.7,433.3V600c0,62.9,0,94.3,19.5,113.8c19.5,19.5,51,19.5,113.8,19.5s94.3,0,113.8-19.5s19.5-51,19.5-113.8
+	V433.3"/>
+<circle class="st2" cx="400" cy="200" r="133.3"/>
 </svg>

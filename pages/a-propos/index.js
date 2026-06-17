@@ -14,7 +14,7 @@ const libreCaslon = Libre_Caslon_Text({
   display: "swap",
 });
 
-const cx = "px-4 sm:px-8 lg:px-28 2xl:px-44";
+const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
 function PageBreadcrumb() {
   return (
@@ -165,7 +165,7 @@ export default function AProposPage() {
         <Hero />
         <QuickNav />
         <div className={`${cx} py-8 pb-16`}>
-          <div className="max-w-2xl lg:max-w-3xl mx-auto px-3 sm:px-0 flex flex-col gap-12">
+          <div className="max-w-3xl lg:max-w-4xl 2xl:max-w-5xl mx-auto px-3 sm:px-0 flex flex-col gap-12">
 
             {/* Intro paragraphs */}
             <div className="text-base font-normal leading-[26px] sm:leading-6 text-gray-700 text-left flex flex-col gap-4">
