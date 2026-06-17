@@ -4,6 +4,7 @@ import { Libre_Caslon_Text } from "next/font/google";
 import { Handshake, Newspaper, Settings, Phone } from "lucide-react";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Card, CardContent } from "@/components/ui/card";
+import SocialMedia from "../../components/SocialMedia";
 import Footer from "../../components/Footer";
 
 const libreCaslon = Libre_Caslon_Text({
@@ -239,6 +240,7 @@ export default function AProposPage() {
 
           </div>
         </div>
+        <SocialMedia />
       </main>
 
       <Footer />
