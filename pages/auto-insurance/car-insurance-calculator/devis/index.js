@@ -39,7 +39,7 @@ export default function DevisPage() {
       </header>
 
       <main className="min-h-screen bg-white">
-        <div className="max-w-2xl mx-auto px-4 py-10 lg:py-16">
+        <div className="max-w-3xl mx-auto px-4 lg:px-8 py-10 lg:py-16">
 
           {/* Vehicle summary chip */}
           {vehicleLabel && (
