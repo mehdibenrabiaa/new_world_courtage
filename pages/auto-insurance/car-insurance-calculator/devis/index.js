@@ -1,15 +1,14 @@
+import { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { Phone } from "lucide-react";
 import CarInsuranceForm from "@/components/CarInsuranceForm";
-
-// Steps 1–4 are answered on the calculator page (type, brand, model, version).
-// This page starts from step index 4 (step id 5 — cylindrée).
-const START_STEP = 4;
 
 export default function DevisPage() {
   const { query } = useRouter();
+  const [progress, setProgress] = useState(Math.round((1 / 6) * 100));
 
   // Rebuild initial answers from query params
   const initialAnswers = {
@@ -32,11 +31,25 @@ export default function DevisPage() {
       </Head>
 
       {/* Minimal header — no navbar */}
-      <header className="sticky top-0 z-40 w-full bg-white border-b border-gray-100">
-        <div className="flex items-center px-4 lg:px-12 h-14">
+      <header className="sticky top-0 z-40 w-full bg-white">
+        <div className="flex items-center justify-between px-4 lg:px-12 h-16">
           <Link href="/">
-            <Image src="/nwc_logo.svg" alt="New World Courtage" width={120} height={32} className="h-7 w-auto" />
+            <Image src="/nwc_logo.svg" alt="New World Courtage" width={160} height={44} className="h-10 w-auto" />
           </Link>
+          <a href="tel:+33800000000" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+            <Phone size={22} className="shrink-0 text-[#131212]" />
+            <div className="flex flex-col leading-tight">
+              <span className="text-xs text-[#131212]">Parlez à un expert agréé</span>
+              <span className="text-sm font-semibold text-[#131212]">+33 800 000 000</span>
+            </div>
+          </a>
+        </div>
+        {/* Progress bar */}
+        <div className="w-full h-[5px] bg-gray-100">
+          <div
+            className="h-full bg-[var(--color-brand)] transition-all duration-500"
+            style={{ width: `${progress}%` }}
+          />
         </div>
       </header>
 
@@ -51,7 +64,7 @@ export default function DevisPage() {
             </div>
           )}
 
-          <CarInsuranceForm initialAnswers={initialAnswers} startStep={START_STEP} theme="light" />
+          <CarInsuranceForm initialAnswers={initialAnswers} theme="light" onProgress={setProgress} />
 
         </div>
       </main>

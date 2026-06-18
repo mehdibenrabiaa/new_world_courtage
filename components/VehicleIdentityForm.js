@@ -4,29 +4,19 @@ import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 
-const CAR_BRANDS = [
-  "Audi", "BMW", "Citroën", "Dacia", "DS Automobiles", "Fiat", "Ford", "Honda",
-  "Hyundai", "Kia", "Mazda", "Mercedes-Benz", "Nissan", "Opel", "Peugeot",
-  "Renault", "Seat", "Skoda", "Suzuki", "Tesla", "Toyota", "Volkswagen", "Volvo",
+const PROVINCES = [
+  "Auvergne-Rhône-Alpes", "Bourgogne-Franche-Comté", "Bretagne",
+  "Centre-Val de Loire", "Corse", "Grand Est", "Hauts-de-France",
+  "Île-de-France", "Normandie", "Nouvelle-Aquitaine", "Occitanie",
+  "Pays de la Loire", "Provence-Alpes-Côte d'Azur",
 ];
 
-const MOTO_BRANDS = [
-  "Aprilia", "BMW", "Ducati", "Harley-Davidson", "Honda", "Kawasaki", "KTM",
-  "Piaggio", "Royal Enfield", "Suzuki", "Triumph", "Vespa", "Yamaha",
-];
-
-const YEARS = Array.from({ length: new Date().getFullYear() - 1989 }, (_, i) => String(new Date().getFullYear() - i));
-
-function Field({ label, optional, children }) {
+function Field({ label, required, children }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-base font-medium text-white flex items-center gap-2">
+      <label className="text-base font-medium text-white leading-none">
         {label}
-        {optional && (
-          <span className="text-[11px] font-normal text-white/75 border border-white/40 rounded-full px-2 py-0.5">
-            optionnel
-          </span>
-        )}
+        {required && <span className="text-white ml-0.5">*</span>}
       </label>
       {children}
     </div>
@@ -35,104 +25,112 @@ function Field({ label, optional, children }) {
 
 export default function VehicleIdentityForm() {
   const router = useRouter();
-  const [type, setType]       = useState("");
-  const [brand, setBrand]     = useState("");
-  const [model, setModel]     = useState("");
-  const [version, setVersion] = useState("");
-  const [year, setYear]       = useState("");
-  const [usage, setUsage]     = useState("");
+  const [province, setProvince]       = useState("");
+  const [age, setAge]                 = useState("");
+  const [gender, setGender]           = useState("");
+  const [drivingRecord, setDriving]   = useState("");
+  const [creditScore, setCredit]      = useState("");
+  const [ownsHome, setOwnsHome]       = useState("");
 
-  const brands = type === "voiture" ? CAR_BRANDS : MOTO_BRANDS;
-  const canSubmit = type && brand && model;
+  const canSubmit = province && age && drivingRecord;
 
   function handleSubmit(e) {
     e.preventDefault();
-    const q = new URLSearchParams({ type, brand, model });
-    if (version) q.set("version", version);
-    if (year)    q.set("year", year);
-    if (usage)   q.set("usage", usage);
+    const q = new URLSearchParams({ province, age });
+    if (gender)      q.set("gender", gender);
+    if (drivingRecord) q.set("driving", drivingRecord);
+    if (creditScore) q.set("credit", creditScore);
+    if (ownsHome)    q.set("home", ownsHome);
     router.push(`/auto-insurance/car-insurance-calculator/devis/?${q.toString()}`);
   }
 
-  const inputCls = "h-14 w-full rounded-[var(--radius)] border border-gray-200 bg-white px-4 text-base text-[#131212] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)] focus:border-transparent transition-shadow";
   const triggerCls = "h-14 text-base bg-white text-[#131212]";
+  const inputCls   = "h-14 w-full rounded-[var(--radius)] border border-gray-200 bg-white px-4 text-base text-[#131212] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)] focus:border-transparent transition-shadow";
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-        {/* Row 1 */}
-        <Field label="Type de véhicule">
-          <Select value={type} onValueChange={v => { setType(v); setBrand(""); }}>
+        {/* Province */}
+        <Field label="Province" required hint="Votre région de résidence influence les tarifs en raison des différences de densité de trafic et de sinistralité locale.">
+          <Select value={province} onValueChange={setProvince}>
             <SelectTrigger className={triggerCls}>
-              <SelectValue placeholder="Voiture, moto…" />
+              <SelectValue placeholder="Sélectionnez une région" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="voiture" className="text-base py-2.5">Voiture</SelectItem>
-              <SelectItem value="moto"    className="text-base py-2.5">Moto</SelectItem>
-              <SelectItem value="scooter" className="text-base py-2.5">Scooter</SelectItem>
-            </SelectContent>
-          </Select>
-        </Field>
-
-        <Field label="Marque">
-          <Select value={brand} onValueChange={setBrand} disabled={!type}>
-            <SelectTrigger className={`${triggerCls} disabled:opacity-60`}>
-              <SelectValue placeholder={type ? "Sélectionnez une marque" : "Choisissez un type d'abord"} />
-            </SelectTrigger>
-            <SelectContent>
-              {brands.map(b => (
-                <SelectItem key={b} value={b} className="text-base py-2.5">{b}</SelectItem>
+              {PROVINCES.map(p => (
+                <SelectItem key={p} value={p} className="text-base py-2.5">{p}</SelectItem>
               ))}
             </SelectContent>
           </Select>
         </Field>
 
-        {/* Row 2 */}
-        <Field label="Modèle">
+        {/* Age */}
+        <Field label="Âge" required hint="L'âge est l'un des principaux facteurs de tarification. Les conducteurs jeunes et seniors peuvent avoir des tarifs différents.">
           <input
-            type="text"
-            value={model}
-            onChange={e => setModel(e.target.value)}
-            placeholder="Ex : Clio, Série 3, CB500…"
+            type="number"
+            min="16"
+            max="99"
+            value={age}
+            onChange={e => setAge(e.target.value)}
+            placeholder="Votre âge"
             className={inputCls}
           />
         </Field>
 
-        <Field label="Version / finition" optional>
-          <input
-            type="text"
-            value={version}
-            onChange={e => setVersion(e.target.value)}
-            placeholder="Ex : Sport, Confort, 1.5 dCi…"
-            className={inputCls}
-          />
-        </Field>
-
-        {/* Row 3 */}
-        <Field label="Année de mise en circulation">
-          <Select value={year} onValueChange={setYear}>
+        {/* Gender */}
+        <Field label="Genre" hint="Certains assureurs utilisent le genre comme facteur statistique de risque. Cette information reste facultative.">
+          <Select value={gender} onValueChange={setGender}>
             <SelectTrigger className={triggerCls}>
-              <SelectValue placeholder="Sélectionnez une année" />
+              <SelectValue placeholder="Sélectionnez" />
             </SelectTrigger>
             <SelectContent>
-              {YEARS.map(y => (
-                <SelectItem key={y} value={y} className="text-base py-2.5">{y}</SelectItem>
-              ))}
+              <SelectItem value="homme"      className="text-base py-2.5">Homme</SelectItem>
+              <SelectItem value="femme"      className="text-base py-2.5">Femme</SelectItem>
+              <SelectItem value="non-binaire" className="text-base py-2.5">Non-binaire</SelectItem>
             </SelectContent>
           </Select>
         </Field>
 
-        <Field label="Usage principal">
-          <Select value={usage} onValueChange={setUsage}>
+        {/* Driving record */}
+        <Field label="Historique de conduite" required hint="Votre historique de sinistres et d'infractions impacte directement votre prime. Un bon dossier peut vous faire économiser jusqu'à 30 %.">
+          <Select value={drivingRecord} onValueChange={setDriving}>
             <SelectTrigger className={triggerCls}>
-              <SelectValue placeholder="Comment utilisez-vous ce véhicule ?" />
+              <SelectValue placeholder="Votre profil conducteur" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="commute"      className="text-base py-2.5">Domicile – travail</SelectItem>
-              <SelectItem value="leisure"      className="text-base py-2.5">Loisirs</SelectItem>
-              <SelectItem value="professional" className="text-base py-2.5">Professionnel</SelectItem>
+              <SelectItem value="excellent"   className="text-base py-2.5">Excellent — aucun incident</SelectItem>
+              <SelectItem value="bon"         className="text-base py-2.5">Bon — infractions mineures</SelectItem>
+              <SelectItem value="moyen"       className="text-base py-2.5">Moyen — accidents ou infractions</SelectItem>
+              <SelectItem value="mauvais"     className="text-base py-2.5">Mauvais — plusieurs incidents</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+
+        {/* Credit score */}
+        <Field label="Cote de crédit" hint="Une bonne cote de crédit peut réduire votre prime. Les assureurs l'utilisent comme indicateur de fiabilité financière.">
+          <Select value={creditScore} onValueChange={setCredit}>
+            <SelectTrigger className={triggerCls}>
+              <SelectValue placeholder="Estimez votre cote" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="excellent" className="text-base py-2.5">Excellent (750+)</SelectItem>
+              <SelectItem value="bon"       className="text-base py-2.5">Bon (700 – 749)</SelectItem>
+              <SelectItem value="moyen"     className="text-base py-2.5">Moyen (650 – 699)</SelectItem>
+              <SelectItem value="faible"    className="text-base py-2.5">Faible (moins de 650)</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+
+        {/* Own a home */}
+        <Field label="Propriétaire de votre logement ?" hint="Les propriétaires bénéficient souvent de tarifs préférentiels et peuvent regrouper leur assurance auto et habitation pour plus d'économies.">
+          <Select value={ownsHome} onValueChange={setOwnsHome}>
+            <SelectTrigger className={triggerCls}>
+              <SelectValue placeholder="Sélectionnez" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="oui" className="text-base py-2.5">Oui</SelectItem>
+              <SelectItem value="non" className="text-base py-2.5">Non</SelectItem>
             </SelectContent>
           </Select>
         </Field>
@@ -144,7 +142,7 @@ export default function VehicleIdentityForm() {
         disabled={!canSubmit}
         className="bg-white text-[#131212] hover:bg-white/90 text-base font-semibold py-[25px] px-[15px] self-start"
       >
-        Commencer
+        Calculer mon tarif
         <ChevronRight size={18} />
       </Button>
 

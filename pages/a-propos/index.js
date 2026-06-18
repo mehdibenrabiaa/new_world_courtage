@@ -1,7 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
 import { Libre_Caslon_Text } from "next/font/google";
-import { Handshake, Newspaper, Settings, Phone } from "lucide-react";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -47,25 +46,30 @@ function ContentBlock({ heading, children }) {
 }
 
 const NAV_ITEMS = [
-  { label: "Nos partenaires", href: "/a-propos/nos-partenaires/", icon: Handshake },
-  { label: "Nos communiqués", href: "/a-propos/nos-communiques/", icon: Newspaper },
-  { label: "Fonctionnement", href: "/a-propos/fonctionnement/", icon: Settings },
-  { label: "Contact", href: "/contact/", icon: Phone },
+  { label: "Nos partenaires", href: "/a-propos/nos-partenaires/", icon: "/icons/handshake.svg" },
+  { label: "Nos communiqués", href: "/a-propos/nos-communiques/", icon: "/icons/document.svg" },
+  { label: "Fonctionnement", href: "/a-propos/fonctionnement/", icon: "/icons/function.svg" },
+  { label: "Contact", href: "/contact/", icon: "/icons/phone.svg" },
 ];
 
 function QuickNav() {
   return (
     <div className="px-4 lg:px-12 2xl:px-24 relative z-10 -mt-12 pb-6">
-      <div className="max-w-5xl mx-auto border border-gray-200 rounded-lg overflow-hidden flex flex-col sm:flex-row divide-y sm:divide-y-0 sm:divide-x divide-gray-200 bg-white">
-        {NAV_ITEMS.map(({ label, href, icon: Icon }) => (
-          <Link
-            key={href}
-            href={href}
-            className="flex-1 flex flex-col items-center justify-center gap-2 py-5 px-3 hover:bg-gray-50 transition-colors duration-150"
-          >
-            <span className="text-base font-semibold text-[#131212] text-center leading-tight">{label}</span>
-          </Link>
-        ))}
+      <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 w-full lg:w-fit lg:mx-auto">
+        <p className="font-semibold text-[17px] sm:text-[19px] text-[#131212] whitespace-nowrap shrink-0">
+          Que souhaitez-vous explorer ?
+        </p>
+        <div className="flex flex-col lg:flex-row gap-2">
+          {NAV_ITEMS.map(({ label, href, icon }) => (
+            <Link key={href} href={href} className="lg:shrink-0">
+              <Card className="shadow-none rounded-xl w-full lg:w-[190px] lg:h-[130px] flex flex-row items-center lg:flex-col lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-3 lg:py-0 border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
+                <img src={icon} alt="" aria-hidden="true" className="shrink-0 w-8 h-8 lg:w-11 lg:h-11" />
+                <span className="flex-1 lg:flex-none text-[16px] font-medium text-[#131212] lg:text-center leading-tight">{label}</span>
+                <img src="/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="lg:hidden shrink-0 opacity-40" />
+              </Card>
+            </Link>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -137,7 +141,7 @@ export default function AProposPage() {
 
       <main>
         <PageBreadcrumb />
-        <PageHero title="À propos de nous" image="/about-pic.jpg" imageAlt="L'équipe New World Courtage" />
+        <PageHero title="À propos de nous" image="/about-hero.jpg" mobileImage="/about-hero-mobile.jpg" imageAlt="L'équipe New World Courtage" />
         <QuickNav />
         <div className={`${cx} py-8 pb-16`}>
           <div className="max-w-3xl lg:max-w-4xl 2xl:max-w-5xl mx-auto px-3 sm:px-0 flex flex-col gap-12 prose prose-gray max-w-none prose-headings:font-normal prose-a:text-[var(--color-brand)] prose-a:no-underline hover:prose-a:text-[var(--color-brand-hover)]">

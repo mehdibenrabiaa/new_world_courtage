@@ -41,7 +41,7 @@ export default function CarInsuranceCalculatorPage() {
 
       <main>
         <PageBreadcrumb />
-        <PageHero title={<>Calculez <em className="italic">rapidement</em> vos besoins en<br className="hidden sm:block" />assurance automobile.</>} image="/auto-insurance-calculator.jpg" imageAlt="Calculateur assurance auto" titlePosition="bottom" />
+        <PageHero title={<>Calculez <em className="italic">rapidement</em> vos besoins en<br className="hidden lg:block" />assurance automobile.</>} image="/auto-insurance-calculator.jpg" imageAlt="Calculateur assurance auto" titlePosition="bottom" titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[48px]" />
         <CarCalculatorSection />
       </main>
 

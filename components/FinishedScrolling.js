@@ -12,7 +12,7 @@ export default function FinishedScrolling() {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="rounded-[20px] overflow-hidden flex flex-col lg:flex-row min-h-[480px]">
+        <div className="rounded-xl overflow-hidden flex flex-col lg:flex-row min-h-[480px]">
 
           {/* Left — content */}
           <div className="order-2 lg:order-1 lg:w-1/2 bg-[var(--color-light)] px-8 py-10 lg:px-14 lg:py-14 flex flex-col justify-between gap-10">

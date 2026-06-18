@@ -12,7 +12,7 @@ export default function CarCalculatorSection() {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="rounded-[20px] overflow-hidden flex flex-col lg:flex-row min-h-[480px] bg-[var(--color-brand)]">
+        <div className="rounded-xl overflow-hidden flex flex-col lg:flex-row min-h-[480px] bg-[var(--color-brand)]">
 
           {/* Left — title (1/3) */}
           <div className="hidden lg:flex lg:w-[40%] px-8 py-10 lg:px-14 lg:py-14 items-center">

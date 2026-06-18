@@ -43,7 +43,8 @@
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Bash(git pull *)"
     ],
     "additionalDirectories": [
       "C:\\Users\\admin\\Desktop\\new world courtage\\illustrations"

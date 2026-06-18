@@ -31,7 +31,7 @@ export default function TrustPilot({
 }) {
   return (
     <div className={`w-full px-4 lg:px-12 2xl:px-24 py-8 ${className}`}>
-      <div className="max-w-3xl mx-auto border-y border-[#00b67a] py-5 flex justify-center">
+      <div className="max-w-3xl mx-auto py-5 flex justify-center">
         <div className="w-fit flex flex-col items-start gap-0">
           <img
             src="/Trustpilot_Logo_(2022).svg"

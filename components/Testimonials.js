@@ -17,7 +17,7 @@ export default function Testimonials() {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="rounded-[20px] overflow-hidden flex flex-col lg:flex-row min-h-[480px] bg-[var(--color-jungle-green)]">
+        <div className="rounded-xl overflow-hidden flex flex-col lg:flex-row min-h-[480px] bg-[var(--color-jungle-green)]">
 
           {/* Left — image (1/3) */}
           <div className="lg:w-1/3 h-[260px] lg:h-auto">

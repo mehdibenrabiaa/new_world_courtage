@@ -38,7 +38,7 @@ function PageBreadcrumb() {
 function Hero() {
   return (
     <div className="w-full py-4 px-4 lg:px-12 2xl:px-24">
-      <div className="flex overflow-hidden rounded-[20px]">
+      <div className="flex overflow-hidden rounded-xl">
         <div className="flex-1 bg-[var(--color-brand)] px-10 pt-20 lg:pt-[140px] pb-20 flex items-end">
           <h1 className="text-[26px] lg:text-[33px] font-semibold leading-none text-white">
             Calculateur d&apos;assurance vie
