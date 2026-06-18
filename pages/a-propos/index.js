@@ -5,6 +5,7 @@ import { Handshake, Newspaper, Settings, Phone } from "lucide-react";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import PageHero from "../../components/PageHero";
 import SocialMedia from "../../components/SocialMedia";
 import Footer from "../../components/Footer";
 
@@ -33,31 +34,6 @@ function PageBreadcrumb() {
   );
 }
 
-function Hero() {
-  return (
-    <div className="w-full py-4 px-4 lg:px-12 2xl:px-24">
-      <div className="flex overflow-hidden rounded-[20px]">
-
-        {/* Left — brand bg + title */}
-        <div className="flex-1 bg-[var(--color-brand)] px-10 pt-20 lg:pt-[140px] pb-20 flex items-end">
-          <h1 className="text-[26px] lg:text-[33px] font-semibold leading-none text-white">
-            À propos de nous
-          </h1>
-        </div>
-
-        {/* Right — image (half width) */}
-        <div className="hidden sm:block w-1/2 min-h-[260px] lg:min-h-[340px] relative">
-          <img
-            src="/about-pic.jpg"
-            alt="L'équipe New World Courtage"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
-        </div>
-
-      </div>
-    </div>
-  );
-}
 
 function ContentBlock({ heading, children }) {
   return (
@@ -161,7 +137,7 @@ export default function AProposPage() {
 
       <main>
         <PageBreadcrumb />
-        <Hero />
+        <PageHero title="À propos de nous" image="/about-pic.jpg" imageAlt="L'équipe New World Courtage" />
         <QuickNav />
         <div className={`${cx} py-8 pb-16`}>
           <div className="max-w-3xl lg:max-w-4xl 2xl:max-w-5xl mx-auto px-3 sm:px-0 flex flex-col gap-12 prose prose-gray max-w-none prose-headings:font-normal prose-a:text-[var(--color-brand)] prose-a:no-underline hover:prose-a:text-[var(--color-brand-hover)]">

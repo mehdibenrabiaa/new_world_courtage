@@ -42,8 +42,8 @@ export default function FAQ({ className = "" }) {
 
   return (
     <section className={`w-full py-10 ${className}`}>
-      <div className="flex flex-col gap-6 max-w-2xl mx-auto">
-        <h2 className={`text-[30px] leading-tight text-[#131212] text-center ${libreCaslon.className}`}>
+      <div className="flex flex-col gap-6 max-w-2xl mx-auto px-4 sm:px-0">
+        <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[#131212] text-center ${libreCaslon.className}`}>
           Questions fréquentes
         </h2>
         <Accordion>

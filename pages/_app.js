@@ -11,12 +11,17 @@ const variants = {
   visible: { opacity: 1, y: 0 },
 }
 
+const NO_NAV_ROUTES = [
+  '/auto-insurance/car-insurance-calculator/devis',
+]
+
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter()
+  const hideNav = NO_NAV_ROUTES.some(r => router.pathname.startsWith(r))
 
   return (
     <div className={roboto.className} style={{ minHeight: '100vh' }}>
-      <Navbar />
+      {!hideNav && <Navbar />}
       <AnimatePresence mode="wait">
         <motion.div
           key={router.pathname}

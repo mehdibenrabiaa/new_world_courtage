@@ -1,0 +1,51 @@
+import Head from "next/head";
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
+import PageHero from "../../../components/PageHero";
+import CarCalculatorSection from "../../../components/CarCalculatorSection";
+import Footer from "../../../components/Footer";
+
+const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
+
+function PageBreadcrumb() {
+  return (
+    <Breadcrumb className={`${cx} pt-6 pb-2`}>
+      <BreadcrumbList>
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbLink href="/auto-insurance/">Assurance auto</BreadcrumbLink>
+        </BreadcrumbItem>
+        <BreadcrumbSeparator />
+        <BreadcrumbItem>
+          <BreadcrumbPage>Calculateur</BreadcrumbPage>
+        </BreadcrumbItem>
+      </BreadcrumbList>
+    </Breadcrumb>
+  );
+}
+
+export default function CarInsuranceCalculatorPage() {
+  return (
+    <>
+      <Head>
+        <title>Calculateur d&apos;assurance auto — New World Courtage</title>
+        <meta
+          name="description"
+          content="Estimez le coût de votre assurance auto en quelques clics. Calculateur gratuit pour comparer les offres selon votre profil."
+        />
+        <meta name="robots" content="index, follow" />
+        <link rel="canonical" href="https://www.newworldcourtage.fr/auto-insurance/car-insurance-calculator/" />
+      </Head>
+
+      <main>
+        <PageBreadcrumb />
+        <PageHero title={<>Calculez <em className="italic">rapidement</em> vos besoins en<br />assurance automobile.</>} image="/auto-insurance-calculator.jpg" imageAlt="Calculateur assurance auto" titlePosition="bottom" />
+        <CarCalculatorSection />
+      </main>
+
+      <Footer />
+    </>
+  );
+}

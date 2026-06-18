@@ -8,6 +8,7 @@
   --color-jungle-green: #f2693d;
   --color-blue-sky: #c3dfdf;
   --color-blue-navy: #172436;
+  --radius: 0.5rem;
 }
 
 @keyframes nav-fade-in {
