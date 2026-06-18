@@ -20,7 +20,9 @@ function SelectTrigger({ className, children, ...props }) {
     >
       {children}
       <SelectPrimitive.Icon asChild>
-        <ChevronDown className="h-4 w-4 text-gray-400 shrink-0" />
+        <svg width="13" height="8" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+          <path d="M1 0.5Q0 0.5 0.5 1.5L4.5 6Q5 6.7 5.5 6L9.5 1.5Q10 0.5 9 0.5Z" fill="#131212" />
+        </svg>
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
   )

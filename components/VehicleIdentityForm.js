@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Lock, Plus, Minus } from "lucide-react";
 
 const PROVINCES = [
   "Auvergne-Rhône-Alpes", "Bourgogne-Franche-Comté", "Bretagne",
@@ -11,50 +11,71 @@ const PROVINCES = [
   "Pays de la Loire", "Provence-Alpes-Côte d'Azur",
 ];
 
-function Field({ label, required, children }) {
+function Field({ label, required, htmlFor, error, children }) {
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-base font-medium text-white leading-none">
+    <div className="flex flex-col gap-1.5">
+      <label htmlFor={htmlFor} className="text-base font-medium text-white leading-none">
         {label}
         {required && <span className="text-white ml-0.5">*</span>}
       </label>
       {children}
+      {error && (
+        <p className="text-xs text-red-400 mt-0.5">{error}</p>
+      )}
     </div>
   );
 }
 
 export default function VehicleIdentityForm() {
   const router = useRouter();
-  const [province, setProvince]       = useState("");
-  const [age, setAge]                 = useState("");
-  const [gender, setGender]           = useState("");
-  const [drivingRecord, setDriving]   = useState("");
-  const [creditScore, setCredit]      = useState("");
-  const [ownsHome, setOwnsHome]       = useState("");
+  const [province, setProvince]     = useState("");
+  const [age, setAge]               = useState("");
+  const [gender, setGender]         = useState("");
+  const [drivingRecord, setDriving] = useState("");
+  const [creditScore, setCredit]    = useState("");
+  const [ownsHome, setOwnsHome]     = useState("");
+  const [errors, setErrors]         = useState({});
 
-  const canSubmit = province && age && drivingRecord;
+  function clearError(field) {
+    setErrors(prev => { const e = { ...prev }; delete e[field]; return e; });
+  }
 
   function handleSubmit(e) {
     e.preventDefault();
+    const newErrors = {};
+    if (!province)     newErrors.province = "Ce champ est requis.";
+    if (!age)          newErrors.age      = "Ce champ est requis.";
+    if (!drivingRecord) newErrors.driving = "Ce champ est requis.";
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
     const q = new URLSearchParams({ province, age });
-    if (gender)      q.set("gender", gender);
+    if (gender)        q.set("gender",  gender);
     if (drivingRecord) q.set("driving", drivingRecord);
-    if (creditScore) q.set("credit", creditScore);
-    if (ownsHome)    q.set("home", ownsHome);
+    if (creditScore)   q.set("credit",  creditScore);
+    if (ownsHome)      q.set("home",    ownsHome);
     router.push(`/auto-insurance/car-insurance-calculator/devis/?${q.toString()}`);
   }
 
-  const triggerCls = "h-14 text-base bg-white text-[#131212]";
-  const inputCls   = "h-14 w-full rounded-[var(--radius)] border border-gray-200 bg-white px-4 text-base text-[#131212] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)] focus:border-transparent transition-shadow";
+  const triggerCls = (field) =>
+    `h-14 text-base bg-white text-[#131212] ${errors[field] ? "border-2 border-red-400 focus:ring-red-400" : ""}`;
+
+  const inputCls = (field) =>
+    `h-14 w-full rounded-[var(--radius)] border bg-white px-4 text-base text-[#131212] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-shadow ${
+      errors[field]
+        ? "border-red-400 focus:ring-red-400"
+        : "border-gray-200 focus:ring-[var(--color-brand)]"
+    }`;
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+    <form onSubmit={handleSubmit} className="flex flex-col gap-11">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
 
         {/* Province */}
-        <Field label="Province" required hint="Votre région de résidence influence les tarifs en raison des différences de densité de trafic et de sinistralité locale.">
-          <Select value={province} onValueChange={setProvince}>
-            <SelectTrigger className={triggerCls}>
+        <Field label="Province" required error={errors.province}>
+          <Select value={province} onValueChange={v => { setProvince(v); clearError("province"); }}>
+            <SelectTrigger className={triggerCls("province")}>
               <SelectValue placeholder="Sélectionnez une région" />
             </SelectTrigger>
             <SelectContent>
@@ -66,51 +87,52 @@ export default function VehicleIdentityForm() {
         </Field>
 
         {/* Age */}
-        <Field label="Âge" required hint="L'âge est l'un des principaux facteurs de tarification. Les conducteurs jeunes et seniors peuvent avoir des tarifs différents.">
+        <Field label="Âge" required htmlFor="field-age" error={errors.age}>
           <input
+            id="field-age"
             type="number"
             min="16"
             max="99"
             value={age}
-            onChange={e => setAge(e.target.value)}
+            onChange={e => { setAge(e.target.value); clearError("age"); }}
             placeholder="Votre âge"
-            className={inputCls}
+            className={inputCls("age")}
           />
         </Field>
 
         {/* Gender */}
-        <Field label="Genre" hint="Certains assureurs utilisent le genre comme facteur statistique de risque. Cette information reste facultative.">
+        <Field label="Genre">
           <Select value={gender} onValueChange={setGender}>
-            <SelectTrigger className={triggerCls}>
+            <SelectTrigger className={triggerCls()}>
               <SelectValue placeholder="Sélectionnez" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="homme"      className="text-base py-2.5">Homme</SelectItem>
-              <SelectItem value="femme"      className="text-base py-2.5">Femme</SelectItem>
+              <SelectItem value="homme"       className="text-base py-2.5">Homme</SelectItem>
+              <SelectItem value="femme"       className="text-base py-2.5">Femme</SelectItem>
               <SelectItem value="non-binaire" className="text-base py-2.5">Non-binaire</SelectItem>
             </SelectContent>
           </Select>
         </Field>
 
         {/* Driving record */}
-        <Field label="Historique de conduite" required hint="Votre historique de sinistres et d'infractions impacte directement votre prime. Un bon dossier peut vous faire économiser jusqu'à 30 %.">
-          <Select value={drivingRecord} onValueChange={setDriving}>
-            <SelectTrigger className={triggerCls}>
+        <Field label="Historique de conduite" required error={errors.driving}>
+          <Select value={drivingRecord} onValueChange={v => { setDriving(v); clearError("driving"); }}>
+            <SelectTrigger className={triggerCls("driving")}>
               <SelectValue placeholder="Votre profil conducteur" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="excellent"   className="text-base py-2.5">Excellent — aucun incident</SelectItem>
-              <SelectItem value="bon"         className="text-base py-2.5">Bon — infractions mineures</SelectItem>
-              <SelectItem value="moyen"       className="text-base py-2.5">Moyen — accidents ou infractions</SelectItem>
-              <SelectItem value="mauvais"     className="text-base py-2.5">Mauvais — plusieurs incidents</SelectItem>
+              <SelectItem value="excellent" className="text-base py-2.5">Excellent — aucun incident</SelectItem>
+              <SelectItem value="bon"       className="text-base py-2.5">Bon — infractions mineures</SelectItem>
+              <SelectItem value="moyen"     className="text-base py-2.5">Moyen — accidents ou infractions</SelectItem>
+              <SelectItem value="mauvais"   className="text-base py-2.5">Mauvais — plusieurs incidents</SelectItem>
             </SelectContent>
           </Select>
         </Field>
 
         {/* Credit score */}
-        <Field label="Cote de crédit" hint="Une bonne cote de crédit peut réduire votre prime. Les assureurs l'utilisent comme indicateur de fiabilité financière.">
+        <Field label="Cote de crédit">
           <Select value={creditScore} onValueChange={setCredit}>
-            <SelectTrigger className={triggerCls}>
+            <SelectTrigger className={triggerCls()}>
               <SelectValue placeholder="Estimez votre cote" />
             </SelectTrigger>
             <SelectContent>
@@ -123,9 +145,9 @@ export default function VehicleIdentityForm() {
         </Field>
 
         {/* Own a home */}
-        <Field label="Propriétaire de votre logement ?" hint="Les propriétaires bénéficient souvent de tarifs préférentiels et peuvent regrouper leur assurance auto et habitation pour plus d'économies.">
+        <Field label="Propriétaire de votre logement ?">
           <Select value={ownsHome} onValueChange={setOwnsHome}>
-            <SelectTrigger className={triggerCls}>
+            <SelectTrigger className={triggerCls()}>
               <SelectValue placeholder="Sélectionnez" />
             </SelectTrigger>
             <SelectContent>
@@ -137,14 +159,52 @@ export default function VehicleIdentityForm() {
 
       </div>
 
-      <Button
-        type="submit"
-        disabled={!canSubmit}
-        className="bg-white text-[#131212] hover:bg-white/90 text-base font-semibold py-[25px] px-[15px] self-start"
-      >
-        Calculer mon tarif
-        <ChevronRight size={18} />
-      </Button>
+      {/* Monthly estimates */}
+      <div className="flex flex-col gap-3">
+        <p className="text-base font-medium text-white leading-none">Estimations mensuelles</p>
+        <div className="rounded-xl bg-white overflow-hidden shadow-sm">
+          {[
+            { label: "Couverture budget",   accent: "#16a363" },
+            { label: "Couverture moyenne",  accent: "#136eb7" },
+            { label: "Couverture complète", accent: "#253b52" },
+          ].map(({ label, accent }, i) => (
+            <div key={i} className={`flex items-center gap-4 py-4 pr-8 ${i > 0 ? "border-t border-gray-100" : ""}`}>
+              <div className="w-1.5 self-stretch rounded-r-full shrink-0" style={{ backgroundColor: accent }} />
+              <span className="flex-1 text-sm text-gray-600">{label}</span>
+              <span className="text-sm font-semibold text-[#131212]">— — €</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Submit block */}
+      <div className="flex flex-col gap-3">
+        <Button
+          type="submit"
+          className="bg-white text-[#131212] hover:bg-white/90 text-base font-semibold py-[25px] px-[15px] self-start"
+        >
+          Calculer mon tarif
+          <ChevronRight size={18} />
+        </Button>
+        <div className="flex items-center gap-2">
+          <Lock size={13} className="text-white/60 shrink-0" />
+          <p className="text-xs font-medium text-white/60">La sécurité de vos données est notre priorité.</p>
+        </div>
+      </div>
+
+      {/* FAQ item */}
+      <details className="group border-t border-white/15 pt-4">
+        <summary className="flex items-center justify-between gap-4 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+          <span className="text-sm font-semibold text-white">Comment calculons-nous vos tarifs ?</span>
+          <span className="shrink-0 text-white/60">
+            <Plus size={16} className="group-open:hidden" />
+            <Minus size={16} className="hidden group-open:block" />
+          </span>
+        </summary>
+        <p className="mt-3 text-sm text-white/60 leading-relaxed">
+          Nos estimations sont basées sur votre province, votre âge, votre historique de conduite et d'autres facteurs de risque. Les tarifs réels peuvent varier selon l'assureur et votre profil complet. Un conseiller agréé vous contactera avec des offres personnalisées.
+        </p>
+      </details>
 
     </form>
   );
