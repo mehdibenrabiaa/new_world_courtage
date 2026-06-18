@@ -15,14 +15,14 @@ export default function CarCalculatorSection() {
         <div className="rounded-[20px] overflow-hidden flex flex-col lg:flex-row min-h-[480px] bg-[var(--color-brand)]">
 
           {/* Left — title (1/3) */}
-          <div className="hidden lg:flex lg:w-1/3 px-8 py-10 lg:px-14 lg:py-14 items-center">
+          <div className="hidden lg:flex lg:w-[40%] px-8 py-10 lg:px-14 lg:py-14 items-center">
             <h2 className={`text-[8vw] sm:text-[38px] lg:text-[46px] leading-[1.1] text-white ${libreCaslon.className}`}>
               Combien d&apos;assurance auto vous faut-il et à quel <em className={`italic ${libreCaslon.className}`}>coût ?</em>
             </h2>
           </div>
 
           {/* Right — content (2/3) */}
-          <div className="lg:w-2/3 px-8 py-10 lg:px-14 lg:py-14 flex flex-col gap-6">
+          <div className="lg:w-[60%] px-8 py-10 lg:px-14 lg:py-14 flex flex-col gap-6">
 
             <div className="inline-flex items-start bg-white/10 border border-white/20 rounded-xl px-5 py-4 max-w-lg">
               <div className="flex flex-col gap-1">

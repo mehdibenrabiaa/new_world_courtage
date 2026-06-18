@@ -15,13 +15,15 @@ const MOTO_BRANDS = [
   "Piaggio", "Royal Enfield", "Suzuki", "Triumph", "Vespa", "Yamaha",
 ];
 
+const YEARS = Array.from({ length: new Date().getFullYear() - 1989 }, (_, i) => String(new Date().getFullYear() - i));
+
 function Field({ label, optional, children }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-sm font-semibold text-white flex items-center gap-2">
+      <label className="text-base font-medium text-white flex items-center gap-2">
         {label}
         {optional && (
-          <span className="text-[11px] font-normal text-white/50 border border-white/20 rounded-full px-2 py-0.5">
+          <span className="text-[11px] font-normal text-white/75 border border-white/40 rounded-full px-2 py-0.5">
             optionnel
           </span>
         )}
@@ -37,6 +39,8 @@ export default function VehicleIdentityForm() {
   const [brand, setBrand]     = useState("");
   const [model, setModel]     = useState("");
   const [version, setVersion] = useState("");
+  const [year, setYear]       = useState("");
+  const [usage, setUsage]     = useState("");
 
   const brands = type === "voiture" ? CAR_BRANDS : MOTO_BRANDS;
   const canSubmit = type && brand && model;
@@ -45,21 +49,23 @@ export default function VehicleIdentityForm() {
     e.preventDefault();
     const q = new URLSearchParams({ type, brand, model });
     if (version) q.set("version", version);
+    if (year)    q.set("year", year);
+    if (usage)   q.set("usage", usage);
     router.push(`/auto-insurance/car-insurance-calculator/devis/?${q.toString()}`);
   }
 
-  const inputCls = "h-12 w-full rounded-[var(--radius)] border border-gray-200 bg-white px-4 text-base text-[#131212] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)] focus:border-transparent transition-shadow";
+  const inputCls = "h-14 w-full rounded-[var(--radius)] border border-gray-200 bg-white px-4 text-base text-[#131212] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)] focus:border-transparent transition-shadow";
+  const triggerCls = "h-14 text-base bg-white text-[#131212]";
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
 
-      {/* 2-col grid → 1-col on mobile */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
-        {/* Row 1 – type + brand */}
+        {/* Row 1 */}
         <Field label="Type de véhicule">
           <Select value={type} onValueChange={v => { setType(v); setBrand(""); }}>
-            <SelectTrigger className="h-12 text-base bg-white text-[#131212]">
+            <SelectTrigger className={triggerCls}>
               <SelectValue placeholder="Voiture, moto…" />
             </SelectTrigger>
             <SelectContent>
@@ -72,7 +78,7 @@ export default function VehicleIdentityForm() {
 
         <Field label="Marque">
           <Select value={brand} onValueChange={setBrand} disabled={!type}>
-            <SelectTrigger className="h-12 text-base bg-white text-[#131212] disabled:opacity-60">
+            <SelectTrigger className={`${triggerCls} disabled:opacity-60`}>
               <SelectValue placeholder={type ? "Sélectionnez une marque" : "Choisissez un type d'abord"} />
             </SelectTrigger>
             <SelectContent>
@@ -83,7 +89,7 @@ export default function VehicleIdentityForm() {
           </Select>
         </Field>
 
-        {/* Row 2 – model + version */}
+        {/* Row 2 */}
         <Field label="Modèle">
           <input
             type="text"
@@ -104,15 +110,41 @@ export default function VehicleIdentityForm() {
           />
         </Field>
 
+        {/* Row 3 */}
+        <Field label="Année de mise en circulation">
+          <Select value={year} onValueChange={setYear}>
+            <SelectTrigger className={triggerCls}>
+              <SelectValue placeholder="Sélectionnez une année" />
+            </SelectTrigger>
+            <SelectContent>
+              {YEARS.map(y => (
+                <SelectItem key={y} value={y} className="text-base py-2.5">{y}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+
+        <Field label="Usage principal">
+          <Select value={usage} onValueChange={setUsage}>
+            <SelectTrigger className={triggerCls}>
+              <SelectValue placeholder="Comment utilisez-vous ce véhicule ?" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="commute"      className="text-base py-2.5">Domicile – travail</SelectItem>
+              <SelectItem value="leisure"      className="text-base py-2.5">Loisirs</SelectItem>
+              <SelectItem value="professional" className="text-base py-2.5">Professionnel</SelectItem>
+            </SelectContent>
+          </Select>
+        </Field>
+
       </div>
 
-      {/* Row 3 – submit */}
       <Button
         type="submit"
         disabled={!canSubmit}
-        className="cta-btn text-white text-base font-normal py-[25px] px-[15px] self-start"
+        className="bg-white text-[#131212] hover:bg-white/90 text-base font-semibold py-[25px] px-[15px] self-start"
       >
-        Calculer mon devis
+        Commencer
         <ChevronRight size={18} />
       </Button>
 

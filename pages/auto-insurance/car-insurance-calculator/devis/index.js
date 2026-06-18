@@ -13,10 +13,12 @@ export default function DevisPage() {
 
   // Rebuild initial answers from query params
   const initialAnswers = {
-    1: query.type    || "",
-    2: query.brand   || "",
-    3: query.model   || "",
-    4: query.version || "",
+    1:  query.type    || "",
+    2:  query.brand   || "",
+    3:  query.model   || "",
+    4:  query.version || "",
+    9:  query.year  ? `${query.year}-01` : "",
+    11: query.usage   || "",
   };
 
   // Summary pill shown at the top
