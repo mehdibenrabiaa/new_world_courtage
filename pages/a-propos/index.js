@@ -37,7 +37,7 @@ function PageBreadcrumb() {
 function ContentBlock({ heading, children }) {
   return (
     <div>
-      <h3 className={`!text-[22px] !leading-snug !text-[#131212] !mt-0 ${libreCaslon.className}`}>
+      <h3 className={`!text-[22px] !leading-snug !text-[var(--color-text)] !mt-0 ${libreCaslon.className}`}>
         {heading}
       </h3>
       <p className="!mt-2">{children}</p>
@@ -56,7 +56,7 @@ function QuickNav() {
   return (
     <div className="px-4 lg:px-12 2xl:px-24 relative z-10 -mt-12 pb-6">
       <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 w-full lg:w-fit lg:mx-auto">
-        <p className="font-semibold text-[17px] sm:text-[19px] text-[#131212] whitespace-nowrap shrink-0">
+        <p className="font-semibold text-[17px] sm:text-[19px] text-[var(--color-text)] whitespace-nowrap shrink-0">
           Que souhaitez-vous explorer ?
         </p>
         <div className="flex flex-col lg:flex-row gap-2">
@@ -64,7 +64,7 @@ function QuickNav() {
             <Link key={href} href={href} className="lg:shrink-0">
               <Card className="shadow-none rounded-xl w-full lg:w-[190px] lg:h-[130px] flex flex-row items-center lg:flex-col lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-3 lg:py-0 border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
                 <img src={icon} alt="" aria-hidden="true" className="shrink-0 w-8 h-8 lg:w-11 lg:h-11" />
-                <span className="flex-1 lg:flex-none text-[16px] font-medium text-[#131212] lg:text-center leading-tight">{label}</span>
+                <span className="flex-1 lg:flex-none text-[16px] font-medium text-[var(--color-text)] lg:text-center leading-tight">{label}</span>
                 <img src="/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="lg:hidden shrink-0 opacity-40" />
               </Card>
             </Link>
@@ -156,7 +156,7 @@ export default function AProposPage() {
             {/* Ce qui nous distingue */}
             <div className="flex flex-col gap-12">
               <Separator />
-              <h2 className={`text-[33px] leading-tight text-[#131212] ${libreCaslon.className}`}>
+              <h2 className={`text-[33px] leading-tight text-[var(--color-text)] ${libreCaslon.className}`}>
                 Ce qui nous distingue
               </h2>
               <ContentBlock heading="Comparer les offres, simplement">
@@ -176,7 +176,7 @@ export default function AProposPage() {
             {/* Comment nous gagnons notre argent */}
             <div className="flex flex-col gap-4">
               <Separator />
-              <h2 className={`text-[33px] leading-tight text-[#131212] ${libreCaslon.className}`}>
+              <h2 className={`text-[33px] leading-tight text-[var(--color-text)] ${libreCaslon.className}`}>
                 Comment nous gagnons notre argent
               </h2>
               <p>
@@ -188,20 +188,20 @@ export default function AProposPage() {
             <div className="not-prose grid grid-cols-1 lg:grid-cols-2 gap-4">
               <Card className="bg-[var(--color-light)] border-0 shadow-none rounded-xl">
                 <CardContent className="p-8 flex flex-col gap-4">
-                  <h3 className="text-[20px] font-semibold text-[#131212] leading-snug">
+                  <h3 className="text-[20px] font-semibold text-[var(--color-text)] leading-snug">
                     Est-il moins cher de souscrire une assurance via New World Courtage ?
                   </h3>
-                  <p className="text-base text-[#131212] leading-[26px] sm:leading-6">
+                  <p className="text-base text-[var(--color-text)] leading-[26px] sm:leading-6">
                     Les tarifs d&apos;assurance sont réglementés par la loi, ce qui signifie qu&apos;aucune société, courtier ou agent ne peut vous proposer de remise sur une police. Vous pouvez tout de même faire des économies ! Chaque assureur évalue le risque différemment et s&apos;efforce de proposer des tarifs compétitifs. C&apos;est pourquoi New World Courtage vous permet de comparer les devis de plusieurs compagnies en un seul endroit : pour vous aider à trouver facilement les meilleures offres adaptées à vos besoins.
                   </p>
                 </CardContent>
               </Card>
               <Card className="bg-[var(--color-light)] border-0 shadow-none rounded-xl">
                 <CardContent className="p-8 flex flex-col gap-4">
-                  <h3 className="text-[20px] font-semibold text-[#131212] leading-snug">
+                  <h3 className="text-[20px] font-semibold text-[var(--color-text)] leading-snug">
                     New World Courtage est-il affilié à une compagnie d&apos;assurance ?
                   </h3>
-                  <p className="text-base text-[#131212] leading-[26px] sm:leading-6">
+                  <p className="text-base text-[var(--color-text)] leading-[26px] sm:leading-6">
                     Non. Nous sommes un cabinet de courtage indépendant, ce qui signifie que nous ne sommes pas détenus par une compagnie d&apos;assurance et que nous n&apos;en possédons pas non plus. Nous commercialisons des polices auprès de plusieurs assureurs, sans parti pris ni favoritisme envers aucun d&apos;eux. Il est essentiel pour nous de vous aider à trouver la police la plus adaptée à vos besoins, quelle que soit la compagnie auprès de laquelle vous la souscrivez.
                   </p>
                 </CardContent>
@@ -211,7 +211,7 @@ export default function AProposPage() {
             {/* Nos agréments */}
             <div className="flex flex-col gap-4">
               <Separator />
-              <h2 className={`text-[33px] leading-tight text-[#131212] ${libreCaslon.className}`}>
+              <h2 className={`text-[33px] leading-tight text-[var(--color-text)] ${libreCaslon.className}`}>
                 Nos agréments
               </h2>
               <p>

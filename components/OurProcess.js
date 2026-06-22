@@ -46,7 +46,7 @@ export default function OurProcess() {
           {/* Header */}
           <div className="flex flex-col gap-5 mb-10 lg:mb-14 max-w-4xl mx-auto text-center">
             <h2
-              className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}
+              className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}
             >
               Nous rendons le processus <em className={`italic ${libreCaslon.className}`}>simple.</em>
             </h2>
@@ -63,11 +63,11 @@ export default function OurProcess() {
                   <img src={icon} alt="" aria-hidden="true" className="max-w-[90px] lg:max-w-[110px] max-h-full object-contain" />
                 </div>
                 <CardContent className="p-5 flex flex-col gap-4">
-                  <Badge className="w-8 h-8 p-0 flex items-center justify-center rounded-full bg-[#131212] border-transparent text-white text-sm">
+                  <Badge className="w-8 h-8 p-0 flex items-center justify-center rounded-full bg-[var(--color-text)] border-transparent text-white text-sm">
                     {id}
                   </Badge>
-                  <h3 className={`text-[22px] leading-snug text-[#131212] ${libreCaslon.className}`}>{title}</h3>
-                  <p className="text-base text-[#131212] leading-[26px] sm:leading-6">{description}</p>
+                  <h3 className={`text-[22px] leading-snug text-[var(--color-text)] ${libreCaslon.className}`}>{title}</h3>
+                  <p className="text-base text-[var(--color-text)] leading-[26px] sm:leading-6">{description}</p>
                 </CardContent>
               </Card>
             ))}

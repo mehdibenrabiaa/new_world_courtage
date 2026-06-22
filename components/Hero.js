@@ -87,7 +87,7 @@ export default function Hero() {
             <div className="bg-white pl-4 sm:pl-6 pr-8 sm:pr-12 py-4 sm:py-6 w-full sm:w-[90%] rounded-br-none sm:rounded-br-[9999px]">
               <p
                 ref={titleRef}
-                className={`sm:text-[36px] lg:text-[55px] text-[#131212] leading-[1.1] ${libreCaslon.className}`}
+                className={`sm:text-[36px] lg:text-[55px] text-[var(--color-text)] leading-[1.1] ${libreCaslon.className}`}
               >
                 <span className="block">Comparez. Choisissez.</span>
                 <span className="block"><em className={`italic ${libreCaslon.className}`}>Soyez couvert.</em></span>
@@ -97,7 +97,7 @@ export default function Hero() {
             {/* Bottom bar */}
             <div className="mt-[300px] lg:mt-auto px-4 lg:px-8 pb-6">
               <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 w-full lg:w-fit lg:mx-auto">
-                <p className="font-semibold text-[17px] sm:text-[19px] text-[#131212] whitespace-nowrap shrink-0">
+                <p className="font-semibold text-[17px] sm:text-[19px] text-[var(--color-text)] whitespace-nowrap shrink-0">
                   Que recherchez-vous ?
                 </p>
                 <div className="flex flex-col lg:flex-row gap-2">
@@ -105,7 +105,7 @@ export default function Hero() {
                     <Link key={id} href={href} className="lg:shrink-0">
                       <Card className="shadow-none rounded-xl w-full lg:w-[124px] lg:h-[124px] flex flex-row items-center lg:flex-col lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-1 lg:py-0 border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
                         <img src={icon} alt="" width={42} height={42} aria-hidden="true" className="shrink-0 w-8 h-8 lg:w-11 lg:h-11" />
-                        <span className="flex-1 lg:flex-none text-[16px] font-medium text-[#131212] lg:text-center leading-tight">{label}</span>
+                        <span className="flex-1 lg:flex-none text-[16px] font-medium text-[var(--color-text)] lg:text-center leading-tight">{label}</span>
                         <img src="/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="lg:hidden shrink-0 opacity-40" />
                       </Card>
                     </Link>

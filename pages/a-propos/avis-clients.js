@@ -52,13 +52,13 @@ function FeaturedReview() {
     <section className={`${cx} py-10 lg:py-14`}>
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
         <div className="flex flex-col gap-0.5">
-          <p className="text-[17px] font-semibold text-[#131212]">Catherine D.</p>
+          <p className="text-[17px] font-semibold text-[var(--color-text)]">Catherine D.</p>
           <p className="text-[14px] text-gray-400">
             Cliente depuis 2024 &middot; Lyon, Auvergne-Rhône-Alpes
           </p>
         </div>
         <blockquote className="flex flex-col gap-3">
-          <p className="text-[20px] lg:text-[24px] leading-[1.4] text-[#131212]">
+          <p className="text-[20px] lg:text-[24px] leading-[1.4] text-[var(--color-text)]">
             &ldquo;Je cherchais une assurance habitation depuis plusieurs semaines sans
             trouver d&apos;offre adaptée à mon budget. L&apos;équipe de New World
             Courtage a compris mes besoins dès le premier appel.&rdquo;
@@ -134,7 +134,7 @@ function ExpertCard({ source, quote, href }) {
   return (
     <Card className="rounded-none border-t-[6px] border-t-[var(--color-brand)] shadow-sm flex flex-col">
       <CardContent className="p-6 flex flex-col gap-4 h-full">
-        <p className="text-base font-bold text-[#131212]">{source}</p>
+        <p className="text-base font-bold text-[var(--color-text)]">{source}</p>
         <p className="text-base text-gray-700 leading-[26px] sm:leading-6 flex-1">{quote}</p>
         <a
           href={href}
@@ -155,7 +155,7 @@ function ExpertsSection() {
       <div className="px-4 lg:px-12 2xl:px-24">
         <div className="rounded-[20px] bg-[var(--color-light)] px-4 py-10 lg:px-8 lg:py-14">
           <div className="flex flex-col gap-5 max-w-4xl mx-auto text-center mb-10 lg:mb-14">
-            <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}>
+            <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
               Ce que disent les <em className={`italic ${libreCaslon.className}`}>experts.</em>
             </h2>
             <p className="text-base text-gray-600 leading-relaxed">

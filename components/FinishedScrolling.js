@@ -19,7 +19,7 @@ export default function FinishedScrolling() {
 
             <div className="flex flex-col gap-5">
               <h2
-                className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}
+                className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}
               >
                 <span className="block">Tu as fini</span>
                 <span className="block">de scroller ?</span>

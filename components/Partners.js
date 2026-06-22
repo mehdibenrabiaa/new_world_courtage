@@ -26,7 +26,7 @@ export default function Partners() {
         <div className="rounded-[20px] bg-[var(--color-light)] px-8 py-10 lg:px-14 lg:py-14">
 
           <div className="flex flex-col gap-5 max-w-2xl mx-auto text-center mb-12">
-            <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}>
+            <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
               Plus de <em className={`italic ${libreCaslon.className}`}>100 compagnies</em> partenaires.
             </h2>
             <p className="text-base text-gray-600 leading-[26px] sm:leading-6">

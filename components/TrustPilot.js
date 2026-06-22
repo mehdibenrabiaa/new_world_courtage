@@ -45,7 +45,7 @@ export default function TrustPilot({
               ))}
             </div>
             <div className="flex flex-col gap-0">
-              <p className="text-[16px] font-bold text-[#131212]">
+              <p className="text-[16px] font-bold text-[var(--color-text)]">
                 TrustScore {score} sur 5
               </p>
               <Button

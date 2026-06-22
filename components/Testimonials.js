@@ -34,14 +34,14 @@ export default function Testimonials() {
             <div className="flex flex-col gap-5">
               {/* Heading */}
               <h2
-                className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}
+                className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}
               >
                 <span className="block">Une référence de</span>
                 <span className="block"><em className={`italic ${libreCaslon.className}`}>confiance</em> en assurance.</span>
               </h2>
 
               {/* Paragraph */}
-              <p className="text-base text-[#131212] max-w-lg leading-[26px] sm:leading-6">
+              <p className="text-base text-[var(--color-text)] max-w-lg leading-[26px] sm:leading-6">
                 New World Courtage propose des devis gratuits adaptés à vos besoins, avec l&apos;accompagnement d&apos;agents agréés, pour vous aider à obtenir rapidement une couverture d&apos;assurance et vous permettre de reprendre le cours de votre vie.
               </p>
             </div>
@@ -50,10 +50,10 @@ export default function Testimonials() {
             <div className="flex flex-col sm:flex-row gap-8 sm:gap-12 mt-5">
               {STATS.map(({ number, label }) => (
                 <div key={label}>
-                  <p className={`text-[44px] lg:text-[72px] leading-none text-[#131212] ${libreCaslon.className}`}>
+                  <p className={`text-[44px] lg:text-[72px] leading-none text-[var(--color-text)] ${libreCaslon.className}`}>
                     {number}
                   </p>
-                  <p className="text-[13px] lg:text-[16px] text-[#131212] mt-2">{label}</p>
+                  <p className="text-[13px] lg:text-[16px] text-[var(--color-text)] mt-2">{label}</p>
                 </div>
               ))}
             </div>

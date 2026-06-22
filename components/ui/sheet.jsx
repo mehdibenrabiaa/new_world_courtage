@@ -47,7 +47,7 @@ function SheetHeader({ className, ...props }) {
 }
 
 function SheetTitle({ className, ...props }) {
-  return <Dialog.Title className={cn("text-base font-semibold text-[#131212]", className)} {...props} />;
+  return <Dialog.Title className={cn("text-base font-semibold text-[var(--color-text)]", className)} {...props} />;
 }
 
 export { Sheet, SheetTrigger, SheetClose, SheetContent, SheetHeader, SheetTitle };

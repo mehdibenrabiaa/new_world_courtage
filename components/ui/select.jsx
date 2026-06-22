@@ -13,7 +13,7 @@ function SelectTrigger({ className, children, ...props }) {
   return (
     <SelectPrimitive.Trigger
       className={cn(
-        "flex h-11 w-full items-center justify-between gap-2 rounded-[var(--radius)] bg-gray-50 border border-gray-200 px-4 text-sm font-medium text-[#131212] shadow-none focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)] focus:border-transparent disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
+        "flex h-10 w-full items-center justify-between gap-2 rounded-[6px] bg-white border border-[#d9d9d9] px-3 text-sm text-[var(--color-text)] shadow-none outline-none hover:border-[var(--color-brand)] focus:border-[var(--color-brand)] focus:shadow-[0_0_0_2px_rgba(19,110,183,0.15)] disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1",
         className
       )}
       {...props}
@@ -21,7 +21,7 @@ function SelectTrigger({ className, children, ...props }) {
       {children}
       <SelectPrimitive.Icon asChild>
         <svg width="13" height="8" viewBox="0 0 10 6" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-          <path d="M1 0.5Q0 0.5 0.5 1.5L4.5 6Q5 6.7 5.5 6L9.5 1.5Q10 0.5 9 0.5Z" fill="#131212" />
+          <path d="M1 0.5Q0 0.5 0.5 1.5L4.5 6Q5 6.7 5.5 6L9.5 1.5Q10 0.5 9 0.5Z" fill="var(--color-text)" />
         </svg>
       </SelectPrimitive.Icon>
     </SelectPrimitive.Trigger>
@@ -55,7 +55,7 @@ function SelectContent({ className, children, position = "popper", ...props }) {
     <SelectPrimitive.Portal>
       <SelectPrimitive.Content
         className={cn(
-          "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-[var(--radius)] border border-gray-100 bg-white text-[#131212] shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+          "relative z-50 max-h-96 min-w-[8rem] overflow-hidden rounded-[var(--radius)] border border-gray-100 bg-white text-[var(--color-text)] shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
           position === "popper" &&
             "data-[side=bottom]:translate-y-1 data-[side=top]:-translate-y-1",
           className
@@ -91,7 +91,7 @@ function SelectItem({ className, children, ...props }) {
   return (
     <SelectPrimitive.Item
       className={cn(
-        "relative flex w-full cursor-default select-none items-center rounded-md py-2 pl-3 pr-8 text-sm outline-none focus:bg-gray-200 focus:text-[#131212] data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+        "relative flex w-full cursor-default select-none items-center rounded-md py-2 pl-3 pr-8 text-sm outline-none focus:bg-gray-300 focus:text-[var(--color-text)] data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
         className
       )}
       {...props}

@@ -21,7 +21,7 @@ function BreadcrumbLink({ className, href, ...props }) {
 }
 
 function BreadcrumbPage({ className, ...props }) {
-  return <span className={cn("text-[#131212] font-medium", className)} aria-current="page" {...props} />;
+  return <span className={cn("text-[var(--color-text)] font-medium", className)} aria-current="page" {...props} />;
 }
 
 function BreadcrumbSeparator({ className, ...props }) {

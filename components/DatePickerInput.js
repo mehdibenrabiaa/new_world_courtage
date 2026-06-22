@@ -17,7 +17,7 @@ function parseDate(str) {
   return isNaN(d.getTime()) ? undefined : d
 }
 
-export function DatePickerInput({ value, onChange, placeholder = "Sélectionnez une date", theme = "dark" }) {
+export function DatePickerInput({ id, value, onChange, placeholder = "Sélectionnez une date", theme = "dark", error = false }) {
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState(() => parseDate(value))
 
@@ -33,11 +33,14 @@ export function DatePickerInput({ value, onChange, placeholder = "Sélectionnez 
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
+          id={id}
           variant="outline"
           className={`w-full justify-start font-normal text-base h-11 ${
-            isLight
-              ? "border-gray-200 text-[#131212] hover:bg-gray-50"
-              : "border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+            error
+              ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,77,79,0.15)]"
+              : isLight
+                ? "border-gray-200 text-[var(--color-text)] hover:bg-gray-50"
+                : "border-white/30 bg-white/10 text-white hover:bg-white/20 hover:text-white"
           } ${!date ? (isLight ? "text-gray-400" : "text-white/40") : ""}`}
         >
           <CalendarIcon size={16} className="mr-2 opacity-50 shrink-0" />

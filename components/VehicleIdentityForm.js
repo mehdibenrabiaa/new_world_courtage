@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { ChevronRight, Lock, Plus, Minus } from "lucide-react";
+import { ChevronRight, Plus, Minus } from "lucide-react";
 
 const PROVINCES = [
   "Auvergne-Rhône-Alpes", "Bourgogne-Franche-Comté", "Bretagne",
@@ -20,7 +20,7 @@ function Field({ label, required, htmlFor, error, children }) {
       </label>
       {children}
       {error && (
-        <p className="text-xs text-red-400 mt-0.5">{error}</p>
+        <p className="text-xs text-[var(--color-error)] mt-0.5">{error}</p>
       )}
     </div>
   );
@@ -35,6 +35,15 @@ export default function VehicleIdentityForm() {
   const [creditScore, setCredit]    = useState("");
   const [ownsHome, setOwnsHome]     = useState("");
   const [errors, setErrors]         = useState({});
+
+  const hasEstimates = !!(province && age && drivingRecord);
+
+  function getEstimates() {
+    const a = parseInt(age) || 30;
+    const ageSurcharge = a < 25 ? 22 : a > 60 ? 10 : 0;
+    const recordDelta = { excellent: -8, bon: 0, moyen: 18, mauvais: 35 }[drivingRecord] ?? 0;
+    return [28, 52, 87].map(b => Math.round(b + ageSurcharge + recordDelta));
+  }
 
   function clearError(field) {
     setErrors(prev => { const e = { ...prev }; delete e[field]; return e; });
@@ -59,12 +68,12 @@ export default function VehicleIdentityForm() {
   }
 
   const triggerCls = (field) =>
-    `h-14 text-base bg-white text-[#131212] ${errors[field] ? "border-2 border-red-400 focus:ring-red-400" : ""}`;
+    `h-14 text-base bg-white text-[var(--color-text)] ${errors[field] ? "border-2 border-[var(--color-error)] focus:ring-[var(--color-error)]" : ""}`;
 
   const inputCls = (field) =>
-    `h-14 w-full rounded-[var(--radius)] border bg-white px-4 text-base text-[#131212] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-shadow ${
+    `h-14 w-full rounded-[var(--radius)] border bg-white px-4 text-base text-[var(--color-text)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-shadow ${
       errors[field]
-        ? "border-red-400 focus:ring-red-400"
+        ? "border-[var(--color-error)] focus:ring-[var(--color-error)]"
         : "border-gray-200 focus:ring-[var(--color-brand)]"
     }`;
 
@@ -87,17 +96,20 @@ export default function VehicleIdentityForm() {
         </Field>
 
         {/* Age */}
-        <Field label="Âge" required htmlFor="field-age" error={errors.age}>
-          <input
-            id="field-age"
-            type="number"
-            min="16"
-            max="99"
-            value={age}
-            onChange={e => { setAge(e.target.value); clearError("age"); }}
-            placeholder="Votre âge"
-            className={inputCls("age")}
-          />
+        <Field label="Âge" required error={errors.age}>
+          <Select value={age} onValueChange={v => { setAge(v); clearError("age"); }}>
+            <SelectTrigger className={triggerCls("age")}>
+              <SelectValue placeholder="Votre tranche d'âge" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="16-24" className="text-base py-2.5">16 – 24 ans</SelectItem>
+              <SelectItem value="25-35" className="text-base py-2.5">25 – 35 ans</SelectItem>
+              <SelectItem value="36-45" className="text-base py-2.5">36 – 45 ans</SelectItem>
+              <SelectItem value="46-55" className="text-base py-2.5">46 – 55 ans</SelectItem>
+              <SelectItem value="56-65" className="text-base py-2.5">56 – 65 ans</SelectItem>
+              <SelectItem value="66+"   className="text-base py-2.5">66 ans et plus</SelectItem>
+            </SelectContent>
+          </Select>
         </Field>
 
         {/* Gender */}
@@ -163,17 +175,22 @@ export default function VehicleIdentityForm() {
       <div className="flex flex-col gap-3">
         <p className="text-base font-medium text-white leading-none">Estimations mensuelles</p>
         <div className="rounded-xl bg-white overflow-hidden shadow-sm">
-          {[
-            { label: "Couverture budget",   accent: "#16a363" },
-            { label: "Couverture moyenne",  accent: "#136eb7" },
-            { label: "Couverture complète", accent: "#253b52" },
-          ].map(({ label, accent }, i) => (
-            <div key={i} className={`flex items-center gap-4 py-4 pr-8 ${i > 0 ? "border-t border-gray-100" : ""}`}>
-              <div className="w-1.5 self-stretch rounded-r-full shrink-0" style={{ backgroundColor: accent }} />
-              <span className="flex-1 text-sm text-gray-600">{label}</span>
-              <span className="text-sm font-semibold text-[#131212]">— — €</span>
-            </div>
-          ))}
+          {(() => {
+            const estimates = hasEstimates ? getEstimates() : null;
+            return [
+              { label: "Couverture budget",   opacity: 0.4 },
+              { label: "Couverture moyenne",  opacity: 0.7 },
+              { label: "Couverture complète", opacity: 1   },
+            ].map(({ label, opacity }, i) => (
+              <div key={i} className="grid items-center gap-x-3 py-2.5 px-3" style={{ gridTemplateColumns: "12px 1fr auto" }}>
+                <div className="w-3 h-8" style={{ backgroundColor: `rgba(19, 110, 183, ${opacity})` }} />
+                <span className="text-base text-gray-600">{label}</span>
+                <span className={`text-[20px] font-semibold transition-all duration-300 ${estimates ? "text-[var(--color-text)]" : "text-gray-300"}`}>
+                  {estimates ? `${estimates[i]} €` : "— —"}
+                </span>
+              </div>
+            ));
+          })()}
         </div>
       </div>
 
@@ -181,14 +198,14 @@ export default function VehicleIdentityForm() {
       <div className="flex flex-col gap-3">
         <Button
           type="submit"
-          className="bg-white text-[#131212] hover:bg-white/90 text-base font-semibold py-[25px] px-[15px] self-start"
+          className="bg-white text-[var(--color-text)] hover:bg-white/90 text-base font-semibold py-[25px] px-[15px] self-start"
         >
           Calculer mon tarif
           <ChevronRight size={18} />
         </Button>
-        <div className="flex items-center gap-2">
-          <Lock size={13} className="text-white/60 shrink-0" />
-          <p className="text-xs font-medium text-white/60">La sécurité de vos données est notre priorité.</p>
+        <div className="flex items-center gap-2 my-5">
+          <img src="/icons/lock.svg" alt="" aria-hidden="true" className="w-4 h-4 shrink-0 brightness-0 invert" />
+          <p className="text-xs font-medium text-white">La sécurité de vos données est notre priorité.</p>
         </div>
       </div>
 

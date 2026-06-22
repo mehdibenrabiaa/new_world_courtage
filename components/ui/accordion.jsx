@@ -18,7 +18,7 @@ function AccordionTrigger({ className, children, ...props }) {
       )}
       {...props}
     >
-      <span className="text-base font-semibold text-[#131212] leading-snug">{children}</span>
+      <span className="text-base font-semibold text-[var(--color-text)] leading-snug">{children}</span>
       <span className="shrink-0 text-[var(--color-brand)]">
         <Plus size={18} className="group-open:hidden" />
         <Minus size={18} className="hidden group-open:block" />

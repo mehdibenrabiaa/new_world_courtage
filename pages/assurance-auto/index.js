@@ -42,7 +42,7 @@ function HeroSection() {
           <div className="relative z-10 h-full flex flex-col justify-end items-start px-4 lg:px-8 pb-6 gap-4 w-[70%]">
 
             {/* Headline — bottom left, black text */}
-            <h1 className={`text-[7vw] sm:text-[38px] lg:text-[48px] text-[#131212] leading-[1.15] ${libreCaslon.className}`}>
+            <h1 className={`text-[7vw] sm:text-[38px] lg:text-[48px] text-[var(--color-text)] leading-[1.15] ${libreCaslon.className}`}>
               Le bon contrat d&apos;assurance auto commence par un{" "}
               <em className={`italic ${libreCaslon.className}`}>simple devis.</em>
             </h1>
@@ -80,7 +80,7 @@ function HeroSection() {
                 type="text"
                 placeholder="Code postal"
                 maxLength={5}
-                className="h-11 flex-1 bg-white rounded-lg px-4 text-sm text-[#131212] placeholder:text-gray-400 border border-input focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)] w-full min-w-0"
+                className="h-11 flex-1 bg-white rounded-lg px-4 text-sm text-[var(--color-text)] placeholder:text-gray-400 border border-input focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)] w-full min-w-0"
               />
 
               {/* CTA */}

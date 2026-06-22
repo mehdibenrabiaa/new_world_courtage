@@ -23,7 +23,7 @@ function MegaMenuContent({ item }) {
         <div className="grid grid-cols-3 gap-6 max-w-3xl">
           {item.sections.map((section) => (
             <div key={section.heading}>
-              <p className="text-[11px] font-bold uppercase tracking-widest text-[#131212] mb-2.5">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text)] mb-2.5">
                 {section.heading}
               </p>
               <ul className="space-y-0.5">
@@ -57,7 +57,7 @@ function MobilePanel({ item, onBack }) {
     <div>
       <button
         onClick={onBack}
-        className="flex items-center gap-2 w-full px-5 py-4 text-base font-bold text-[#131212] border-b border-gray-200 hover:bg-gray-50"
+        className="flex items-center gap-2 w-full px-5 py-4 text-base font-bold text-[var(--color-text)] border-b border-gray-200 hover:bg-gray-50"
       >
         {item.label}
       </button>
@@ -65,14 +65,14 @@ function MobilePanel({ item, onBack }) {
       <div className="pb-4">
         {item.sections.map((section) => (
           <div key={section.heading} className="px-5 pt-4">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-[#131212] mb-2">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text)] mb-2">
               {section.heading}
             </p>
             {section.links.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="block py-2.5 text-sm text-[#131212] border-b border-gray-100 last:border-0 hover:text-[var(--color-brand)]"
+                className="block py-2.5 text-sm text-[var(--color-text)] border-b border-gray-100 last:border-0 hover:text-[var(--color-brand)]"
               >
                 {link.label}
               </Link>
@@ -81,7 +81,7 @@ function MobilePanel({ item, onBack }) {
         ))}
 
         <div className="mx-5 mt-5 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <p className="text-[13.5px] font-semibold text-[#131212] mb-3">{item.cta.tagline}</p>
+          <p className="text-[13.5px] font-semibold text-[var(--color-text)] mb-3">{item.cta.tagline}</p>
           <Link
             href={item.cta.href}
             className="block text-center py-3 bg-[var(--color-brand)] text-white text-sm font-bold rounded-full hover:bg-[var(--color-brand-hover)] transition-colors"
@@ -130,7 +130,7 @@ function MobileDrawer({ open, onClose }) {
                 <button
                   key={item.id}
                   onClick={() => setActivePanel(item)}
-                  className="w-full text-left px-5 py-3.5 text-base font-medium text-[#131212] hover:bg-gray-50"
+                  className="w-full text-left px-5 py-3.5 text-base font-medium text-[var(--color-text)] hover:bg-gray-50"
                 >
                   {item.label}
                 </button>
@@ -138,10 +138,10 @@ function MobileDrawer({ open, onClose }) {
 
               <div className="h-px bg-gray-200 mx-5 my-2" />
 
-              <Link href="/a-propos/" onClick={onClose} className="block px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-[#131212]">
+              <Link href="/a-propos/" onClick={onClose} className="block px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-[var(--color-text)]">
                 À propos
               </Link>
-              <a href="tel:+33800000000" className="flex items-center gap-3 px-5 py-3 text-base font-medium text-[#131212] hover:bg-gray-50">
+              <a href="tel:+33800000000" className="flex items-center gap-3 px-5 py-3 text-base font-medium text-[var(--color-text)] hover:bg-gray-50">
                 <Phone size={16} className="text-[var(--color-brand)]" />
                 0 800 000 000
               </a>
@@ -192,7 +192,7 @@ export default function Navbar() {
 
           {/* Utility — desktop */}
           <div className="hidden lg:flex items-center gap-3 ml-auto shrink-0">
-            <Button variant="link" asChild className="px-5 py-2 text-base font-medium hover:no-underline hover:text-[#131212]">
+            <Button variant="link" asChild className="px-5 py-2 text-base font-medium hover:no-underline hover:text-[var(--color-text)]">
               <Link href="/a-propos/">À propos</Link>
             </Button>
             <CtaButton href="/life-insurance/start" />

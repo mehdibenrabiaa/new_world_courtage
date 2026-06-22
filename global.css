@@ -9,6 +9,8 @@
   --color-blue-sky:  #8fb8d4;
   --color-blue-navy: #253b52;
   --radius: 0.5rem;
+  --color-error: #ff4d4f;
+  --color-text: #262626;
 }
 
 @keyframes nav-fade-in {
@@ -21,6 +23,7 @@
     transform: translateY(0);
   }
 }
+
 @keyframes drawer-slide-in {
   from {
     transform: translateX(-100%);
@@ -47,6 +50,7 @@
 }
 
 body {
+  color: var(--color-text);
   margin: 0 auto;
   font-size: 16px;
   line-height: 1.65;

@@ -70,7 +70,7 @@ export default function SocialMedia() {
           <div className="order-2 lg:w-1/2 bg-[var(--color-light)] px-8 py-10 lg:px-14 lg:py-14 flex flex-col justify-between gap-10">
 
             <div className="flex flex-col gap-5">
-              <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[#131212] ${libreCaslon.className}`}>
+              <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
                 <span className="block">Suivez-nous</span>
                 <em className={`block italic ${libreCaslon.className}`}>sur les réseaux.</em>
               </h2>
@@ -88,10 +88,10 @@ export default function SocialMedia() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 group w-fit"
                 >
-                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 group-hover:border-gray-400 group-hover:bg-[var(--color-brand)] text-[#131212] group-hover:text-white transition-colors duration-150">
+                  <span className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 group-hover:border-gray-400 group-hover:bg-[var(--color-brand)] text-[var(--color-text)] group-hover:text-white transition-colors duration-150">
                     <Icon />
                   </span>
-                  <span className="text-base font-medium text-[#131212] group-hover:text-[var(--color-brand)] transition-colors duration-150">
+                  <span className="text-base font-medium text-[var(--color-text)] group-hover:text-[var(--color-brand)] transition-colors duration-150">
                     {label}
                   </span>
                 </a>

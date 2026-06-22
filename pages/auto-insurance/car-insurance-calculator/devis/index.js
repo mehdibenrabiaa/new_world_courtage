@@ -1,9 +1,8 @@
 import { useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
-import Link from "next/link";
 import { useRouter } from "next/router";
-import { Phone } from "lucide-react";
+import { Phone, ChevronRight } from "lucide-react";
 import CarInsuranceForm from "@/components/CarInsuranceForm";
 
 export default function DevisPage() {
@@ -33,15 +32,17 @@ export default function DevisPage() {
       {/* Minimal header — no navbar */}
       <header className="sticky top-0 z-40 w-full bg-white">
         <div className="flex items-center justify-between px-4 lg:px-12 h-16">
-          <Link href="/">
-            <Image src="/nwc_logo.svg" alt="New World Courtage" width={160} height={44} className="h-10 w-auto" />
-          </Link>
-          <a href="tel:+33800000000" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-            <Phone size={22} className="shrink-0 text-[#131212]" />
+          <Image src="/nwc_logo.svg" alt="New World Courtage" width={160} height={44} className="h-10 w-auto" />
+          <a
+            href="tel:+33800000000"
+            className="flex items-center gap-2.5 bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] text-white rounded-lg px-4 py-2.5 transition-colors"
+          >
+            <Phone size={18} className="shrink-0" />
             <div className="flex flex-col leading-tight">
-              <span className="text-xs text-[#131212]">Parlez à un expert agréé</span>
-              <span className="text-sm font-semibold text-[#131212]">+33 800 000 000</span>
+              <span className="text-[11px] opacity-80">Parlez à un expert agréé</span>
+              <span className="text-sm font-semibold">+33 800 000 000</span>
             </div>
+            <ChevronRight size={16} className="shrink-0 opacity-70" />
           </a>
         </div>
         {/* Progress bar */}
@@ -54,13 +55,13 @@ export default function DevisPage() {
       </header>
 
       <main className="min-h-screen bg-white">
-        <div className="max-w-3xl mx-auto px-4 lg:px-8 py-10 lg:py-16">
+        <div className="max-w-4xl mx-auto px-4 lg:px-6 py-10 lg:py-16">
 
           {/* Vehicle summary chip */}
           {vehicleLabel && (
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[var(--color-light)] border border-gray-200 px-4 py-2">
               <span className="text-sm text-gray-500">Véhicule :</span>
-              <span className="text-sm font-semibold text-[#131212] capitalize">{vehicleLabel}</span>
+              <span className="text-sm font-semibold text-[var(--color-text)] capitalize">{vehicleLabel}</span>
             </div>
           )}
 

@@ -2,6 +2,7 @@ import Head from "next/head";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import PageHero from "../../../components/PageHero";
 import CarCalculatorSection from "../../../components/CarCalculatorSection";
+import CarInsuranceProcess from "../../../components/CarInsuranceProcess";
 import Footer from "../../../components/Footer";
 
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
@@ -43,6 +44,7 @@ export default function CarInsuranceCalculatorPage() {
         <PageBreadcrumb />
         <PageHero title={<>Calculez <em className="italic">rapidement</em> vos besoins en<br className="hidden lg:block" />assurance automobile.</>} image="/auto-insurance-calculator.jpg" imageAlt="Calculateur assurance auto" titlePosition="bottom" titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[48px]" />
         <CarCalculatorSection />
+        <CarInsuranceProcess />
       </main>
 
       <Footer />

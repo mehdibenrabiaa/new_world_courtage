@@ -77,7 +77,7 @@ function Calculator() {
       <div className="max-w-2xl mx-auto px-4 sm:px-0 flex flex-col gap-8">
 
         <div className="flex flex-col gap-2">
-          <h2 className={`text-[30px] leading-tight text-[#131212] ${libreCaslon.className}`}>
+          <h2 className={`text-[30px] leading-tight text-[var(--color-text)] ${libreCaslon.className}`}>
             Estimez votre prime mensuelle
           </h2>
           <p className="text-base text-gray-600 leading-[26px] sm:leading-6">
@@ -88,7 +88,7 @@ function Calculator() {
         <div className="flex flex-col gap-4">
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-[#131212]">Âge</label>
+            <label className="text-sm font-medium text-[var(--color-text)]">Âge</label>
             <input
               type="number"
               min={18}
@@ -96,12 +96,12 @@ function Calculator() {
               placeholder="Ex : 35"
               value={age}
               onChange={(e) => setAge(e.target.value)}
-              className="h-11 w-full rounded-lg border border-input px-4 text-sm text-[#131212] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)]"
+              className="h-11 w-full rounded-lg border border-input px-4 text-sm text-[var(--color-text)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)]"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-[#131212]">Genre</label>
+            <label className="text-sm font-medium text-[var(--color-text)]">Genre</label>
             <Select onValueChange={setGender}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Sélectionner" />
@@ -114,7 +114,7 @@ function Calculator() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-[#131212]">Capital souhaité</label>
+            <label className="text-sm font-medium text-[var(--color-text)]">Capital souhaité</label>
             <Select onValueChange={setCoverage}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Sélectionner" />
@@ -131,7 +131,7 @@ function Calculator() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-[#131212]">Durée du contrat</label>
+            <label className="text-sm font-medium text-[var(--color-text)]">Durée du contrat</label>
             <Select onValueChange={setDuration}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Sélectionner" />
@@ -157,7 +157,7 @@ function Calculator() {
         {result !== null && (
           <div className="rounded-xl bg-[var(--color-light)] p-8 flex flex-col gap-3">
             <p className="text-sm font-medium text-gray-500 uppercase tracking-wide">Estimation indicative</p>
-            <p className={`text-[42px] leading-none text-[#131212] ${libreCaslon.className}`}>
+            <p className={`text-[42px] leading-none text-[var(--color-text)] ${libreCaslon.className}`}>
               {result} €<span className="text-[20px] text-gray-500"> / mois</span>
             </p>
             <p className="text-sm text-gray-500 leading-relaxed">
