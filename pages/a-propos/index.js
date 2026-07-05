@@ -157,7 +157,7 @@ export default function AProposPage() {
             </div>
 
             {/* Ce qui nous distingue */}
-            <div className="flex flex-col gap-12">
+            <div className="flex flex-col gap-7">
               <Separator />
               <h2 className={`text-[33px] leading-tight text-[var(--color-text)] ${libreCaslon.className}`}>
                 Ce qui nous distingue
