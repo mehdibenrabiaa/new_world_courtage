@@ -147,7 +147,7 @@ export default function AProposPage() {
         <PageHero title="À propos de nous" image="/about-hero.jpg" mobileImage="/about-hero-mobile.jpg" imageAlt="L'équipe New World Courtage" />
         <QuickNav />
         <div className={`${cx} py-8 pb-16`}>
-          <div className="max-w-3xl lg:max-w-4xl 2xl:max-w-5xl mx-auto px-3 sm:px-0 flex flex-col gap-12 prose prose-gray max-w-none prose-headings:font-normal prose-a:text-[var(--color-brand)] prose-a:no-underline hover:prose-a:text-[var(--color-brand-hover)]">
+          <div className="max-w-3xl lg:max-w-4xl 2xl:max-w-5xl mx-auto px-3 sm:px-0 flex flex-col gap-12 prose prose-gray max-w-none prose-headings:font-normal prose-a:text-[var(--color-brand)] prose-a:no-underline hover:prose-a:text-[var(--color-brand-hover)] prose-p:mt-0 prose-p:mb-4">
 
             {/* Intro paragraphs */}
             <div>
