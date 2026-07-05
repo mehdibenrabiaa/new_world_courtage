@@ -67,7 +67,7 @@ export default function Hero() {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="relative w-full min-h-[920px] lg:h-[75vw] lg:max-h-[90vh] lg:min-h-[600px] overflow-hidden rounded-none lg:rounded-xl">
+        <div className="relative w-full min-h-[650px] lg:h-[75vw] lg:max-h-[90vh] lg:min-h-[600px] overflow-hidden rounded-none lg:rounded-xl">
           <picture className="absolute inset-0 w-full h-full">
             <source media="(max-width: 1023px)" srcSet="/hero-mobile.jpg" />
             <img
@@ -84,7 +84,7 @@ export default function Hero() {
 
           <div className="relative z-10 h-full flex flex-col">
             {/* Headline — top left */}
-            <div className="bg-white pl-4 sm:pl-6 pr-8 sm:pr-12 py-4 sm:py-6 w-full lg:w-[55%] rounded-br-none sm:rounded-br-[9999px]">
+            <div className="bg-white pl-4 sm:pl-6 pr-8 sm:pr-12 py-3 w-full sm:w-[90%] lg:w-[60%] rounded-br-none sm:rounded-br-[9999px]">
               <p
                 ref={titleRef}
                 className={`sm:text-[36px] lg:text-[55px] text-[var(--color-text)] leading-[1.1] ${libreCaslon.className}`}

@@ -8,7 +8,7 @@
   --color-jungle-green: #27ae7a;
   --color-blue-sky:  #8fb8d4;
   --color-blue-navy: #253b52;
-  --radius: 0.5rem;
+  --radius: 5px;
   --color-error: #ff4d4f;
   --color-text: #262626;
 }
@@ -48,7 +48,7 @@
 
 .cta-btn {
   background-color: var(--color-brand);
-  border-radius: 8px;
+  border-radius: var(--radius);
 }
 .cta-btn:hover {
   background-color: var(--color-brand-hover);
