@@ -123,6 +123,9 @@ export default function AProposPage() {
                 email: "Contact@newworldcourtage.com",
                 address: {
                   "@type": "PostalAddress",
+                  streetAddress: "455 Promenade des Anglais, Immeuble Nice Premier – Arenas Partners",
+                  addressLocality: "Nice",
+                  postalCode: "06000",
                   addressCountry: "FR",
                 },
                 areaServed: { "@type": "Country", name: "France" },

@@ -28,8 +28,9 @@ const CONTACT = {
   email: "Contact@newworldcourtage.com",
   phone: "07 45 89 18 65",
   tel: "+33745891865",
-  whatsapp: "+33774595329",
-  address: ["12 rue de la Paix", "75001 Paris"],
+  whatsappDisplay: "07 74 59 53 29",
+  whatsappHref: "https://wa.me/33774595329",
+  address: ["455 Promenade des Anglais", "Immeuble Nice Premier – Arenas Partners", "06000 Nice, France"],
 };
 
 const GUIDE_LINKS = [
@@ -120,19 +121,22 @@ export default function Footer() {
             <div className="flex flex-col gap-3 min-w-[140px]">
               <h3 className="text-[15px] font-bold text-white">Contact</h3>
               <ul className="flex flex-col gap-2.5">
-                <li>
+                <li className="flex flex-col">
+                  <span className="text-[12px] uppercase tracking-widest text-white/30 mb-0.5">Email</span>
                   <a href={`mailto:${CONTACT.email}`} className="text-[15px] text-white/55 hover:text-white transition-colors break-all">
                     {CONTACT.email}
                   </a>
                 </li>
-                <li>
+                <li className="flex flex-col">
+                  <span className="text-[12px] uppercase tracking-widest text-white/30 mb-0.5">Ligne directe</span>
                   <a href={`tel:${CONTACT.tel}`} className="text-[15px] text-white/55 hover:text-white transition-colors">
-                    Ligne directe : {CONTACT.phone}
+                    {CONTACT.phone}
                   </a>
                 </li>
-                <li>
-                  <a href={`https://wa.me/${CONTACT.whatsapp.replace('+', '')}`} target="_blank" rel="noopener noreferrer" className="text-[15px] text-white/55 hover:text-white transition-colors">
-                    WhatsApp : {CONTACT.whatsapp}
+                <li className="flex flex-col">
+                  <span className="text-[12px] uppercase tracking-widest text-white/30 mb-0.5">WhatsApp</span>
+                  <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className="text-[15px] text-white/55 hover:text-white transition-colors">
+                    {CONTACT.whatsappDisplay}
                   </a>
                 </li>
               </ul>
