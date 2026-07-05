@@ -104,7 +104,7 @@ export default function Footer() {
                 alt="New World Courtage"
                 width={160}
                 height={40}
-                className="h-14 w-auto"
+                className="h-11 w-auto"
               />
             </Link>
           </div>
