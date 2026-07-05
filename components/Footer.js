@@ -98,7 +98,7 @@ export default function Footer() {
 
           {/* Logo */}
           <div className="shrink-0">
-            <Link href="/">
+            <Link href="/" aria-label="New World Courtage — Accueil">
               <Image
                 src="/nwc_logo_white.svg"
                 alt="New World Courtage"
@@ -118,7 +118,7 @@ export default function Footer() {
                 <ul className="flex flex-col gap-2.5">
                   {items.map(({ label, href }) => (
                     <li key={href}>
-                      <Link href={href} className="text-[15px] text-white/55 hover:text-white transition-colors">
+                      <Link href={href} className="text-[15px] text-white/75 hover:text-white transition-colors">
                         {label}
                       </Link>
                     </li>
@@ -132,25 +132,25 @@ export default function Footer() {
               <h3 className="text-[15px] font-bold text-white">Contact</h3>
               <ul className="flex flex-col gap-3.5">
                 <li>
-                  <a href={`mailto:${CONTACT.email}`} className="flex items-center gap-2.5 text-[15px] text-white/55 hover:text-white transition-colors break-all">
-                    <Mail size={15} className="shrink-0 text-white/40" />
+                  <a href={`mailto:${CONTACT.email}`} className="flex items-center gap-2.5 text-[15px] text-white/75 hover:text-white transition-colors break-all">
+                    <Mail size={15} className="shrink-0 text-white/60" />
                     {CONTACT.email}
                   </a>
                 </li>
                 <li>
-                  <a href={`tel:${CONTACT.tel}`} className="flex items-center gap-2.5 text-[15px] text-white/55 hover:text-white transition-colors">
-                    <Phone size={15} className="shrink-0 text-white/40" />
+                  <a href={`tel:${CONTACT.tel}`} className="flex items-center gap-2.5 text-[15px] text-white/75 hover:text-white transition-colors">
+                    <Phone size={15} className="shrink-0 text-white/60" />
                     {CONTACT.phone}
                   </a>
                 </li>
                 <li>
-                  <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-[15px] text-white/55 hover:text-white transition-colors">
-                    <span className="shrink-0 text-white/40"><WhatsAppIcon size={15} /></span>
+                  <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" aria-label={`WhatsApp : ${CONTACT.whatsappDisplay} (ouvre dans un nouvel onglet)`} className="flex items-center gap-2.5 text-[15px] text-white/75 hover:text-white transition-colors">
+                    <span className="shrink-0 text-white/60"><WhatsAppIcon size={15} /></span>
                     {CONTACT.whatsappDisplay}
                   </a>
                 </li>
-                <li className="flex items-start gap-2.5 text-[15px] text-white/55">
-                  <MapPin size={15} className="shrink-0 text-white/40 mt-0.5" />
+                <li className="flex items-start gap-2.5 text-[15px] text-white/75">
+                  <MapPin size={15} className="shrink-0 text-white/60 mt-0.5" />
                   <div>
                     {CONTACT.address.map((line) => (
                       <p key={line}>{line}</p>
@@ -172,7 +172,7 @@ export default function Footer() {
                 <ul className="flex flex-col gap-2.5">
                   {items.map(({ label, href }) => (
                     <li key={href}>
-                      <Link href={href} className="text-[15px] text-white/55 hover:text-white transition-colors leading-snug block">
+                      <Link href={href} className="text-[15px] text-white/75 hover:text-white transition-colors leading-snug block">
                         {label}
                       </Link>
                     </li>
@@ -188,21 +188,21 @@ export default function Footer() {
 
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             {LEGAL_LINKS.map(({ label, href }) => (
-              <Link key={href} href={href} className="text-[14px] text-white/40 hover:text-white/70 transition-colors">
+              <Link key={href} href={href} className="text-[14px] text-white/60 hover:text-white/70 transition-colors">
                 {label}
               </Link>
             ))}
           </div>
 
-          <p className="text-[13px] text-white/30 leading-relaxed max-w-4xl">
+          <p className="text-[13px] text-white/60 leading-relaxed max-w-4xl">
             New World Courtage SAS — courtier en assurance indépendant immatriculé à l&apos;ORIAS. Les informations fournies sur ce site ont été développées à des fins générales d&apos;information et d&apos;éducation. Nous faisons de notre mieux pour nous assurer que ces informations sont exactes et à jour. Les devis ou fourchettes de primes d&apos;assurance affichés ne sont pas contractuels. La prime définitive est déterminée par la compagnie d&apos;assurance à l&apos;issue du processus de souscription.
           </p>
 
-          <p className="text-[13px] text-white/30 leading-relaxed max-w-4xl">
-            <strong className="text-white/40">Mention :</strong> Les images présentes sur ce site peuvent être générées par intelligence artificielle. Toute ressemblance avec des personnes réelles, vivantes ou décédées, serait purement fortuite.
+          <p className="text-[13px] text-white/60 leading-relaxed max-w-4xl">
+            <strong className="text-white/60">Mention :</strong> Les images présentes sur ce site peuvent être générées par intelligence artificielle. Toute ressemblance avec des personnes réelles, vivantes ou décédées, serait purement fortuite.
           </p>
 
-          <p className="text-[13px] text-white/30">
+          <p className="text-[13px] text-white/60">
             © {new Date().getFullYear()} New World Courtage. Tous droits réservés.
           </p>
 
