@@ -7,8 +7,8 @@ import Navbar from '../components/Navbar'
 const roboto = Roboto({ subsets: ['latin'], weight: ['400', '500', '700'], display: 'swap' })
 
 const variants = {
-  hidden:  { opacity: 0, y: 16 },
-  visible: { opacity: 1, y: 0 },
+  hidden:  { opacity: 0 },
+  visible: { opacity: 1 },
 }
 
 const NO_NAV_ROUTES = [
@@ -22,7 +22,7 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <div className={roboto.className} style={{ minHeight: '100vh' }}>
       {!hideNav && <Navbar />}
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode="wait" initial={false}>
         <motion.div
           key={router.pathname}
           variants={variants}

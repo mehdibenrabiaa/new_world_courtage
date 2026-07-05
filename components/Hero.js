@@ -75,7 +75,7 @@ export default function Hero() {
               alt="Protégez ce qui compte le plus pour vous."
               width={1600}
               height={900}
-              decoding="sync"
+              decoding="async"
               loading="eager"
               fetchpriority="high"
               className="w-full h-full object-cover object-top"

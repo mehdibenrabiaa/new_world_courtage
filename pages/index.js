@@ -23,6 +23,8 @@ export default function Home() {
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://www.newworldcourtage.fr/" />
+        <link rel="preload" as="image" href="/hero-mobile.jpg" media="(max-width: 1023px)" />
+        <link rel="preload" as="image" href="/hero.jpg" media="(min-width: 1024px)" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.newworldcourtage.fr/" />
         <meta
