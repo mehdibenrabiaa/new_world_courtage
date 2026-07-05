@@ -54,7 +54,7 @@ const NAV_ITEMS = [
 
 function QuickNav() {
   return (
-    <div className="px-4 lg:px-12 2xl:px-24 relative z-10 -mt-12 pb-6">
+    <div className="px-4 lg:px-12 2xl:px-24 relative z-10 -mt-20 pb-6">
       <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 w-full lg:w-fit lg:mx-auto">
         <p className="font-semibold text-[17px] sm:text-[19px] text-[var(--color-text)] whitespace-nowrap shrink-0">
           Que souhaitez-vous explorer ?
