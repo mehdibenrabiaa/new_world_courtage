@@ -64,7 +64,7 @@ export default function VehicleIdentityForm() {
     if (drivingRecord) q.set("driving", drivingRecord);
     if (creditScore)   q.set("credit",  creditScore);
     if (ownsHome)      q.set("home",    ownsHome);
-    router.push(`/auto-insurance/car-insurance-calculator/devis/?${q.toString()}`);
+    router.push(`/assurance-auto/calculateur/devis/?${q.toString()}`);
   }
 
   const triggerCls = (field) =>

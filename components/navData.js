@@ -18,7 +18,7 @@ export const NAV_ITEMS = [
         heading: 'Outils & Ressources',
         links: [
           { label: 'Comparer les devis auto', href: '/assurance-auto/devis/' },
-          { label: "Calculateur d'assurance auto", href: '/auto-insurance/car-insurance-calculator/' },
+          { label: "Calculateur d'assurance auto", href: '/assurance-auto/calculateur/' },
           { label: 'Tarifs auto par département', href: '/assurance-auto/tarifs/' },
           { label: "Coût de l'assurance auto", href: '/assurance-auto/cout/' },
         ],

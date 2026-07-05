@@ -9,7 +9,6 @@ export default function DevisPage() {
   const { query } = useRouter();
   const [progress, setProgress] = useState(Math.round((1 / 6) * 100));
 
-  // Rebuild initial answers from query params
   const initialAnswers = {
     1:  query.type    || "",
     2:  query.brand   || "",
@@ -19,7 +18,6 @@ export default function DevisPage() {
     11: query.usage   || "",
   };
 
-  // Summary pill shown at the top
   const vehicleLabel = [query.brand, query.model, query.version].filter(Boolean).join(" ");
 
   return (
@@ -29,7 +27,6 @@ export default function DevisPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      {/* Minimal header — no navbar */}
       <header className="sticky top-0 z-40 w-full bg-white">
         <div className="flex items-center justify-between px-4 lg:px-12 h-16">
           <Image src="/nwc_logo.svg" alt="New World Courtage" width={160} height={44} className="h-10 w-auto" />
@@ -45,7 +42,6 @@ export default function DevisPage() {
             <ChevronRight size={16} className="shrink-0 opacity-70" />
           </a>
         </div>
-        {/* Progress bar */}
         <div className="w-full h-[5px] bg-gray-100">
           <div
             className="h-full bg-[var(--color-brand)] transition-all duration-500"
@@ -56,17 +52,13 @@ export default function DevisPage() {
 
       <main className="min-h-screen bg-white">
         <div className="max-w-4xl mx-auto px-4 lg:px-6 py-10 lg:py-16">
-
-          {/* Vehicle summary chip */}
           {vehicleLabel && (
             <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-[var(--color-light)] border border-gray-200 px-4 py-2">
               <span className="text-sm text-gray-500">Véhicule :</span>
               <span className="text-sm font-semibold text-[var(--color-text)] capitalize">{vehicleLabel}</span>
             </div>
           )}
-
           <CarInsuranceForm initialAnswers={initialAnswers} theme="light" onProgress={setProgress} />
-
         </div>
       </main>
     </>

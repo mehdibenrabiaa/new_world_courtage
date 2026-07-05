@@ -54,7 +54,7 @@ const GUIDE_LINKS = [
     items: [
       { label: "Comment choisir son assurance auto ?", href: "/auto-insurance/how-to-buy-car-insurance/" },
       { label: "Quelle couverture auto choisir ?", href: "/auto-insurance/how-much-car-insurance-do-you-need/" },
-      { label: "Calculateur assurance auto", href: "/auto-insurance/car-insurance-calculator/" },
+      { label: "Calculateur assurance auto", href: "/assurance-auto/calculateur/" },
     ],
   },
   {

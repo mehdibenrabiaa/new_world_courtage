@@ -16,7 +16,7 @@ function PageBreadcrumb() {
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
-          <BreadcrumbLink href="/auto-insurance/">Assurance auto</BreadcrumbLink>
+          <BreadcrumbLink href="/assurance-auto/">Assurance auto</BreadcrumbLink>
         </BreadcrumbItem>
         <BreadcrumbSeparator />
         <BreadcrumbItem>
@@ -37,7 +37,7 @@ export default function CarInsuranceCalculatorPage() {
           content="Estimez le coût de votre assurance auto en quelques clics. Calculateur gratuit pour comparer les offres selon votre profil."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://www.newworldcourtage.fr/auto-insurance/car-insurance-calculator/" />
+        <link rel="canonical" href="https://new-world-courtage.vercel.app/assurance-auto/calculateur/" />
       </Head>
 
       <main>

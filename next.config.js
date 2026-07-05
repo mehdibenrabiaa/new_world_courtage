@@ -5,6 +5,20 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/auto-insurance/car-insurance-calculator/devis/:path*',
+        destination: '/assurance-auto/calculateur/devis/:path*',
+        permanent: true,
+      },
+      {
+        source: '/auto-insurance/car-insurance-calculator/:path*',
+        destination: '/assurance-auto/calculateur/:path*',
+        permanent: true,
+      },
+    ]
+  },
   async headers() {
     return [
       {
