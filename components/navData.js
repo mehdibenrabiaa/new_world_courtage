@@ -3,7 +3,7 @@ export const NAV_ITEMS = [
     id: 'auto',
     label: 'Auto',
     href: '/assurance-auto/',
-    cta: { tagline: "Comparez et économisez sur votre assurance auto", button: 'Obtenir des devis gratuits', href: '/assurance-auto/' },
+    cta: { tagline: "Comparez et économisez sur votre assurance auto", button: 'Devis gratuit', href: '/assurance-auto/' },
     sections: [
       {
         heading: 'Couvertures',
@@ -37,7 +37,7 @@ export const NAV_ITEMS = [
     id: 'habitation',
     label: 'Habitation',
     href: '/assurance-habitation/',
-    cta: { tagline: "Vous pourriez économiser sur votre assurance habitation", button: 'Obtenir des devis gratuits', href: '/assurance-habitation/' },
+    cta: { tagline: "Vous pourriez économiser sur votre assurance habitation", button: 'Devis gratuit', href: '/assurance-habitation/' },
     sections: [
       {
         heading: 'Couvertures',
@@ -70,7 +70,7 @@ export const NAV_ITEMS = [
     id: 'sante',
     label: 'Santé',
     href: '/assurance-sante/',
-    cta: { tagline: "Trouvez la mutuelle santé adaptée à vos besoins", button: 'Obtenir des devis gratuits', href: '/assurance-sante/' },
+    cta: { tagline: "Trouvez la mutuelle santé adaptée à vos besoins", button: 'Devis gratuit', href: '/assurance-sante/' },
     sections: [
       {
         heading: 'Couvertures',
@@ -103,7 +103,7 @@ export const NAV_ITEMS = [
     id: 'decennale',
     label: 'Décennale',
     href: '/assurance-decennale/',
-    cta: { tagline: "Protégez vos chantiers avec la garantie décennale", button: 'Obtenir des devis gratuits', href: '/assurance-decennale/' },
+    cta: { tagline: "Protégez vos chantiers avec la garantie décennale", button: 'Devis gratuit', href: '/assurance-decennale/' },
     sections: [
       {
         heading: 'Couvertures',

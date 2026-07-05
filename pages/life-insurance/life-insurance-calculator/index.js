@@ -164,7 +164,7 @@ function Calculator() {
               Cette estimation est fournie à titre indicatif. Le tarif définitif dépend de votre profil médical et des conditions de l&apos;assureur.
             </p>
             <Button className="cta-btn text-white text-base font-medium py-[25px] px-[15px] w-fit mt-2">
-              Obtenir un devis personnalisé
+              Devis gratuit
             </Button>
           </div>
         )}

@@ -31,7 +31,7 @@ export default function FinishedScrolling() {
               </p>
             </div>
 
-            <CtaButton label="Obtenir un devis gratuit" className="self-start" />
+            <CtaButton label="Devis gratuit" className="self-start" />
 
           </div>
 

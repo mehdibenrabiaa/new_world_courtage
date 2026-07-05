@@ -146,7 +146,7 @@ function MobileDrawer({ open, onClose }) {
                 07 45 89 18 65
               </a>
               <Link href="/life-insurance/start" onClick={onClose} className="block mx-5 mt-3 mb-2 py-3.5 text-center text-base font-bold text-white bg-[var(--color-brand)] rounded-full hover:bg-[var(--color-brand-hover)] transition-colors">
-                Obtenir un devis
+                Devis gratuit
               </Link>
             </div>
           )}

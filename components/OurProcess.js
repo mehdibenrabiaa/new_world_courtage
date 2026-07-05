@@ -74,7 +74,7 @@ export default function OurProcess() {
           </div>
 
           <div className="flex justify-center">
-            <CtaButton label="Obtenir un devis gratuit" />
+            <CtaButton label="Devis gratuit" />
           </div>
 
         </div>
