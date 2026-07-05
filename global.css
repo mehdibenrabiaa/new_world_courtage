@@ -25,21 +25,26 @@
 }
 
 @keyframes drawer-slide-in {
-  from {
-    transform: translateX(-100%);
-  }
-  to {
-    transform: translateX(0);
-  }
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(0); }
+}
+@keyframes drawer-slide-out {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
 }
 @keyframes overlay-fade-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
+@keyframes overlay-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+.sheet-slide-left[data-state=open]    { animation: drawer-slide-in  0.3s cubic-bezier(0.32,0.72,0,1) both; }
+.sheet-slide-left[data-state=closed]  { animation: drawer-slide-out 0.3s cubic-bezier(0.32,0.72,0,1) both; }
+.sheet-overlay[data-state=open]       { animation: overlay-fade-in  0.25s ease both; }
+.sheet-overlay[data-state=closed]     { animation: overlay-fade-out 0.25s ease both; }
 
 .cta-btn {
   background-color: var(--color-brand);
