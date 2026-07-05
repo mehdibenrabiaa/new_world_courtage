@@ -53,12 +53,12 @@ function useMobileFitText() {
 }
 
 const CATEGORIES = [
-  { id: "auto", label: "Auto", href: "/assurance-auto/", icon: "/icons/car.svg" },
-  { id: "habitation", label: "Habitation", href: "/assurance-habitation/", icon: "/icons/home.svg" },
-  { id: "sante", label: "Santé", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
-  { id: "decennale", label: "Décennale", href: "/assurance-decennale/", icon: "/icons/building.svg" },
-  { id: "moto", label: "Moto", href: "/assurance-moto/", icon: "/icons/motorcycle.svg" },
-  { id: "poids-lourd", label: "Poids lourd", href: "/assurance-poids-lourd/", icon: "/icons/truck.svg" },
+  { id: "auto", label: "Assurance Auto", href: "/assurance-auto/", icon: "/icons/car.svg" },
+  { id: "habitation", label: "Assurance Habitation", href: "/assurance-habitation/", icon: "/icons/home.svg" },
+  { id: "sante", label: "Assurance Santé", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
+  { id: "decennale", label: "Assurance Décennale", href: "/assurance-decennale/", icon: "/icons/building.svg" },
+  { id: "moto", label: "Assurance Moto", href: "/assurance-moto/", icon: "/icons/motorcycle.svg" },
+  { id: "poids-lourd", label: "Assurance Poids lourd", href: "/assurance-poids-lourd/", icon: "/icons/truck.svg" },
 ];
 
 export default function Hero() {
