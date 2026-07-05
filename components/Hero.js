@@ -84,7 +84,7 @@ export default function Hero() {
 
           <div className="relative z-10 h-full flex flex-col">
             {/* Headline — top left */}
-            <div className="bg-white pl-4 sm:pl-6 pr-8 sm:pr-12 py-4 sm:py-6 w-[75%] sm:w-[60%] lg:w-[55%] rounded-br-none sm:rounded-br-[9999px]">
+            <div className="bg-white pl-4 sm:pl-6 pr-8 sm:pr-12 py-4 sm:py-6 w-full lg:w-[55%] rounded-br-none sm:rounded-br-[9999px]">
               <p
                 ref={titleRef}
                 className={`sm:text-[36px] lg:text-[55px] text-[var(--color-text)] leading-[1.1] ${libreCaslon.className}`}
