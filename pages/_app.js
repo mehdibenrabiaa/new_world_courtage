@@ -12,7 +12,7 @@ const variants = {
 }
 
 const NO_NAV_ROUTES = [
-  '/auto-insurance/car-insurance-calculator/devis',
+  '/assurance-auto/calculateur/devis',
 ]
 
 export default function MyApp({ Component, pageProps }) {
