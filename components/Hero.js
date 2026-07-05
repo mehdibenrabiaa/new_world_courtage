@@ -53,12 +53,12 @@ function useMobileFitText() {
 }
 
 const CATEGORIES = [
-  { id: "auto", label: "Assurance Auto", href: "/assurance-auto/", icon: "/icons/car.svg" },
-  { id: "habitation", label: "Assurance Habitation", href: "/assurance-habitation/", icon: "/icons/home.svg" },
-  { id: "sante", label: "Assurance Santé", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
-  { id: "decennale", label: "Assurance Décennale", href: "/assurance-decennale/", icon: "/icons/building.svg" },
-  { id: "moto", label: "Assurance Moto", href: "/assurance-moto/", icon: "/icons/motorcycle.svg" },
-  { id: "poids-lourd", label: "Assurance Poids lourd", href: "/assurance-poids-lourd/", icon: "/icons/truck.svg" },
+  { id: "auto", label: "Auto", href: "/assurance-auto/", icon: "/icons/car.svg" },
+  { id: "habitation", label: "Habitation", href: "/assurance-habitation/", icon: "/icons/home.svg" },
+  { id: "sante", label: "Santé", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
+  { id: "decennale", label: "Décennale", href: "/assurance-decennale/", icon: "/icons/building.svg" },
+  { id: "moto", label: "Moto", href: "/assurance-moto/", icon: "/icons/motorcycle.svg" },
+  { id: "poids-lourd", label: "Poids lourd", href: "/assurance-poids-lourd/", icon: "/icons/truck.svg" },
 ];
 
 export default function Hero() {
@@ -98,7 +98,7 @@ export default function Hero() {
             <div className="mt-[300px] lg:mt-auto px-4 lg:px-8 pb-6">
               <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 w-full lg:w-fit lg:mx-auto">
                 <p className="font-semibold text-[17px] sm:text-[19px] text-[var(--color-text)] whitespace-nowrap shrink-0">
-                  Que recherchez-vous ?
+                  Quelle assurance recherchez-vous ?
                 </p>
                 <div className="flex flex-col lg:flex-row gap-2">
                   {CATEGORIES.map(({ id, label, href, icon }) => (
