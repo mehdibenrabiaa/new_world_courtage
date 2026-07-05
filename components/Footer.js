@@ -25,9 +25,10 @@ const TOP_LINKS = [
 ];
 
 const CONTACT = {
-  email: "contact@newworldcourtage.fr",
-  phone: "0 800 000 000",
-  tel: "+33800000000",
+  email: "Contact@newworldcourtage.com",
+  phone: "07 45 89 18 65",
+  tel: "+33745891865",
+  whatsapp: "+33774595329",
   address: ["12 rue de la Paix", "75001 Paris"],
 };
 
@@ -126,7 +127,12 @@ export default function Footer() {
                 </li>
                 <li>
                   <a href={`tel:${CONTACT.tel}`} className="text-[15px] text-white/55 hover:text-white transition-colors">
-                    {CONTACT.phone}
+                    Ligne directe : {CONTACT.phone}
+                  </a>
+                </li>
+                <li>
+                  <a href={`https://wa.me/${CONTACT.whatsapp.replace('+', '')}`} target="_blank" rel="noopener noreferrer" className="text-[15px] text-white/55 hover:text-white transition-colors">
+                    WhatsApp : {CONTACT.whatsapp}
                   </a>
                 </li>
               </ul>

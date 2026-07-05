@@ -119,8 +119,8 @@ export default function AProposPage() {
                 name: "New World Courtage",
                 url: "https://www.newworldcourtage.fr",
                 logo: "https://www.newworldcourtage.fr/nwc_logo.svg",
-                telephone: "+33800000000",
-                email: "contact@newworldcourtage.fr",
+                telephone: "+33745891865",
+                email: "Contact@newworldcourtage.com",
                 address: {
                   "@type": "PostalAddress",
                   addressCountry: "FR",

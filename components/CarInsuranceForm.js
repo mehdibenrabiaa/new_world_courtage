@@ -274,15 +274,15 @@ function BookingPanel({ t }) {
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
           <Button variant="outline" size="sm" asChild className="gap-2 h-10 rounded-lg border-gray-200 text-gray-700 hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] hover:bg-transparent">
-            <a href="tel:+33800000000">
+            <a href="tel:+33745891865">
               <Phone size={15} />
-              +33 800 000 000
+              07 45 89 18 65
             </a>
           </Button>
           <Button variant="outline" size="sm" asChild className="gap-2 h-10 rounded-lg border-gray-200 text-gray-700 hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] hover:bg-transparent">
-            <a href="mailto:contact@newworldcourtage.fr">
+            <a href="mailto:Contact@newworldcourtage.com">
               <Mail size={15} />
-              contact@newworldcourtage.fr
+              Contact@newworldcourtage.com
             </a>
           </Button>
         </div>

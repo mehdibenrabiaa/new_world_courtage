@@ -141,9 +141,9 @@ function MobileDrawer({ open, onClose }) {
               <Link href="/a-propos/" onClick={onClose} className="block px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-[var(--color-text)]">
                 À propos
               </Link>
-              <a href="tel:+33800000000" className="flex items-center gap-3 px-5 py-3 text-base font-medium text-[var(--color-text)] hover:bg-gray-50">
+              <a href="tel:+33745891865" className="flex items-center gap-3 px-5 py-3 text-base font-medium text-[var(--color-text)] hover:bg-gray-50">
                 <Phone size={16} className="text-[var(--color-brand)]" />
-                0 800 000 000
+                07 45 89 18 65
               </a>
               <Link href="/life-insurance/start" onClick={onClose} className="block mx-5 mt-3 mb-2 py-3.5 text-center text-base font-bold text-white bg-[var(--color-brand)] rounded-full hover:bg-[var(--color-brand-hover)] transition-colors">
                 Obtenir un devis

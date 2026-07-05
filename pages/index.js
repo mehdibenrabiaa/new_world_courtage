@@ -59,8 +59,8 @@ export default function Home() {
               logo: "https://www.newworldcourtage.fr/hero.jpg",
               description:
                 "New World Courtage est un courtier en assurance indépendant. Comparez gratuitement les meilleures offres d'assurance auto, habitation, santé et décennale.",
-              telephone: "+33800000000",
-              email: "contact@newworldcourtage.fr",
+              telephone: "+33745891865",
+              email: "Contact@newworldcourtage.com",
               address: {
                 "@type": "PostalAddress",
                 addressCountry: "FR",
