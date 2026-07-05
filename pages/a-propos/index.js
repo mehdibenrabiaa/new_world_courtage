@@ -120,7 +120,7 @@ export default function AProposPage() {
                 url: "https://www.newworldcourtage.fr",
                 logo: "https://www.newworldcourtage.fr/nwc_logo.svg",
                 telephone: "+33745891865",
-                email: "Contact@newworldcourtage.com",
+                email: "contact@newworldcourtage.com",
                 address: {
                   "@type": "PostalAddress",
                   streetAddress: "455 Promenade des Anglais, Immeuble Nice Premier – Arenas Partners",

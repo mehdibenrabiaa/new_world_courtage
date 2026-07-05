@@ -280,9 +280,9 @@ function BookingPanel({ t }) {
             </a>
           </Button>
           <Button variant="outline" size="sm" asChild className="gap-2 h-10 rounded-lg border-gray-200 text-gray-700 hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] hover:bg-transparent">
-            <a href="mailto:Contact@newworldcourtage.com">
+            <a href="mailto:contact@newworldcourtage.com">
               <Mail size={15} />
-              Contact@newworldcourtage.com
+              contact@newworldcourtage.com
             </a>
           </Button>
         </div>

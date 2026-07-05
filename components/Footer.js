@@ -25,7 +25,7 @@ const TOP_LINKS = [
 ];
 
 const CONTACT = {
-  email: "Contact@newworldcourtage.com",
+  email: "contact@newworldcourtage.com",
   phone: "07 45 89 18 65",
   tel: "+33745891865",
   whatsappDisplay: "07 74 59 53 29",

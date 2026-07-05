@@ -60,7 +60,7 @@ export default function Home() {
               description:
                 "New World Courtage est un courtier en assurance indépendant. Comparez gratuitement les meilleures offres d'assurance auto, habitation, santé et décennale.",
               telephone: "+33745891865",
-              email: "Contact@newworldcourtage.com",
+              email: "contact@newworldcourtage.com",
               address: {
                 "@type": "PostalAddress",
                 streetAddress: "455 Promenade des Anglais, Immeuble Nice Premier – Arenas Partners",
