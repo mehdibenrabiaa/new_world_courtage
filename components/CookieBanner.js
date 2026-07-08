@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
+import { createPortal } from "react-dom";
 import * as Dialog from "@radix-ui/react-dialog";
 import Link from "next/link";
 import { X, BarChart2, Megaphone, Lock, Loader2 } from "lucide-react";
@@ -96,7 +97,7 @@ const CATEGORIES = [
 export function CookiePreferencesPanel({ analytics, marketing, setAnalytics, setMarketing, onSave, onAcceptAll, onRejectAll, onClose = () => {}, loading = null }) {
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-sm text-gray-500 leading-relaxed">
+      <p className="text-base text-gray-500 leading-relaxed">
         Choisissez les catégories de cookies que vous souhaitez autoriser. Votre choix sera conservé 13 mois.{" "}
         <Link href="/confidentialite/" onClick={onClose} className="text-[var(--color-brand)] hover:underline">Politique de confidentialité</Link>
       </p>
@@ -109,16 +110,16 @@ export function CookiePreferencesPanel({ analytics, marketing, setAnalytics, set
             <div key={id} className="flex gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50">
               <div className="flex-1 flex flex-col gap-1">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <Icon size={14} className="text-[var(--color-brand)] shrink-0" />
-                  <span className="text-sm font-semibold text-[#131212]">{label}</span>
+                  <Icon size={15} className="text-[var(--color-brand)] shrink-0" />
+                  <span className="text-base font-semibold text-[#131212]">{label}</span>
                   {locked && (
-                    <span className="text-[10px] font-medium text-gray-400 border border-gray-200 rounded-full px-2 py-0.5 leading-none">
+                    <span className="text-xs font-medium text-gray-400 border border-gray-200 rounded-full px-2 py-0.5 leading-none">
                       Toujours actif
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-gray-500 leading-relaxed mt-0.5">{description}</p>
-                <p className="text-[11px] text-gray-400 mt-1">Prestataires : {providers}</p>
+                <p className="text-sm text-gray-500 leading-relaxed mt-0.5">{description}</p>
+                <p className="text-xs text-gray-400 mt-1">Prestataires : {providers}</p>
               </div>
               <div className="shrink-0 pt-0.5">
                 <Toggle checked={checked} onChange={onChange} disabled={locked} />
@@ -129,14 +130,14 @@ export function CookiePreferencesPanel({ analytics, marketing, setAnalytics, set
       </div>
 
       <div className="flex flex-col gap-2 pt-1">
-        <Button onClick={onSave} disabled={!!loading} className="cta-btn text-white w-full font-semibold">
+        <Button onClick={onSave} disabled={!!loading} className="cta-btn text-white w-full text-base font-semibold py-[25px] h-auto">
           {loading === "save" ? <Loader2 size={16} className="animate-spin" /> : "Enregistrer mes préférences"}
         </Button>
         <div className="grid grid-cols-2 gap-2">
-          <Button onClick={onRejectAll} disabled={!!loading} variant="ghost" className="text-gray-500 hover:text-[#131212] text-sm border border-gray-200">
+          <Button onClick={onRejectAll} disabled={!!loading} variant="ghost" className="text-gray-500 hover:text-[#131212] text-base py-[25px] h-auto border border-gray-200">
             {loading === "reject" ? <Loader2 size={16} className="animate-spin" /> : "Tout refuser"}
           </Button>
-          <Button onClick={onAcceptAll} disabled={!!loading} variant="ghost" className="text-[var(--color-brand)] hover:text-[var(--color-brand-hover)] font-semibold text-sm border border-gray-200">
+          <Button onClick={onAcceptAll} disabled={!!loading} variant="ghost" className="text-[var(--color-brand)] hover:text-[var(--color-brand-hover)] font-semibold text-base py-[25px] h-auto border border-gray-200">
             {loading === "accept" ? <Loader2 size={16} className="animate-spin" /> : "Tout accepter"}
           </Button>
         </div>
@@ -154,6 +155,23 @@ export default function CookieBanner() {
   const [analytics, setAnalytics]   = useState(true);
   const [marketing, setMarketing]   = useState(false);
   const [loading, setLoading]       = useState(null);
+  const [dragOffset, setDragOffset] = useState(0);
+  const dragStartY = useRef(null);
+
+  function handleTouchStart(e) {
+    dragStartY.current = e.touches[0].clientY;
+  }
+  function handleTouchMove(e) {
+    const delta = e.touches[0].clientY - dragStartY.current;
+    if (delta > 0) setDragOffset(delta);
+  }
+  function handleTouchEnd() {
+    if (dragOffset > 80) {
+      setPrefsOpen(false);
+    }
+    setDragOffset(0);
+    dragStartY.current = null;
+  }
 
   useEffect(() => {
     const consent = getConsent();
@@ -213,22 +231,25 @@ export default function CookieBanner() {
 
   return (
     <>
-      {/* Floating cookie button */}
-      <div className={`fixed bottom-6 left-6 z-[60] transition-all duration-500 ease-out ${visible ? "translate-x-0 opacity-100" : "-translate-x-20 opacity-0"}`}>
-<button
-          onClick={() => setPrefsOpen(true)}
-          aria-label="Gérer les cookies"
-          className="relative w-14 h-14 rounded-full bg-[var(--color-brand)] text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center group"
-        >
-          <CookieIcon size={24} />
+      {/* Floating cookie button — rendered in its own portal so Radix Sheet's inert on #__next doesn't block it */}
+      {createPortal(
+        <div className={`fixed bottom-6 left-6 z-[200] transition-all duration-500 ease-out ${visible ? "translate-x-0 opacity-100" : "-translate-x-20 opacity-0"}`}>
+          <button
+            onClick={() => setPrefsOpen(true)}
+            aria-label="Gérer les cookies"
+            className="relative w-14 h-14 rounded-full bg-[var(--color-brand)] text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center group"
+          >
+            <CookieIcon size={24} />
 
-          {/* Tooltip */}
-          <span className="absolute bottom-full mb-2.5 left-0 whitespace-nowrap text-xs font-medium bg-[#131212] text-white px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md">
-            Gérer les cookies
-            <span className="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#131212]" />
-          </span>
-        </button>
-      </div>
+            {/* Tooltip */}
+            <span className="absolute bottom-full mb-2.5 left-0 whitespace-nowrap text-xs font-medium bg-[#131212] text-white px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-md">
+              Gérer les cookies
+              <span className="absolute top-full left-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-[#131212]" />
+            </span>
+          </button>
+        </div>,
+        document.body
+      )}
 
       {/* Preferences modal */}
       <Dialog.Root open={prefsOpen} onOpenChange={setPrefsOpen}>
@@ -237,10 +258,15 @@ export default function CookieBanner() {
 
           {/* Mobile: bottom sheet — Desktop: centered modal */}
           <Dialog.Content className="modal-content fixed z-[62] inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center md:p-4">
-            <div className="bg-white shadow-2xl w-full flex flex-col overflow-hidden rounded-t-2xl max-h-[88vh] md:rounded-[var(--radius)] md:max-w-md md:max-h-[90vh]">
-
+            <div
+              className="bg-white shadow-2xl w-full flex flex-col overflow-hidden rounded-t-2xl max-h-[88vh] md:rounded-[var(--radius)] md:max-w-md md:max-h-[90vh]"
+              style={{ transform: dragOffset > 0 ? `translateY(${dragOffset}px)` : undefined, transition: dragOffset === 0 ? "transform 0.3s ease" : "none" }}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+            >
               {/* Drag handle — mobile only */}
-              <div className="flex justify-center pt-3 pb-1 md:hidden shrink-0">
+              <div className="flex justify-center pt-3 pb-1 md:hidden shrink-0 cursor-grab active:cursor-grabbing">
                 <div className="w-10 h-1 rounded-full bg-gray-200" />
               </div>
 
