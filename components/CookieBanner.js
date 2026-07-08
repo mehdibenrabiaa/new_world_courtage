@@ -234,11 +234,18 @@ export default function CookieBanner() {
       <Dialog.Root open={prefsOpen} onOpenChange={setPrefsOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-[61] bg-black/40 sheet-overlay" />
-          <Dialog.Content className="fixed inset-0 z-[62] flex items-center justify-center p-4">
-            <div className="modal-content bg-white rounded-[var(--radius)] shadow-2xl w-full max-w-md max-h-[90vh] flex flex-col overflow-hidden">
+
+          {/* Mobile: bottom sheet — Desktop: centered modal */}
+          <Dialog.Content className="modal-content fixed z-[62] inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center md:p-4">
+            <div className="bg-white shadow-2xl w-full flex flex-col overflow-hidden rounded-t-2xl max-h-[88vh] md:rounded-[var(--radius)] md:max-w-md md:max-h-[90vh]">
+
+              {/* Drag handle — mobile only */}
+              <div className="flex justify-center pt-3 pb-1 md:hidden shrink-0">
+                <div className="w-10 h-1 rounded-full bg-gray-200" />
+              </div>
 
               {/* Header */}
-              <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 shrink-0">
+              <div className="flex items-center justify-between px-4 py-4 md:px-6 md:py-5 border-b border-gray-100 shrink-0">
                 <Dialog.Title className="text-base font-semibold text-[#131212]">
                   Gérer mes cookies
                 </Dialog.Title>
@@ -253,7 +260,7 @@ export default function CookieBanner() {
               </div>
 
               {/* Content */}
-              <div className="flex-1 overflow-y-auto px-6 py-6">
+              <div className="flex-1 overflow-y-auto px-4 py-5 md:px-6 md:py-6">
                 <CookiePreferencesPanel
                   analytics={analytics}
                   marketing={marketing}

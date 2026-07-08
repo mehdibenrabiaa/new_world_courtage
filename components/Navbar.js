@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import * as NavMenu from '@radix-ui/react-navigation-menu'
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { Menu, X, Phone } from 'lucide-react'
+import { Menu, X, Phone, Mail } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import CtaButton from '@/components/CtaButton'
 import { NAV_ITEMS } from './navData'
@@ -108,7 +108,7 @@ function MobileDrawer({ open, onClose }) {
 
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
-      <SheetContent side="left" aria-label="Navigation menu">
+      <SheetContent side="right" aria-label="Navigation menu">
         <SheetTitle className="sr-only">Menu de navigation</SheetTitle>
         <SheetHeader className="px-5 h-24 border-b border-gray-200">
           <Link href="/" onClick={onClose}>
@@ -141,13 +141,27 @@ function MobileDrawer({ open, onClose }) {
               <Link href="/a-propos/" onClick={onClose} className="block px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-[var(--color-text)]">
                 À propos
               </Link>
-              <a href="tel:+33745891865" className="flex items-center gap-3 px-5 py-3 text-base font-medium text-[var(--color-text)] hover:bg-gray-50">
-                <Phone size={16} className="text-[var(--color-brand)]" />
-                07 45 89 18 65
-              </a>
-              <Link href="/life-insurance/start" onClick={onClose} className="block mx-5 mt-3 mb-2 py-3.5 text-center text-base font-bold text-white bg-[var(--color-brand)] rounded-full hover:bg-[var(--color-brand-hover)] transition-colors">
-                Devis gratuit
-              </Link>
+
+              <div className="h-px bg-gray-200 mx-5 my-2" />
+
+              <div className="px-5 py-3 flex flex-col gap-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400">Contact</p>
+                <a href="mailto:contact@newworldcourtage.com" className="flex items-center gap-3 text-sm text-[var(--color-text)] hover:text-[var(--color-brand)]">
+                  <Mail size={15} className="text-[var(--color-brand)] shrink-0" />
+                  contact@newworldcourtage.com
+                </a>
+                <a href="tel:+33745891865" className="flex items-center gap-3 text-sm text-[var(--color-text)] hover:text-[var(--color-brand)]">
+                  <Phone size={15} className="text-[var(--color-brand)] shrink-0" />
+                  07 45 89 18 65
+                </a>
+                <a href="tel:+33774595329" className="flex items-center gap-3 text-sm text-[var(--color-text)] hover:text-[var(--color-brand)]">
+                  <Phone size={15} className="text-[var(--color-brand)] shrink-0" />
+                  07 74 59 53 29
+                </a>
+              </div>
+              <div className="mx-5 mt-3 mb-2" onClick={onClose}>
+                <CtaButton href="/life-insurance/start" className="w-full justify-center" />
+              </div>
             </div>
           )}
         </div>

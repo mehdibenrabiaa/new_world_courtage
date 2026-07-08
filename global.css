@@ -57,8 +57,17 @@
 
 @keyframes modal-scale-in  { from { opacity: 0; transform: scale(0.95) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 @keyframes modal-scale-out { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.95) translateY(8px); } }
-.modal-content[data-state=open]   { animation: modal-scale-in  0.2s cubic-bezier(0.16,1,0.3,1) both; }
-.modal-content[data-state=closed] { animation: modal-scale-out 0.15s ease-in both; }
+@keyframes sheet-slide-up   { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes sheet-slide-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
+
+@media (min-width: 768px) {
+  .modal-content[data-state=open]   { animation: modal-scale-in  0.2s cubic-bezier(0.16,1,0.3,1) both; }
+  .modal-content[data-state=closed] { animation: modal-scale-out 0.15s ease-in both; }
+}
+@media (max-width: 767px) {
+  .modal-content[data-state=open]   { animation: sheet-slide-up   0.3s cubic-bezier(0.32,0.72,0,1) both; }
+  .modal-content[data-state=closed] { animation: sheet-slide-down 0.25s ease-in both; }
+}
 
 .cta-btn {
   background-color: var(--color-brand);
