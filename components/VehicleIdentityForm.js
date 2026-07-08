@@ -62,13 +62,21 @@ function Field({ label, required, htmlFor, error, children }) {
 export default function VehicleIdentityForm() {
   const router = useRouter();
 
-  const [permis,     setPermis]     = useState(() => readStorage().permis     ?? "");
-  const [bonusMalus, setBonusMalus] = useState(() => readStorage().bonusMalus ?? "");
-  const [naissance,  setNaissance]  = useState(() => readStorage().naissance  ?? "");
-  const [immat,      setImmat]      = useState(() => readStorage().immat      ?? "");
+  const [permis,     setPermis]     = useState("");
+  const [bonusMalus, setBonusMalus] = useState("");
+  const [naissance,  setNaissance]  = useState("");
+  const [immat,      setImmat]      = useState("");
   const [errors,     setErrors]     = useState({});
 
-  // Persist to sessionStorage whenever any field changes
+  // Restore saved values after hydration, then keep in sync
+  useEffect(() => {
+    const saved = readStorage();
+    if (saved.permis)     setPermis(saved.permis);
+    if (saved.bonusMalus) setBonusMalus(saved.bonusMalus);
+    if (saved.naissance)  setNaissance(saved.naissance);
+    if (saved.immat)      setImmat(saved.immat);
+  }, []);
+
   useEffect(() => {
     writeStorage({ permis, bonusMalus, naissance, immat });
   }, [permis, bonusMalus, naissance, immat]);

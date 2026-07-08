@@ -1,13 +1,6 @@
-import { Libre_Caslon_Text } from "next/font/google";
+import { libreCaslon } from "@/lib/fonts";
 
-const libreCaslon = Libre_Caslon_Text({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
-
-export default function PageHero({ title, image = "/about-pic.jpg", mobileImage, imageAlt = "", titlePosition = "top", titleClassName = "" }) {
+export default function PageHero({ title, image = "/about-pic.jpg", mobileImage, imageAlt = "", titlePosition = "top", titleClassName = "", titleWidth = "lg:w-[80%]" }) {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
@@ -23,7 +16,7 @@ export default function PageHero({ title, image = "/about-pic.jpg", mobileImage,
           </picture>
 
           <div className={`relative z-10 h-full min-h-[340px] lg:min-h-[460px] flex flex-col ${titlePosition === "bottom" ? "justify-end" : ""}`}>
-            <div className={`bg-white pl-4 sm:pl-6 pr-4 sm:pr-12 py-4 sm:py-6 w-full sm:w-[90%] lg:w-[80%] ${titlePosition === "bottom" ? "rounded-tr-none sm:rounded-tr-[9999px]" : "rounded-br-none sm:rounded-br-[9999px]"}`}>
+            <div className={`bg-white pl-4 sm:pl-6 pr-4 sm:pr-12 py-4 sm:py-6 w-full sm:w-[90%] ${titleWidth} ${titlePosition === "bottom" ? "rounded-tr-none sm:rounded-tr-[9999px]" : "rounded-br-none sm:rounded-br-[9999px]"}`}>
               <h1 className={`text-[8vw] sm:text-[36px] lg:text-[48px] text-[var(--color-text)] leading-[1.1] ${libreCaslon.className} ${titleClassName}`}>
                 {title}
               </h1>

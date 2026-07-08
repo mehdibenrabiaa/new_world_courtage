@@ -125,7 +125,7 @@ export default function AProposPage() {
 
       <main>
         <PageBreadcrumb />
-        <PageHero title="À propos de nous" image="/about-hero.jpg" mobileImage="/about-hero-mobile.jpg" imageAlt="L'équipe New World Courtage" />
+        <PageHero title="À propos de nous" image="/about-hero.jpg" mobileImage="/about-hero-mobile.jpg" imageAlt="L'équipe New World Courtage" titleWidth="lg:w-[50%]" />
         <QuickNav />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 py-14 flex flex-col gap-12">
 

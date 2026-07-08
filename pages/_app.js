@@ -1,11 +1,11 @@
 import '../global.css'
-import { Questrial } from 'next/font/google'
+import { DM_Sans } from 'next/font/google'
 import { useRouter } from 'next/router'
 import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from '../components/Navbar'
 import CookieBanner from '../components/CookieBanner'
 
-const questrial = Questrial({ subsets: ['latin'], weight: ['400'], display: 'swap' })
+const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap' })
 
 const variants = {
   hidden:  { opacity: 0 },
@@ -21,7 +21,7 @@ export default function MyApp({ Component, pageProps }) {
   const hideNav = NO_NAV_ROUTES.some(r => router.pathname.startsWith(r))
 
   return (
-    <div className={questrial.className} style={{ minHeight: '100vh' }}>
+    <div className={dmSans.className} style={{ minHeight: '100vh' }}>
       {!hideNav && <Navbar />}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div

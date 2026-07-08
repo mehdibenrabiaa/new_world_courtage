@@ -42,7 +42,7 @@ function MegaMenuContent({ item }) {
         </div>
 
         <div className="mt-5 pt-4 border-t border-gray-200 flex items-center justify-between gap-4">
-          <p className="text-sm font-semibold text-gray-900">{item.cta.tagline}</p>
+          <p className="text-sm font-medium text-gray-900">{item.cta.tagline}</p>
           <CtaButton href={item.cta.href} label={item.cta.button} className="shrink-0" />
         </div>
       </div>
@@ -81,7 +81,7 @@ function MobilePanel({ item, onBack }) {
         ))}
 
         <div className="mx-5 mt-5 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <p className="text-[13.5px] font-semibold text-[var(--color-text)] mb-3">{item.cta.tagline}</p>
+          <p className="text-[13.5px] font-medium text-[var(--color-text)] mb-3">{item.cta.tagline}</p>
           <Link
             href={item.cta.href}
             className="block text-center py-3 bg-[var(--color-brand)] text-white text-sm font-bold rounded-full hover:bg-[var(--color-brand-hover)] transition-colors"

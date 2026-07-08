@@ -1,18 +1,11 @@
 import { useState } from "react";
-import { Libre_Caslon_Text } from "next/font/google";
+import { libreCaslon } from "@/lib/fonts";
 import {
   Accordion,
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
 } from "@/components/ui/accordion";
-
-const libreCaslon = Libre_Caslon_Text({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
 
 const ITEMS = [
   {

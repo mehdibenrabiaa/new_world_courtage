@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Link from "next/link";
-import { Libre_Caslon_Text } from "next/font/google";
+import { libreCaslon } from "@/lib/fonts";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -10,13 +10,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import Footer from "../../components/Footer";
-
-const libreCaslon = Libre_Caslon_Text({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
 
 function HeroSection() {
   return (

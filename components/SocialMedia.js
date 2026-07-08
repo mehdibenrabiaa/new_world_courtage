@@ -1,4 +1,4 @@
-import { Libre_Caslon_Text } from "next/font/google";
+import { libreCaslon } from "@/lib/fonts";
 
 function IconInstagram() {
   return (
@@ -36,12 +36,6 @@ function IconX() {
   );
 }
 
-const libreCaslon = Libre_Caslon_Text({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
 
 const LINKS = [
   { label: "Instagram",   href: "https://instagram.com/newworldcourtage",       Icon: IconInstagram },

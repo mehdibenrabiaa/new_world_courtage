@@ -1,12 +1,5 @@
-import { Libre_Caslon_Text } from "next/font/google";
+import { libreCaslon } from "@/lib/fonts";
 import VehicleIdentityForm from "./VehicleIdentityForm";
-
-const libreCaslon = Libre_Caslon_Text({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
 
 export default function CarCalculatorSection() {
   return (

@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+.caslon {
+  letter-spacing: -1px;
+}
+
 :root {
   --color-brand: #1961ae;
   --color-brand-hover: rgb(1, 76, 138);

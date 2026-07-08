@@ -1,14 +1,7 @@
 import { useEffect, useRef } from "react";
-import { Libre_Caslon_Text } from "next/font/google";
+import { libreCaslon } from "@/lib/fonts";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
-
-const libreCaslon = Libre_Caslon_Text({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
 
 function useMobileFitText() {
   const ref = useRef(null);

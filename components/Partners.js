@@ -1,13 +1,6 @@
-import { Libre_Caslon_Text } from "next/font/google";
+import { libreCaslon } from "@/lib/fonts";
 import CtaButton from "@/components/CtaButton";
 import { Separator } from "@/components/ui/separator";
-
-const libreCaslon = Libre_Caslon_Text({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
 
 const LOGOS = [
   { id: "axa",       name: "AXA",        src: "/insurances_logos/AXA_Versicherungen_Logo.svg" },

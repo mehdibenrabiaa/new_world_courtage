@@ -1,11 +1,4 @@
-import { Libre_Caslon_Text } from "next/font/google";
-
-const libreCaslon = Libre_Caslon_Text({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
+import { libreCaslon } from "@/lib/fonts";
 
 const STATS = [
   { number: "30M+", label: "personnes accompagnées" },
