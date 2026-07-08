@@ -18,27 +18,49 @@ function Section({ id, title, children }) {
 
 function CookieTable({ rows }) {
   return (
-    <div className="overflow-x-auto rounded-xl border border-gray-100 mt-1">
-      <table className="w-full text-sm text-left">
-        <thead className="bg-gray-50 text-[#131212] font-semibold">
-          <tr>
-            {["Cookie", "Fournisseur", "Catégorie", "Durée", "Finalité"].map(h => (
-              <th key={h} className="px-4 py-3 whitespace-nowrap">{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-gray-100">
-          {rows.map((r, i) => (
-            <tr key={i} className="text-gray-600">
-              <td className="px-4 py-3 font-mono text-xs text-[#131212]">{r.name}</td>
-              <td className="px-4 py-3 whitespace-nowrap">{r.provider}</td>
-              <td className="px-4 py-3 whitespace-nowrap">{r.category}</td>
-              <td className="px-4 py-3 whitespace-nowrap">{r.duration}</td>
-              <td className="px-4 py-3">{r.purpose}</td>
+    <div className="mt-1">
+      {/* Mobile: cards */}
+      <div className="flex flex-col gap-3 md:hidden">
+        {rows.map((r, i) => (
+          <div key={i} className="rounded-xl border border-gray-100 p-4 flex flex-col gap-2">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <span className="font-mono text-xs font-semibold text-[#131212]">{r.name}</span>
+              <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${r.category === "Analytique" ? "bg-blue-50 text-blue-600" : "bg-orange-50 text-orange-600"}`}>
+                {r.category}
+              </span>
+            </div>
+            <p className="text-[13px] text-gray-600 leading-relaxed">{r.purpose}</p>
+            <div className="flex items-center gap-2 text-xs text-gray-400">
+              <span>{r.provider}</span>
+              <span>·</span>
+              <span>{r.duration}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+      {/* Desktop: table */}
+      <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-100">
+        <table className="w-full text-sm text-left">
+          <thead className="bg-gray-50 text-[#131212] font-semibold">
+            <tr>
+              {["Cookie", "Fournisseur", "Catégorie", "Durée", "Finalité"].map(h => (
+                <th key={h} className="px-4 py-3 whitespace-nowrap">{h}</th>
+              ))}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {rows.map((r, i) => (
+              <tr key={i} className="text-gray-600">
+                <td className="px-4 py-3 font-mono text-xs text-[#131212]">{r.name}</td>
+                <td className="px-4 py-3 whitespace-nowrap">{r.provider}</td>
+                <td className="px-4 py-3 whitespace-nowrap">{r.category}</td>
+                <td className="px-4 py-3 whitespace-nowrap">{r.duration}</td>
+                <td className="px-4 py-3">{r.purpose}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
@@ -68,7 +90,7 @@ export default function PrivacyPolicy() {
         <div className="bg-[var(--color-brand)] py-14 px-4 sm:px-6 lg:px-12 2xl:px-24">
           <div className="max-w-4xl mx-auto flex flex-col gap-3">
             <p className="text-sm text-white/50">Dernière mise à jour : {LAST_UPDATED}</p>
-            <h1 className="text-3xl sm:text-4xl font-bold text-white leading-tight">
+            <h1 className="text-2xl sm:text-4xl font-bold text-white leading-tight">
               Politique de confidentialité
             </h1>
             <p className="text-base text-white/70 leading-relaxed max-w-2xl">
@@ -103,7 +125,23 @@ export default function PrivacyPolicy() {
           </Section>
 
           <Section id="finalites" title="3. Finalités et bases légales">
-            <div className="overflow-x-auto rounded-xl border border-gray-100">
+            {/* Mobile: stacked rows */}
+            <div className="flex flex-col gap-2 md:hidden">
+              {[
+                ["Établir et transmettre votre devis d'assurance", "Exécution d'un contrat (art. 6.1.b)"],
+                ["Améliorer nos services et analyser le trafic", "Consentement (art. 6.1.a)"],
+                ["Personnaliser les publicités en ligne", "Consentement (art. 6.1.a)"],
+                ["Répondre à vos demandes de contact", "Intérêt légitime (art. 6.1.f)"],
+                ["Respecter nos obligations légales et réglementaires", "Obligation légale (art. 6.1.c)"],
+              ].map(([f, b], i) => (
+                <div key={i} className="rounded-xl border border-gray-100 p-4 flex flex-col gap-1">
+                  <p className="text-[13px] text-gray-600">{f}</p>
+                  <p className="text-[12px] font-medium text-[#131212]">{b}</p>
+                </div>
+              ))}
+            </div>
+            {/* Desktop: table */}
+            <div className="hidden md:block overflow-x-auto rounded-xl border border-gray-100">
               <table className="w-full text-sm text-left">
                 <thead className="bg-gray-50 text-[#131212] font-semibold">
                   <tr>

@@ -139,7 +139,7 @@ export default function AProposPage() {
           {/* Ce qui nous distingue */}
           <section className="flex flex-col gap-4">
             <h2 className="text-xl font-bold text-[#131212]">Ce qui nous distingue</h2>
-            <div className="flex flex-col gap-5 text-[15px] text-gray-600 leading-relaxed">
+            <div className="flex flex-col gap-5 text-[15px] text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100">
               {[
                 { heading: "Comparer les offres, simplement", body: "Avec nos outils modernes, comparez les devis de plusieurs grandes compagnies d'assurance côte à côte en quelques minutes. Vous avez déjà une couverture ? Nous pouvons vous aider à magasiner votre police pour trouver un tarif plus avantageux." },
                 { heading: "Des conseils qui vous placent en priorité", body: "Avec des centaines de conseillers en assurance agréés disponibles et des milliers d'articles vérifiés sur notre site, nous avons des réponses à toutes vos questions, que vous souhaitiez parler à quelqu'un en direct ou effectuer vos recherches de manière autonome." },

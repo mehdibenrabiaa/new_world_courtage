@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import Link from "next/link";
-import { X, BarChart2, Megaphone, Lock } from "lucide-react";
+import { X, BarChart2, Megaphone, Lock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getConsent, saveConsent } from "@/lib/consent";
 
@@ -93,7 +93,7 @@ const CATEGORIES = [
 ];
 
 // ── Shared preferences panel (also used on /cookies/ page) ───────────────────
-export function CookiePreferencesPanel({ analytics, marketing, setAnalytics, setMarketing, onSave, onAcceptAll, onRejectAll, onClose = () => {} }) {
+export function CookiePreferencesPanel({ analytics, marketing, setAnalytics, setMarketing, onSave, onAcceptAll, onRejectAll, onClose = () => {}, loading = null }) {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-sm text-gray-500 leading-relaxed">
@@ -129,15 +129,15 @@ export function CookiePreferencesPanel({ analytics, marketing, setAnalytics, set
       </div>
 
       <div className="flex flex-col gap-2 pt-1">
-        <Button onClick={onSave} className="cta-btn text-white w-full font-semibold">
-          Enregistrer mes préférences
+        <Button onClick={onSave} disabled={!!loading} className="cta-btn text-white w-full font-semibold">
+          {loading === "save" ? <Loader2 size={16} className="animate-spin" /> : "Enregistrer mes préférences"}
         </Button>
         <div className="grid grid-cols-2 gap-2">
-          <Button onClick={onRejectAll} variant="ghost" className="text-gray-500 hover:text-[#131212] text-sm border border-gray-200">
-            Tout refuser
+          <Button onClick={onRejectAll} disabled={!!loading} variant="ghost" className="text-gray-500 hover:text-[#131212] text-sm border border-gray-200">
+            {loading === "reject" ? <Loader2 size={16} className="animate-spin" /> : "Tout refuser"}
           </Button>
-          <Button onClick={onAcceptAll} variant="ghost" className="text-[var(--color-brand)] hover:text-[var(--color-brand-hover)] font-semibold text-sm border border-gray-200">
-            Tout accepter
+          <Button onClick={onAcceptAll} disabled={!!loading} variant="ghost" className="text-[var(--color-brand)] hover:text-[var(--color-brand-hover)] font-semibold text-sm border border-gray-200">
+            {loading === "accept" ? <Loader2 size={16} className="animate-spin" /> : "Tout accepter"}
           </Button>
         </div>
       </div>
@@ -153,6 +153,7 @@ export default function CookieBanner() {
   const [prefsOpen, setPrefsOpen]   = useState(false);
   const [analytics, setAnalytics]   = useState(true);
   const [marketing, setMarketing]   = useState(false);
+  const [loading, setLoading]       = useState(null);
 
   useEffect(() => {
     const consent = getConsent();
@@ -175,25 +176,37 @@ export default function CookieBanner() {
   }, []);
 
   const acceptAll = useCallback(() => {
-    saveConsent({ analytics: true, marketing: true });
-    applyConsent(true, true);
-    setAnalytics(true); setMarketing(true);
-    setHasConsent(true);
-    setPrefsOpen(false);
+    setLoading("accept");
+    setTimeout(() => {
+      saveConsent({ analytics: true, marketing: true });
+      applyConsent(true, true);
+      setAnalytics(true); setMarketing(true);
+      setHasConsent(true);
+      setPrefsOpen(false);
+      setLoading(null);
+    }, 1000);
   }, []);
 
   const rejectAll = useCallback(() => {
-    saveConsent({ analytics: false, marketing: false });
-    setAnalytics(false); setMarketing(false);
-    setHasConsent(true);
-    setPrefsOpen(false);
+    setLoading("reject");
+    setTimeout(() => {
+      saveConsent({ analytics: false, marketing: false });
+      setAnalytics(false); setMarketing(false);
+      setHasConsent(true);
+      setPrefsOpen(false);
+      setLoading(null);
+    }, 1000);
   }, []);
 
   const savePrefs = useCallback(() => {
-    saveConsent({ analytics, marketing });
-    applyConsent(analytics, marketing);
-    setHasConsent(true);
-    setPrefsOpen(false);
+    setLoading("save");
+    setTimeout(() => {
+      saveConsent({ analytics, marketing });
+      applyConsent(analytics, marketing);
+      setHasConsent(true);
+      setPrefsOpen(false);
+      setLoading(null);
+    }, 1000);
   }, [analytics, marketing]);
 
   if (!mounted) return null;
@@ -250,6 +263,7 @@ export default function CookieBanner() {
                   onAcceptAll={acceptAll}
                   onRejectAll={rejectAll}
                   onClose={() => setPrefsOpen(false)}
+                  loading={loading}
                 />
               </div>
 
