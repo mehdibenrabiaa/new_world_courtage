@@ -97,7 +97,7 @@ export default function Hero() {
             {/* Bottom bar */}
             <div className="mt-[300px] lg:mt-auto px-4 lg:px-8 pb-6">
               <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 w-full lg:w-fit lg:mx-auto">
-                <p className="font-semibold text-[18px] sm:text-[20px] text-[var(--color-text)] whitespace-nowrap shrink-0">
+                <p className="font-semibold text-[15px] sm:text-[16px] text-[var(--color-text)] whitespace-nowrap shrink-0">
                   Quelle assurance recherchez-vous ?
                 </p>
                 <div className="flex flex-col lg:flex-row gap-2">

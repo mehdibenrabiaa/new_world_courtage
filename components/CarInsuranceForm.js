@@ -496,7 +496,7 @@ export default function CarInsuranceForm({ initialAnswers = {}, startSection = 0
                   <Select value={answer} onValueChange={val => setAnswer(step.id, val)}>
                     <SelectTrigger
                       id={`field-${step.id}`}
-                      className={`w-full ${errors[step.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,77,79,0.15)]" : ""}`}
+                      className={`w-full ${errors[step.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
                     >
                       <SelectValue placeholder="Sélectionnez une option" />
                     </SelectTrigger>
@@ -534,7 +534,7 @@ export default function CarInsuranceForm({ initialAnswers = {}, startSection = 0
                     placeholder={step.placeholder}
                     value={answer}
                     onChange={e => setAnswer(step.id, e.target.value)}
-                    className={errors[step.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,77,79,0.15)]" : ""}
+                    className={errors[step.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}
                   />
                   {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
                 </>

@@ -25,25 +25,7 @@ const STEPS = [
   },
   {
     id: 3,
-    icon: "/illustrations/quote_steps_3.webp",
-    title: "Déclarez votre historique",
-    description: "Sinistres déclarés, coefficient bonus-malus, suspension ou annulation de permis — chaque élément de votre passé de conducteur influe sur vos primes. Une déclaration transparente vous garantit des offres fiables et sans mauvaises surprises.",
-  },
-  {
-    id: 4,
-    icon: "/illustrations/quote_steps_4.webp",
-    title: "Choisissez votre couverture",
-    description: "Au tiers, intermédiaire ou tous risques — avec ou sans protection juridique, assistance 0 km ou véhicule de remplacement. Configurez librement le niveau de garanties qui correspond à votre usage et à votre budget.",
-  },
-  {
-    id: 5,
-    icon: "/illustrations/quote_steps_5.webp",
-    title: "Comparez plus de 100 offres",
-    description: "Nos agents agréés analysent votre dossier complet et le soumettent à plus de 100 compagnies partenaires. Vous recevez une sélection claire et personnalisée des meilleures propositions du marché, sans démarche supplémentaire de votre part.",
-  },
-  {
-    id: 6,
-    icon: "/illustrations/quote_steps_6.webp",
+    icon: "/illustrations/quote_steps_1.webp",
     title: "Souscrivez en toute sérénité",
     description: "Une fois l'offre choisie, finalisez votre souscription en ligne en quelques minutes ou en échangeant directement avec votre conseiller. Votre attestation d'assurance vous est transmise immédiatement, sans frais cachés ni engagement caché.",
   },
@@ -58,7 +40,7 @@ export default function CarInsuranceProcess() {
           {/* Header */}
           <div className="flex flex-col gap-5 mb-10 lg:mb-14 max-w-4xl mx-auto text-center">
             <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
-              Votre devis auto en <em className={`italic ${libreCaslon.className}`}>6 étapes.</em>
+              Votre devis auto en <em className={`italic ${libreCaslon.className}`}>3 étapes.</em>
             </h2>
             <p className="text-base text-gray-600 leading-[26px] sm:leading-6">
               Notre calculateur guide chaque conducteur à travers un parcours simple et rapide. En quelques minutes, obtenez une estimation personnalisée et entrez en contact avec un conseiller agréé.

@@ -82,7 +82,6 @@ const GUIDE_LINKS = [
 
 const LEGAL_LINKS = [
   { label: "Politique de confidentialité", href: "/confidentialite/" },
-  { label: "Gestion des cookies", href: "/cookies/" },
   { label: "Accessibilité", href: "/accessibilite/" },
   { label: "Conditions générales", href: "/cgu/" },
   { label: "Mentions légales", href: "/mentions-legales/" },

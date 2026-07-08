@@ -1,10 +1,11 @@
 import '../global.css'
-import { Roboto } from 'next/font/google'
+import { Questrial } from 'next/font/google'
 import { useRouter } from 'next/router'
 import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from '../components/Navbar'
+import CookieBanner from '../components/CookieBanner'
 
-const roboto = Roboto({ subsets: ['latin'], weight: ['400', '500', '700'], display: 'swap' })
+const questrial = Questrial({ subsets: ['latin'], weight: ['400'], display: 'swap' })
 
 const variants = {
   hidden:  { opacity: 0 },
@@ -20,7 +21,7 @@ export default function MyApp({ Component, pageProps }) {
   const hideNav = NO_NAV_ROUTES.some(r => router.pathname.startsWith(r))
 
   return (
-    <div className={roboto.className} style={{ minHeight: '100vh' }}>
+    <div className={questrial.className} style={{ minHeight: '100vh' }}>
       {!hideNav && <Navbar />}
       <AnimatePresence mode="wait" initial={false}>
         <motion.div
@@ -33,6 +34,7 @@ export default function MyApp({ Component, pageProps }) {
           <Component {...pageProps} />
         </motion.div>
       </AnimatePresence>
+      <CookieBanner />
     </div>
   )
 }

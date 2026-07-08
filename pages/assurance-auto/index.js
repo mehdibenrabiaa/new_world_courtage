@@ -1,4 +1,5 @@
 import Head from "next/head";
+import Link from "next/link";
 import { Libre_Caslon_Text } from "next/font/google";
 import { Button } from "@/components/ui/button";
 import {
@@ -84,9 +85,11 @@ function HeroSection() {
               />
 
               {/* CTA */}
-              <Button className="h-11 bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] text-white font-semibold px-6 rounded-lg shrink-0 w-full md:w-auto">
-                Get started
-              </Button>
+              <Link href="/assurance-auto/calculateur/" className="w-full md:w-auto shrink-0">
+                <Button className="h-11 bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] text-white font-semibold px-6 rounded-lg w-full">
+                  Obtenir un devis
+                </Button>
+              </Link>
 
             </div>
           </div>

@@ -28,7 +28,7 @@ export default function CarCalculatorSection() {
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-semibold text-white">0 frais. 0 commission.</p>
                 <p className="text-sm text-white/80 leading-snug">
-                  Votre devis assurance moto au même prix que chez l&apos;assureur, tout simplement.
+                  Votre devis assurance auto au même prix que chez l&apos;assureur, tout simplement.
                 </p>
               </div>
             </div>

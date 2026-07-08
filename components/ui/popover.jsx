@@ -9,7 +9,7 @@ function Popover({ children, open: controlledOpen, onOpenChange }) {
   const setOpen = onOpenChange ?? setInternal
   return (
     <PopoverContext.Provider value={{ open, setOpen }}>
-      <div className="relative inline-block">
+      <div className="relative inline-block w-full">
         {children}
       </div>
     </PopoverContext.Provider>
@@ -47,6 +47,18 @@ const PopoverContent = React.forwardRef(function PopoverContent(
 ) {
   const { open, setOpen } = React.useContext(PopoverContext)
   const innerRef = React.useRef(null)
+  const [openAbove, setOpenAbove] = React.useState(false)
+
+  // Detect whether to flip above (collision detection)
+  React.useLayoutEffect(() => {
+    if (!open || !innerRef.current) return
+    const trigger = innerRef.current.parentElement
+    if (!trigger) return
+    const triggerRect = trigger.getBoundingClientRect()
+    const contentH    = innerRef.current.offsetHeight
+    const spaceBelow  = window.innerHeight - triggerRect.bottom
+    setOpenAbove(spaceBelow < contentH + sideOffset + 8)
+  }, [open, sideOffset])
 
   React.useEffect(() => {
     if (!open) return
@@ -66,6 +78,10 @@ const PopoverContent = React.forwardRef(function PopoverContent(
     align === "start" ? { left: alignOffset }  :
     { left: "50%", transform: "translateX(-50%)" }
 
+  const positionStyle = openAbove
+    ? { bottom: `calc(100% + ${sideOffset}px)`, ...alignStyle }
+    : { top:    `calc(100% + ${sideOffset}px)`, ...alignStyle }
+
   return (
     <div
       ref={node => {
@@ -77,7 +93,7 @@ const PopoverContent = React.forwardRef(function PopoverContent(
         "absolute z-50 rounded-xl border border-gray-200 bg-white shadow-lg outline-none",
         className
       )}
-      style={{ top: `calc(100% + ${sideOffset}px)`, ...alignStyle }}
+      style={positionStyle}
       {...props}
     >
       {children}

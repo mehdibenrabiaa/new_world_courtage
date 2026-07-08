@@ -1,19 +1,10 @@
 import Head from "next/head";
 import Link from "next/link";
-import { Libre_Caslon_Text } from "next/font/google";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import PageHero from "../../components/PageHero";
 import SocialMedia from "../../components/SocialMedia";
 import Footer from "../../components/Footer";
-
-const libreCaslon = Libre_Caslon_Text({
-  subsets: ["latin"],
-  weight: ["400"],
-  style: ["normal", "italic"],
-  display: "swap",
-});
 
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
@@ -34,16 +25,6 @@ function PageBreadcrumb() {
 }
 
 
-function ContentBlock({ heading, children }) {
-  return (
-    <div>
-      <h3 className={`!text-[22px] !leading-snug !text-[var(--color-text)] !mt-0 ${libreCaslon.className}`}>
-        {heading}
-      </h3>
-      <p className="!mt-2">{children}</p>
-    </div>
-  );
-}
 
 const NAV_ITEMS = [
   { label: "Nos partenaires", href: "/a-propos/nos-partenaires/", icon: "/icons/handshake.svg" },
@@ -56,7 +37,7 @@ function QuickNav() {
   return (
     <div className="px-4 lg:px-12 2xl:px-24 relative z-10 -mt-20 pb-6">
       <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 w-full lg:w-fit lg:mx-auto">
-        <p className="font-semibold text-[17px] sm:text-[19px] text-[var(--color-text)] whitespace-nowrap shrink-0">
+        <p className="font-semibold text-[15px] sm:text-[16px] text-[var(--color-text)] whitespace-nowrap shrink-0">
           Que souhaitez-vous explorer ?
         </p>
         <div className="flex flex-col lg:flex-row gap-2">
@@ -146,84 +127,83 @@ export default function AProposPage() {
         <PageBreadcrumb />
         <PageHero title="À propos de nous" image="/about-hero.jpg" mobileImage="/about-hero-mobile.jpg" imageAlt="L'équipe New World Courtage" />
         <QuickNav />
-        <div className={`${cx} py-8 pb-16`}>
-          <div className="max-w-3xl lg:max-w-4xl 2xl:max-w-5xl mx-auto px-3 sm:px-0 flex flex-col gap-12 prose prose-gray max-w-none prose-headings:font-normal prose-a:text-[var(--color-brand)] prose-a:no-underline hover:prose-a:text-[var(--color-brand-hover)] prose-p:mt-0 prose-p:mb-4">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 py-14 flex flex-col gap-12">
 
-            {/* Intro paragraphs */}
-            <div>
-              <p>New World Courtage réinvente l&apos;expérience de l&apos;assurance en proposant une plateforme unique et intégrée. Désormais, les consommateurs peuvent comparer les offres des plus grands assureurs, bénéficier de conseils d&apos;experts impartiaux, souscrire à leurs polices et gérer l&apos;ensemble de leur portefeuille en toute simplicité.</p>
-              <p>Grâce à notre technologie propriétaire connectée aux leaders du marché (assurance vie, invalidité, habitation et auto), nous offrons un parcours numérique fluide et performant, tant pour les assurés que pour les compagnies d&apos;assurance.</p>
-              <p>Depuis 2014, nos guides, nos outils digitaux et nos spécialistes ont accompagné des millions de personnes dans leurs démarches, totalisant plus de 200 milliards de dollars de capitaux assurés. En 2023, Policygenius a été acquis par Zinnia, un acteur majeur des technologies et services numériques appliqués à l&apos;assurance.</p>
+          {/* Intro */}
+          <div className="flex flex-col gap-3 text-[15px] text-gray-600 leading-relaxed">
+            <p>New World Courtage réinvente l&apos;expérience de l&apos;assurance en proposant une plateforme unique et intégrée. Désormais, les consommateurs peuvent comparer les offres des plus grands assureurs, bénéficier de conseils d&apos;experts impartiaux, souscrire à leurs polices et gérer l&apos;ensemble de leur portefeuille en toute simplicité.</p>
+            <p>Grâce à notre technologie propriétaire connectée aux leaders du marché (assurance vie, invalidité, habitation et auto), nous offrons un parcours numérique fluide et performant, tant pour les assurés que pour les compagnies d&apos;assurance.</p>
+            <p>Depuis 2014, nos guides, nos outils digitaux et nos spécialistes ont accompagné des millions de personnes dans leurs démarches, totalisant plus de 200 milliards de dollars de capitaux assurés.</p>
+          </div>
+
+          {/* Ce qui nous distingue */}
+          <section className="flex flex-col gap-4">
+            <h2 className="text-xl font-bold text-[#131212]">Ce qui nous distingue</h2>
+            <div className="flex flex-col gap-5 text-[15px] text-gray-600 leading-relaxed">
+              {[
+                { heading: "Comparer les offres, simplement", body: "Avec nos outils modernes, comparez les devis de plusieurs grandes compagnies d'assurance côte à côte en quelques minutes. Vous avez déjà une couverture ? Nous pouvons vous aider à magasiner votre police pour trouver un tarif plus avantageux." },
+                { heading: "Des conseils qui vous placent en priorité", body: "Avec des centaines de conseillers en assurance agréés disponibles et des milliers d'articles vérifiés sur notre site, nous avons des réponses à toutes vos questions, que vous souhaitiez parler à quelqu'un en direct ou effectuer vos recherches de manière autonome." },
+                { heading: "Des standards éditoriaux rigoureux", body: "Nos articles sont rédigés et édités par une équipe éditoriale de premier plan, puis soigneusement vérifiés par des conseillers en assurance agréés et des planificateurs financiers certifiés." },
+              ].map(({ heading, body }) => (
+                <div key={heading} className="flex flex-col gap-1.5">
+                  <h3 className="text-[15px] font-semibold text-[#131212]">{heading}</h3>
+                  <p>{body}</p>
+                </div>
+              ))}
             </div>
+          </section>
 
-            {/* Ce qui nous distingue */}
-            <div className="flex flex-col gap-7">
-              <Separator />
-              <h2 className={`text-[33px] leading-tight text-[var(--color-text)] ${libreCaslon.className}`}>
-                Ce qui nous distingue
-              </h2>
-              <ContentBlock heading="Comparer les offres, simplement">
-                No need to fill out forms on a dozen different sites — with Policygenius&apos; modern tools, you can compare quotes from multiple leading insurance companies side by side in minutes. Already have coverage? We can help you re-shop your policy to look for a lower rate.
-              </ContentBlock>
-              <ContentBlock heading="Comparison shopping made easy">
-                No need to fill out forms on a dozen different sites — with Policygenius&apos; modern tools, you can compare quotes from multiple leading insurance companies side by side in minutes. Already have coverage? We can help you re-shop your policy to look for a lower rate.
-              </ContentBlock>
-              <ContentBlock heading="Des conseils qui vous placent en priorité">
-                Avec des centaines de conseillers en assurance agréés disponibles et des milliers d&apos;articles vérifiés sur notre site, nous avons des réponses à toutes vos questions, que vous souhaitiez parler à quelqu&apos;un en direct ou effectuer vos recherches de manière autonome.
-              </ContentBlock>
-              <ContentBlock heading="Des standards éditoriaux rigoureux">
-                Nos articles sont rédigés et édités par une équipe éditoriale de premier plan, puis soigneusement vérifiés par des conseillers en assurance agréés et des planificateurs financiers certifiés. Découvrez nos standards éditoriaux, notamment notre processus de rédaction, nos responsables et nos experts examinateurs.
-              </ContentBlock>
-            </div>
-
-            {/* Comment nous gagnons notre argent */}
-            <div className="flex flex-col gap-4">
-              <Separator />
-              <h2 className={`text-[33px] leading-tight text-[var(--color-text)] ${libreCaslon.className}`}>
-                Comment nous gagnons notre argent
-              </h2>
+          {/* Comment nous gagnons notre argent */}
+          <section className="flex flex-col gap-4">
+            <h2 className="text-xl font-bold text-[#131212]">Comment nous gagnons notre argent</h2>
+            <div className="flex flex-col gap-3 text-[15px] text-gray-600 leading-relaxed">
               <p>
-                Nous sommes un courtier en assurance indépendant : nous percevons une commission de la part des compagnies d&apos;assurance pour chaque vente réalisée. Ces commissions sont déjà intégrées dans le prix des polices d&apos;assurance, de sorte que vous ne payez rien de plus en passant par nous. Notre rémunération peut varier selon plusieurs facteurs — type et montant du produit, assureur concerné ou volume d&apos;affaires — mais nous ne favorisons jamais un assureur au détriment d&apos;un autre en raison de la commission. Notre mission, c&apos;est de défendre vos intérêts, pas les nôtres.
+                Nous sommes un courtier en assurance indépendant : nous percevons une commission de la part des compagnies d&apos;assurance pour chaque vente réalisée. Ces commissions sont déjà intégrées dans le prix des polices d&apos;assurance, de sorte que vous ne payez rien de plus en passant par nous.
+              </p>
+              <p>
+                Notre rémunération peut varier selon plusieurs facteurs — type et montant du produit, assureur concerné ou volume d&apos;affaires — mais nous ne favorisons jamais un assureur au détriment d&apos;un autre en raison de la commission. Notre mission, c&apos;est de défendre vos intérêts, pas les nôtres.
               </p>
             </div>
+          </section>
 
-            {/* Blue info boxes */}
-            <div className="not-prose grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <Card className="bg-[var(--color-light)] border-0 shadow-none rounded-xl">
-                <CardContent className="p-8 flex flex-col gap-4">
-                  <h3 className="text-[20px] font-semibold text-[var(--color-text)] leading-snug">
+          {/* FAQ cards */}
+          <section className="flex flex-col gap-4">
+            <h2 className="text-xl font-bold text-[#131212]">Questions fréquentes</h2>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <Card className="bg-[var(--color-light)] border-0 shadow-none">
+                <CardContent className="p-6 flex flex-col gap-3">
+                  <h3 className="text-[15px] font-semibold text-[#131212] leading-snug">
                     Est-il moins cher de souscrire une assurance via New World Courtage ?
                   </h3>
-                  <p className="text-base text-[var(--color-text)] leading-[26px] sm:leading-6">
-                    Les tarifs d&apos;assurance sont réglementés par la loi, ce qui signifie qu&apos;aucune société, courtier ou agent ne peut vous proposer de remise sur une police. Vous pouvez tout de même faire des économies ! Chaque assureur évalue le risque différemment et s&apos;efforce de proposer des tarifs compétitifs. C&apos;est pourquoi New World Courtage vous permet de comparer les devis de plusieurs compagnies en un seul endroit : pour vous aider à trouver facilement les meilleures offres adaptées à vos besoins.
+                  <p className="text-[15px] text-gray-600 leading-relaxed">
+                    Les tarifs d&apos;assurance sont réglementés par la loi. Chaque assureur évalue le risque différemment — c&apos;est pourquoi notre comparateur vous permet de trouver facilement les meilleures offres adaptées à vos besoins.
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-[var(--color-light)] border-0 shadow-none rounded-xl">
-                <CardContent className="p-8 flex flex-col gap-4">
-                  <h3 className="text-[20px] font-semibold text-[var(--color-text)] leading-snug">
+              <Card className="bg-[var(--color-light)] border-0 shadow-none">
+                <CardContent className="p-6 flex flex-col gap-3">
+                  <h3 className="text-[15px] font-semibold text-[#131212] leading-snug">
                     New World Courtage est-il affilié à une compagnie d&apos;assurance ?
                   </h3>
-                  <p className="text-base text-[var(--color-text)] leading-[26px] sm:leading-6">
-                    Non. Nous sommes un cabinet de courtage indépendant, ce qui signifie que nous ne sommes pas détenus par une compagnie d&apos;assurance et que nous n&apos;en possédons pas non plus. Nous commercialisons des polices auprès de plusieurs assureurs, sans parti pris ni favoritisme envers aucun d&apos;eux. Il est essentiel pour nous de vous aider à trouver la police la plus adaptée à vos besoins, quelle que soit la compagnie auprès de laquelle vous la souscrivez.
+                  <p className="text-[15px] text-gray-600 leading-relaxed">
+                    Non. Nous sommes un cabinet de courtage indépendant, non détenu par une compagnie d&apos;assurance. Nous commercialisons des polices auprès de plusieurs assureurs sans parti pris afin de défendre vos intérêts.
                   </p>
                 </CardContent>
               </Card>
             </div>
+          </section>
 
-            {/* Nos agréments */}
-            <div className="flex flex-col gap-4">
-              <Separator />
-              <h2 className={`text-[33px] leading-tight text-[var(--color-text)] ${libreCaslon.className}`}>
-                Nos agréments
-              </h2>
+          {/* Nos agréments */}
+          <section className="flex flex-col gap-4">
+            <h2 className="text-xl font-bold text-[#131212]">Nos agréments</h2>
+            <div className="flex flex-col gap-3 text-[15px] text-gray-600 leading-relaxed">
               <p>
                 Tout intermédiaire en assurance est tenu par la loi d&apos;être immatriculé auprès de l&apos;ORIAS dans chaque territoire où il exerce son activité. Vous pouvez consulter nos agréments{" "}
-                <a href="https://www.orias.fr" target="_blank" rel="noopener noreferrer">ici</a>.
+                <a href="https://www.orias.fr" target="_blank" rel="noopener noreferrer" className="text-[var(--color-brand)] hover:underline">ici</a>.
               </p>
             </div>
+          </section>
 
-          </div>
         </div>
         <SocialMedia />
       </main>

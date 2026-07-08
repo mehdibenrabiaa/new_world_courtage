@@ -18,7 +18,7 @@ function SheetOverlay({ className, ...props }) {
 function SheetContent({ className, children, side = "left", ...props }) {
   const sides = {
     left:   "inset-y-0 left-0 h-full w-[min(480px,100vw)] sheet-slide-left",
-    right:  "inset-y-0 right-0 h-full w-[min(480px,100vw)]",
+    right:  "inset-y-0 right-0 h-full w-[min(480px,100vw)] sheet-slide-right",
     top:    "inset-x-0 top-0",
     bottom: "inset-x-0 bottom-0",
   };

@@ -9,7 +9,7 @@
   --color-blue-sky:  #8fb8d4;
   --color-blue-navy: #253b52;
   --radius: 5px;
-  --color-error: #ff4d4f;
+  --color-error: #FF8F00;
   --color-text: #262626;
 }
 
@@ -41,10 +41,20 @@
   to   { opacity: 0; }
 }
 
-.sheet-slide-left[data-state=open]    { animation: drawer-slide-in  0.3s cubic-bezier(0.32,0.72,0,1) both; }
-.sheet-slide-left[data-state=closed]  { animation: drawer-slide-out 0.3s cubic-bezier(0.32,0.72,0,1) both; }
-.sheet-overlay[data-state=open]       { animation: overlay-fade-in  0.25s ease both; }
-.sheet-overlay[data-state=closed]     { animation: overlay-fade-out 0.25s ease both; }
+@keyframes sheet-slide-in-right  { from { transform: translateX(100%); } to { transform: translateX(0); } }
+@keyframes sheet-slide-out-right { from { transform: translateX(0); } to { transform: translateX(100%); } }
+
+.sheet-slide-left[data-state=open]    { animation: drawer-slide-in       0.3s cubic-bezier(0.32,0.72,0,1) both; }
+.sheet-slide-left[data-state=closed]  { animation: drawer-slide-out      0.3s cubic-bezier(0.32,0.72,0,1) both; }
+.sheet-slide-right[data-state=open]   { animation: sheet-slide-in-right  0.3s cubic-bezier(0.32,0.72,0,1) both; }
+.sheet-slide-right[data-state=closed] { animation: sheet-slide-out-right 0.3s cubic-bezier(0.32,0.72,0,1) both; }
+.sheet-overlay[data-state=open]       { animation: overlay-fade-in       0.25s ease both; }
+.sheet-overlay[data-state=closed]     { animation: overlay-fade-out      0.25s ease both; }
+
+@keyframes modal-scale-in  { from { opacity: 0; transform: scale(0.95) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+@keyframes modal-scale-out { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.95) translateY(8px); } }
+.modal-content[data-state=open]   { animation: modal-scale-in  0.2s cubic-bezier(0.16,1,0.3,1) both; }
+.modal-content[data-state=closed] { animation: modal-scale-out 0.15s ease-in both; }
 
 .cta-btn {
   background-color: var(--color-brand);
@@ -53,6 +63,12 @@
 .cta-btn:hover {
   background-color: var(--color-brand-hover);
 }
+
+::-webkit-scrollbar { width: 20px; height: 20px; }
+::-webkit-scrollbar-track { background: #f1f5f9; }
+::-webkit-scrollbar-thumb { background: #d1d5db; border: 4px solid #f1f5f9; }
+::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+* { scrollbar-width: auto; scrollbar-color: #d1d5db #f1f5f9; }
 
 body {
   color: var(--color-text);
