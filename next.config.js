@@ -1,10 +1,11 @@
 /** @type {import('next').NextConfig} */
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
 const nextConfig = {
   compress: true,
   poweredByHeader: false,
-  experimental: {
-    optimizeCss: true,
-  },
   async redirects() {
     return [
       {
@@ -34,4 +35,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+module.exports = withBundleAnalyzer(nextConfig)

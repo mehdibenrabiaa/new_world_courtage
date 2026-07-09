@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Navbar from '../components/Navbar'
 import CookieBanner from '../components/CookieBanner'
 
-const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'swap' })
+const dmSans = DM_Sans({ subsets: ['latin'], weight: ['400', '500', '600', '700'], display: 'optional' })
 
 const variants = {
   hidden:  { opacity: 0 },

@@ -3,7 +3,8 @@
   "scripts": {
     "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "analyze": "set ANALYZE=true && set NEXT_TURBOPACK=0 && next build"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.16",
@@ -23,6 +24,7 @@
     "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.10",
     "@tailwindcss/postcss": "^4.3.0",
     "autoprefixer": "^10.5.0",
     "critters": "^0.0.23",
