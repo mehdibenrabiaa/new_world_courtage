@@ -130,14 +130,14 @@ export function CookiePreferencesPanel({ analytics, marketing, setAnalytics, set
       </div>
 
       <div className="flex flex-col gap-2 pt-1">
-        <Button onClick={onSave} disabled={!!loading} className="cta-btn text-white w-full text-base font-semibold py-[25px] h-auto">
+        <Button onClick={onSave} disabled={!!loading} className="cta-btn text-white w-full text-base font-semibold py-[12px] h-auto">
           {loading === "save" ? <Loader2 size={16} className="animate-spin" /> : "Enregistrer mes préférences"}
         </Button>
         <div className="grid grid-cols-2 gap-2">
-          <Button onClick={onRejectAll} disabled={!!loading} variant="ghost" className="text-gray-500 hover:text-[#131212] text-base py-[25px] h-auto border border-gray-200">
+          <Button onClick={onRejectAll} disabled={!!loading} variant="ghost" className="text-gray-500 hover:text-[#131212] text-base py-[12px] h-auto border border-gray-200">
             {loading === "reject" ? <Loader2 size={16} className="animate-spin" /> : "Tout refuser"}
           </Button>
-          <Button onClick={onAcceptAll} disabled={!!loading} variant="ghost" className="text-[var(--color-brand)] hover:text-[var(--color-brand-hover)] font-semibold text-base py-[25px] h-auto border border-gray-200">
+          <Button onClick={onAcceptAll} disabled={!!loading} variant="ghost" className="text-[var(--color-brand)] hover:text-[var(--color-brand-hover)] font-semibold text-base py-[12px] h-auto border border-gray-200">
             {loading === "accept" ? <Loader2 size={16} className="animate-spin" /> : "Tout accepter"}
           </Button>
         </div>
