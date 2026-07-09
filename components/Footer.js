@@ -43,39 +43,41 @@ const CONTACT = {
   address: ["455 Promenade des Anglais", "Immeuble Nice Premier – Arenas Partners", "06000 Nice, France"],
 };
 
+const nbsp = (s) => s.replace(/ ([?!:;»])/g, " $1");
+
 const GUIDE_LINKS = [
   {
     heading: "Vie",
     items: [
       { label: "Types d'assurance vie", href: "/life-insurance/types-of-life-insurance/" },
-      { label: "Assurance vie : comment choisir ?", href: "/life-insurance/how-to-buy-life-insurance/" },
-      { label: "De quel capital ai-je besoin ?", href: "/life-insurance/life-insurance-calculator/" },
-      { label: "Comment fonctionne l'assurance vie ?", href: "/life-insurance/how-does-life-insurance-work/" },
+      { label: "Assurance vie : comment choisir ?", href: "/life-insurance/how-to-buy-life-insurance/" },
+      { label: "De quel capital ai-je besoin ?", href: "/life-insurance/life-insurance-calculator/" },
+      { label: "Comment fonctionne l'assurance vie ?", href: "/life-insurance/how-does-life-insurance-work/" },
     ],
   },
   {
     heading: "Habitation",
     items: [
-      { label: "Comment choisir son assurance habitation ?", href: "/assurance-habitation/comment-choisir/" },
-      { label: "Quel niveau de couverture choisir ?", href: "/assurance-habitation/niveau-de-couverture/" },
-      { label: "Pourquoi ma prime a-t-elle augmenté ?", href: "/assurance-habitation/augmentation-prime/" },
+      { label: "Comment choisir son assurance habitation ?", href: "/assurance-habitation/comment-choisir/" },
+      { label: "Quel niveau de couverture choisir ?", href: "/assurance-habitation/niveau-de-couverture/" },
+      { label: "Pourquoi ma prime a-t-elle augmenté ?", href: "/assurance-habitation/augmentation-prime/" },
     ],
   },
   {
     heading: "Auto",
     items: [
-      { label: "Comment choisir son assurance auto ?", href: "/auto-insurance/how-to-buy-car-insurance/" },
-      { label: "Quelle couverture auto choisir ?", href: "/auto-insurance/how-much-car-insurance-do-you-need/" },
+      { label: "Comment choisir son assurance auto ?", href: "/auto-insurance/how-to-buy-car-insurance/" },
+      { label: "Quelle couverture auto choisir ?", href: "/auto-insurance/how-much-car-insurance-do-you-need/" },
       { label: "Calculateur assurance auto", href: "/assurance-auto/calculateur/" },
     ],
   },
   {
     heading: "Décennale",
     items: [
-      { label: "Comment fonctionne la décennale ?", href: "/assurance-decennale/fonctionnement/" },
+      { label: "Comment fonctionne la décennale ?", href: "/assurance-decennale/fonctionnement/" },
       { label: "Types de garanties décennales", href: "/assurance-decennale/types-de-garanties/" },
-      { label: "Suis-je obligé de m'assurer ?", href: "/assurance-decennale/obligation/" },
-      { label: "Combien coûte la décennale ?", href: "/assurance-decennale/tarifs/" },
+      { label: "Suis-je obligé de m'assurer ?", href: "/assurance-decennale/obligation/" },
+      { label: "Combien coûte la décennale ?", href: "/assurance-decennale/tarifs/" },
     ],
   },
 ];
@@ -83,7 +85,7 @@ const GUIDE_LINKS = [
 const LEGAL_LINKS = [
   { label: "Politique de confidentialité", href: "/confidentialite/" },
   { label: "Accessibilité", href: "/accessibilite/" },
-  { label: "Conditions générales", href: "/cgu/" },
+  { label: "Conditions générales", href: "/conditions-generales/" },
   { label: "Mentions légales", href: "/mentions-legales/" },
 ];
 
@@ -172,7 +174,7 @@ export default function Footer() {
                   {items.map(({ label, href }) => (
                     <li key={href}>
                       <Link href={href} className="text-[15px] text-white/75 hover:text-white transition-colors leading-snug block">
-                        {label}
+                        {nbsp(label)}
                       </Link>
                     </li>
                   ))}

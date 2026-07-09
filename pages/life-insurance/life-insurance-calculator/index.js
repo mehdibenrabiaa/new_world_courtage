@@ -96,7 +96,7 @@ function Calculator() {
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-[var(--color-text)]">Genre</label>
             <Select onValueChange={setGender}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="h-11 w-full">
                 <SelectValue placeholder="Sélectionner" />
               </SelectTrigger>
               <SelectContent>
@@ -109,7 +109,7 @@ function Calculator() {
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-[var(--color-text)]">Capital souhaité</label>
             <Select onValueChange={setCoverage}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="h-11 w-full">
                 <SelectValue placeholder="Sélectionner" />
               </SelectTrigger>
               <SelectContent>
@@ -126,7 +126,7 @@ function Calculator() {
           <div className="flex flex-col gap-1.5">
             <label className="text-sm font-medium text-[var(--color-text)]">Durée du contrat</label>
             <Select onValueChange={setDuration}>
-              <SelectTrigger className="w-full">
+              <SelectTrigger className="h-11 w-full">
                 <SelectValue placeholder="Sélectionner" />
               </SelectTrigger>
               <SelectContent>

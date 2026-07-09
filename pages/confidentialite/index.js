@@ -25,12 +25,12 @@ function CookieTable({ rows }) {
           <div key={i} className="rounded-xl border border-gray-100 p-4 flex flex-col gap-2">
             <div className="flex items-center justify-between gap-2 flex-wrap">
               <span className="font-mono text-xs font-semibold text-[#131212]">{r.name}</span>
-              <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${r.category === "Analytique" ? "bg-blue-50 text-blue-600" : "bg-orange-50 text-orange-600"}`}>
+              <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${r.category === "Analytique" ? "bg-blue-100 text-blue-800" : "bg-orange-100 text-orange-800"}`}>
                 {r.category}
               </span>
             </div>
             <p className="text-[13px] text-gray-600 leading-relaxed">{r.purpose}</p>
-            <div className="flex items-center gap-2 text-xs text-gray-400">
+            <div className="flex items-center gap-2 text-sm text-gray-600">
               <span>{r.provider}</span>
               <span>·</span>
               <span>{r.duration}</span>
@@ -89,11 +89,11 @@ export default function PrivacyPolicy() {
         {/* Hero */}
         <div className="bg-[var(--color-brand)] py-14 px-4 sm:px-6 lg:px-12 2xl:px-24">
           <div className="max-w-4xl mx-auto flex flex-col gap-3">
-            <p className="text-sm text-white/50">Dernière mise à jour : {LAST_UPDATED}</p>
+            <p className="text-sm text-white/80">Dernière mise à jour : {LAST_UPDATED}</p>
             <h1 className="text-2xl sm:text-4xl font-bold text-white leading-tight">
               Politique de confidentialité
             </h1>
-            <p className="text-base text-white/70 leading-relaxed max-w-2xl">
+            <p className="text-base text-white/90 leading-relaxed max-w-2xl">
               Chez New World Courtage, la protection de vos données personnelles est une priorité. Cette politique explique quelles données nous collectons, pourquoi et comment vous pouvez exercer vos droits.
             </p>
           </div>
@@ -110,7 +110,7 @@ export default function PrivacyPolicy() {
               Siège social : 455 Promenade des Anglais, Immeuble Nice Premier – Arenas Partners, 06000 Nice, France.
             </p>
             <p>
-              Contact : <a href="mailto:contact@newworldcourtage.com" className="text-[var(--color-brand)] hover:underline">contact@newworldcourtage.com</a>
+              Contact : <a href="mailto:contact@newworldcourtage.com" className="text-[var(--color-brand)] underline">contact@newworldcourtage.com</a>
             </p>
           </Section>
 
@@ -172,11 +172,11 @@ export default function PrivacyPolicy() {
               Nous utilisons des cookies pour faire fonctionner notre site, analyser son usage et, avec votre accord, diffuser des publicités ciblées. Vous pouvez gérer vos préférences à tout moment.
             </p>
             <CookieTable rows={COOKIES} />
-            <p className="text-xs text-gray-400">
+            <p className="text-sm text-gray-500">
               Les durées de conservation des cookies tiers peuvent évoluer selon les politiques de leurs éditeurs respectifs. Consultez les politiques de confidentialité de{" "}
-              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[var(--color-brand)] hover:underline">Google</a>,{" "}
-              <a href="https://privacy.microsoft.com/fr-fr/privacystatement" target="_blank" rel="noopener noreferrer" className="text-[var(--color-brand)] hover:underline">Microsoft</a> et{" "}
-              <a href="https://www.facebook.com/privacy/policy" target="_blank" rel="noopener noreferrer" className="text-[var(--color-brand)] hover:underline">Meta</a> pour plus d'informations.
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-[var(--color-brand)] underline">Google</a>,{" "}
+              <a href="https://privacy.microsoft.com/fr-fr/privacystatement" target="_blank" rel="noopener noreferrer" className="text-[var(--color-brand)] underline">Microsoft</a> et{" "}
+              <a href="https://www.facebook.com/privacy/policy" target="_blank" rel="noopener noreferrer" className="text-[var(--color-brand)] underline">Meta</a> pour plus d'informations.
             </p>
           </Section>
 
@@ -215,10 +215,10 @@ export default function PrivacyPolicy() {
               <li><strong className="text-[#131212]">Droit d'opposition</strong> : vous opposer au traitement de vos données pour les finalités fondées sur l'intérêt légitime.</li>
               <li><strong className="text-[#131212]">Droit à la portabilité</strong> : recevoir vos données dans un format structuré et lisible par machine.</li>
               <li><strong className="text-[#131212]">Droit de retirer votre consentement</strong> : à tout moment, sans que cela affecte la licéité des traitements antérieurs.</li>
-              <li><strong className="text-[#131212]">Droit de réclamation</strong> : introduire une réclamation auprès de la <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" className="text-[var(--color-brand)] hover:underline">CNIL</a>.</li>
+              <li><strong className="text-[#131212]">Droit de réclamation</strong> : introduire une réclamation auprès de la <a href="https://www.cnil.fr" target="_blank" rel="noopener noreferrer" className="text-[var(--color-brand)] underline">CNIL</a>.</li>
             </ul>
             <p>
-              Pour exercer vos droits, contactez-nous à <a href="mailto:contact@newworldcourtage.com" className="text-[var(--color-brand)] hover:underline">contact@newworldcourtage.com</a>. Nous répondrons dans un délai maximum d'un mois.
+              Pour exercer vos droits, contactez-nous à <a href="mailto:contact@newworldcourtage.com" className="text-[var(--color-brand)] underline">contact@newworldcourtage.com</a>. Nous répondrons dans un délai maximum d'un mois.
             </p>
           </Section>
 

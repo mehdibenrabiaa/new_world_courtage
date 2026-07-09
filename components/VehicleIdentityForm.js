@@ -100,10 +100,10 @@ export default function VehicleIdentityForm() {
   }
 
   const triggerCls = (field) =>
-    `h-14 text-base bg-white text-[var(--color-text)] ${errors[field] ? "border-2 border-[var(--color-error)]" : ""}`;
+    `h-11 text-sm bg-white text-[var(--color-text)] ${errors[field] ? "border-2 border-[var(--color-error)]" : ""}`;
 
   const inputCls = (field) =>
-    `h-14 w-full rounded-[var(--radius)] border bg-white px-4 text-base text-[var(--color-text)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-shadow ${
+    `h-11 w-full rounded-lg border bg-white px-4 text-sm text-[var(--color-text)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition-shadow ${
       errors[field]
         ? "border-[var(--color-error)] focus:ring-[var(--color-error)]"
         : "border-gray-200 focus:ring-[var(--color-brand)]"
@@ -160,7 +160,7 @@ export default function VehicleIdentityForm() {
               placeholder="Votre date de naissance"
               theme="light"
               error={!!errors.naissance}
-              className="h-14 bg-white border-gray-200 text-[var(--color-text)] hover:bg-gray-50"
+              className="h-11 bg-white border-gray-200 text-[var(--color-text)] hover:bg-gray-50"
             />
           </div>
         </Field>

@@ -49,9 +49,9 @@ function MegaMenuContent({ item }) {
           ))}
         </div>
 
-        <div className="mt-5 pt-4 border-t border-gray-200 flex items-center justify-between gap-4">
-          <p className="text-sm font-medium text-gray-900">{item.cta.tagline}</p>
+        <div className="mt-5 pt-4 border-t border-gray-200 flex items-center gap-4">
           <CtaButton href={item.cta.href} label={item.cta.button} className="shrink-0" />
+          <p className="text-sm font-medium text-gray-900">{item.cta.tagline}</p>
         </div>
       </div>
     </div>
