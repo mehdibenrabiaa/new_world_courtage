@@ -1,6 +1,7 @@
 import Head from "next/head";
 import Link from "next/link";
 import Footer from "@/components/Footer";
+import ReadyCta from "@/components/ReadyCta";
 import ManageCookiesButton from "@/components/ManageCookiesButton";
 
 const LAST_UPDATED = "8 juillet 2026";
@@ -232,6 +233,7 @@ export default function PrivacyPolicy() {
 
         </div>
         </div>
+        <ReadyCta />
       </main>
 
       <Footer />
