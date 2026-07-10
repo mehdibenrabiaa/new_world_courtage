@@ -92,8 +92,8 @@ export default function Home() {
         <Hero />
         <Partners />
         <TrustPilot />
-        <Testimonials />
         <RealCustomers />
+        <Testimonials />
         <OurProcess />
         <SocialMedia />
         <FinishedScrolling />

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { ChevronRight } from "lucide-react";
 
 export default function CtaButton({ href = "/devis", label = "Devis gratuit", className = "" }) {
   return (
@@ -9,8 +10,9 @@ export default function CtaButton({ href = "/devis", label = "Devis gratuit", cl
       asChild
       className={cn("cta-btn text-white text-base font-normal py-[25px] px-[15px]", className)}
     >
-      <Link href={href}>
+      <Link href={href} className="flex items-center gap-2">
         {label}
+        <ChevronRight size={18} strokeWidth={2.5} />
       </Link>
     </Button>
   );

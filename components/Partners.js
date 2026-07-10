@@ -39,7 +39,7 @@ export default function Partners() {
           <div className="flex justify-center mt-8">
             <CtaButton
               href="/a-propos/nos-partenaires/"
-              label="En savoir sur tous nos partenaires"
+              label="Voir nos partenaires"
             />
           </div>
 

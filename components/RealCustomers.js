@@ -1,7 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { libreCaslon } from "@/lib/fonts";
-import { ChevronLeft, ChevronRight, BadgeCheck } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import CtaButton from "@/components/CtaButton";
 
 const TESTIMONIALS = [
   {
@@ -40,25 +41,86 @@ const PER_PAGE = 3;
 
 function Stars() {
   return (
-    <div className="flex gap-0.5">
-      {[...Array(5)].map((_, i) => (
-        <svg key={i} width="20" height="20" viewBox="0 0 24 24" fill="#00b67a">
-          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-        </svg>
-      ))}
+    <img src="/trustpilot_starts.svg" alt="5 étoiles Trustpilot" className="h-5 w-auto" />
+  );
+}
+
+function VerifiedBadge() {
+  return (
+    <div className="flex items-center gap-1.5">
+      <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="7.5" cy="7.5" r="7.5" fill="#6b7280" />
+        <path d="M4.5 7.5L6.5 9.5L10.5 5.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      <span className="text-[13px] font-semibold text-gray-600">Vérifié</span>
     </div>
   );
 }
 
+function CardInner({ title, quote, name }) {
+  return (
+    <>
+      <div className="flex items-center justify-between mb-2">
+        <Stars />
+        <VerifiedBadge />
+      </div>
+
+      <div>
+        <div className="flex items-start gap-2">
+          <img src="/quotation-mark.svg" alt="" aria-hidden="true" className="shrink-0 h-7 w-auto mt-0.5" />
+          <h3 className="text-[17px] font-bold text-[var(--color-text)] leading-snug">{title}</h3>
+        </div>
+        <p className="text-[16px] text-black leading-relaxed mt-3">{quote}</p>
+      </div>
+
+      <p className="text-[14px] font-semibold text-[var(--color-text)] mt-auto pt-2 border-t border-gray-100">{name}</p>
+    </>
+  );
+}
+
+const CARD_CLASS = "bg-transparent rounded-2xl p-6 flex flex-col gap-5 border border-[#e0e0e0]";
+
 export default function RealCustomers() {
   const [page, setPage] = useState(0);
+  const [direction, setDirection] = useState("next");
+  const [minH, setMinH] = useState(0);
+  const [isDesktop, setIsDesktop] = useState(false);
+  const measureRef = useRef(null);
+
   const totalPages = Math.ceil(TESTIMONIALS.length / PER_PAGE);
   const visible = TESTIMONIALS.slice(page * PER_PAGE, page * PER_PAGE + PER_PAGE);
+
+  useEffect(() => {
+    const check = () => setIsDesktop(window.innerWidth >= 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  useEffect(() => {
+    if (!measureRef.current) return;
+    const cards = Array.from(measureRef.current.children);
+    const max = Math.max(...cards.map(c => c.offsetHeight));
+    setMinH(max);
+  }, []);
 
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="rounded-[20px] bg-[var(--color-light)] px-4 py-10 lg:px-8 lg:py-14">
+        <div className="relative rounded-[20px] bg-[#F0F4F8] px-4 py-10 lg:px-8 lg:py-14">
+
+          {/* Off-screen measurement grid — all 6 cards */}
+          <div
+            ref={measureRef}
+            className="grid grid-cols-3 gap-4"
+            style={{ position: "absolute", visibility: "hidden", top: 0, left: 32, right: 32, pointerEvents: "none" }}
+          >
+            {TESTIMONIALS.map(({ title, quote, name }) => (
+              <div key={name} className={CARD_CLASS}>
+                <CardInner title={title} quote={quote} name={name} />
+              </div>
+            ))}
+          </div>
 
           {/* Header */}
           <div className="flex flex-col gap-5 max-w-4xl mx-auto text-center mb-10 lg:mb-14">
@@ -70,54 +132,18 @@ export default function RealCustomers() {
             </p>
           </div>
 
-          {/* Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-            {visible.map(({ title, quote, name }) => (
-              <div key={name} className="bg-white rounded-2xl p-6 flex flex-col gap-5">
-                <div className="flex items-center justify-between">
-                  <Stars />
-                  <div className="flex items-center gap-1.5 text-gray-400 text-[13px]">
-                    <BadgeCheck size={15} />
-                    <span>Vérifié</span>
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <span className="text-[var(--color-brand)] text-[44px] leading-none" style={{ fontFamily: "Georgia, serif" }}>&ldquo;</span>
-                  <h3 className="text-[17px] font-bold text-[var(--color-text)] leading-snug -mt-3">{title}</h3>
-                </div>
-
-                <p className="text-[15px] text-gray-500 leading-relaxed">{quote}</p>
-
-                <p className="text-[14px] font-semibold text-[var(--color-text)] mt-auto pt-2 border-t border-gray-100">{name}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Navigation */}
-          <div className="flex items-center justify-center gap-4">
+          {/* Navigation — top right above cards */}
+          <div className="flex items-center justify-end gap-3 mb-4">
             <button
-              onClick={() => setPage(p => Math.max(0, p - 1))}
+              onClick={() => { setDirection("prev"); setPage(p => Math.max(0, p - 1)); }}
               disabled={page === 0}
               className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               aria-label="Précédent"
             >
               <ChevronLeft size={18} />
             </button>
-
-            <div className="flex items-center gap-2">
-              {[...Array(totalPages)].map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setPage(i)}
-                  className={`h-2 rounded-full transition-all duration-300 ${i === page ? "w-6 bg-[var(--color-text)]" : "w-2 bg-gray-300"}`}
-                  aria-label={`Page ${i + 1}`}
-                />
-              ))}
-            </div>
-
             <button
-              onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+              onClick={() => { setDirection("next"); setPage(p => Math.min(totalPages - 1, p + 1)); }}
               disabled={page === totalPages - 1}
               className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
               aria-label="Suivant"
@@ -125,6 +151,31 @@ export default function RealCustomers() {
               <ChevronRight size={18} />
             </button>
           </div>
+
+          {/* Visible cards */}
+          <div key={page} className={`grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}>
+            {visible.map(({ title, quote, name }) => (
+              <a
+                key={name}
+                href="https://www.trustpilot.com/review/newworldcourtage.fr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`${CARD_CLASS} cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02]`}
+                style={isDesktop && minH ? { minHeight: minH } : undefined}
+              >
+                <CardInner title={title} quote={quote} name={name} />
+              </a>
+            ))}
+          </div>
+
+          {/* Read more CTA */}
+          <div className="flex justify-center mt-2 mb-6">
+            <CtaButton
+              href="/avis/"
+              label="Voir plus d'avis"
+            />
+          </div>
+
 
         </div>
       </div>

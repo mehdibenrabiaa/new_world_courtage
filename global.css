@@ -10,10 +10,10 @@
   --color-brand-hover: rgb(1, 76, 138);
   --color-light: #f3f5f7;
   --color-jungle-green: #27ae7a;
-  --color-blue-sky:  #8fb8d4;
+  --color-blue-sky: #8fb8d4;
   --color-blue-navy: #172436;
   --radius: 5px;
-  --color-error: #FF8F00;
+  --color-error: #ff8f00;
   --color-text: #262626;
 }
 
@@ -29,59 +29,167 @@
 }
 
 @keyframes drawer-slide-in {
-  from { transform: translateX(-100%); }
-  to   { transform: translateX(0); }
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
 }
 @keyframes drawer-slide-out {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-100%); }
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
 }
 @keyframes overlay-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes overlay-fade-out {
-  from { opacity: 1; }
-  to   { opacity: 0; }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
-@keyframes sheet-slide-in-right  { from { transform: translateX(100%); } to { transform: translateX(0); } }
-@keyframes sheet-slide-out-right { from { transform: translateX(0); } to { transform: translateX(100%); } }
+@keyframes sheet-slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+@keyframes sheet-slide-out-right {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(100%);
+  }
+}
 
-.sheet-slide-left[data-state=open]    { animation: drawer-slide-in       0.3s cubic-bezier(0.32,0.72,0,1) both; }
-.sheet-slide-left[data-state=closed]  { animation: drawer-slide-out      0.3s cubic-bezier(0.32,0.72,0,1) both; }
-.sheet-slide-right[data-state=open]   { animation: sheet-slide-in-right  0.3s cubic-bezier(0.32,0.72,0,1) both; }
-.sheet-slide-right[data-state=closed] { animation: sheet-slide-out-right 0.3s cubic-bezier(0.32,0.72,0,1) both; }
-.sheet-overlay[data-state=open]       { animation: overlay-fade-in       0.25s ease both; }
-.sheet-overlay[data-state=closed]     { animation: overlay-fade-out      0.25s ease both; }
+.sheet-slide-left[data-state="open"] {
+  animation: drawer-slide-in 0.3s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+.sheet-slide-left[data-state="closed"] {
+  animation: drawer-slide-out 0.3s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+.sheet-slide-right[data-state="open"] {
+  animation: sheet-slide-in-right 0.3s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+.sheet-slide-right[data-state="closed"] {
+  animation: sheet-slide-out-right 0.3s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+.sheet-overlay[data-state="open"] {
+  animation: overlay-fade-in 0.25s ease both;
+}
+.sheet-overlay[data-state="closed"] {
+  animation: overlay-fade-out 0.25s ease both;
+}
 
-@keyframes modal-scale-in  { from { opacity: 0; transform: scale(0.95) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-@keyframes modal-scale-out { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.95) translateY(8px); } }
-@keyframes sheet-slide-up   { from { transform: translateY(100%); } to { transform: translateY(0); } }
-@keyframes sheet-slide-down { from { transform: translateY(0); } to { transform: translateY(100%); } }
+@keyframes modal-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+@keyframes modal-scale-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.95) translateY(8px);
+  }
+}
+@keyframes sheet-slide-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+@keyframes sheet-slide-down {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(100%);
+  }
+}
 
 @media (min-width: 768px) {
-  .modal-content[data-state=open]   { animation: modal-scale-in  0.2s cubic-bezier(0.16,1,0.3,1) both; }
-  .modal-content[data-state=closed] { animation: modal-scale-out 0.15s ease-in both; }
+  .modal-content[data-state="open"] {
+    animation: modal-scale-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .modal-content[data-state="closed"] {
+    animation: modal-scale-out 0.15s ease-in both;
+  }
 }
 @media (max-width: 767px) {
-  .modal-content[data-state=open]   { animation: sheet-slide-up   0.3s cubic-bezier(0.32,0.72,0,1) both; }
-  .modal-content[data-state=closed] { animation: sheet-slide-down 0.25s ease-in both; }
+  .modal-content[data-state="open"] {
+    animation: sheet-slide-up 0.3s cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+  .modal-content[data-state="closed"] {
+    animation: sheet-slide-down 0.25s ease-in both;
+  }
 }
 
-.cta-btn {
-  background-color: var(--color-brand);
-  border-radius: var(--radius);
+@keyframes slide-in-from-right {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
 }
-.cta-btn:hover {
-  background-color: var(--color-brand-hover);
+@keyframes slide-in-from-left {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.slide-in-right { animation: slide-in-from-right 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+.slide-in-left  { animation: slide-in-from-left  0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
+
+@layer components {
+  .cta-btn {
+    background-color: var(--color-brand);
+    border-radius: var(--radius);
+  }
+  .cta-btn:hover {
+    background-color: var(--color-brand-hover);
+  }
 }
 
-::-webkit-scrollbar { width: 20px; height: 20px; }
-::-webkit-scrollbar-track { background: #f1f5f9; }
-::-webkit-scrollbar-thumb { background: #d1d5db; border: 4px solid #f1f5f9; }
-::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
-* { scrollbar-width: auto; scrollbar-color: #d1d5db #f1f5f9; }
+::-webkit-scrollbar {
+  width: 20px;
+  height: 20px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border: 4px solid #f1f5f9;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+* {
+  scrollbar-width: auto;
+  scrollbar-color: #d1d5db #f1f5f9;
+}
 
 body {
   color: var(--color-text);
