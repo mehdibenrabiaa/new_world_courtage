@@ -8,7 +8,6 @@ import TrustPilot from "../components/TrustPilot";
 import FinishedScrolling from "../components/FinishedScrolling";
 import SocialMedia from "../components/SocialMedia";
 import FAQ from "../components/FAQ";
-import ReadyCta from "../components/ReadyCta";
 import Footer from "../components/Footer";
 
 export default function Home() {
@@ -99,7 +98,6 @@ export default function Home() {
         <SocialMedia />
         <FinishedScrolling />
         <FAQ className="px-4 lg:px-12 2xl:px-24" />
-        <ReadyCta />
       </main>
       <Footer />
     </>
