@@ -8,7 +8,7 @@ export default function FinishedScrolling() {
         <div className="rounded-xl overflow-hidden flex flex-col lg:flex-row min-h-[480px]">
 
           {/* Left — content */}
-          <div className="order-2 lg:order-1 lg:w-1/2 bg-[var(--color-light)] px-8 py-10 lg:px-14 lg:py-14 flex flex-col justify-between gap-10">
+          <div className="order-2 lg:order-1 lg:w-1/2 bg-[var(--color-light)] px-8 py-10 lg:px-14 lg:py-14 flex flex-col gap-6">
 
             <div className="flex flex-col gap-5">
               <h2
@@ -24,14 +24,14 @@ export default function FinishedScrolling() {
               </p>
             </div>
 
-            <CtaButton label="Devis gratuit" className="self-start" />
+            <CtaButton label="Devis gratuit" className="self-start mt-4" />
 
           </div>
 
           {/* Right — image */}
           <div className="order-1 lg:order-2 lg:w-1/2 h-[260px] lg:h-auto">
             <img
-              src="/finished_scrolling.jpg"
+              src="/a family walking.png"
               alt=""
               className="w-full h-full object-cover object-top"
             />

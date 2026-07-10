@@ -26,22 +26,20 @@ export default function ConditionsGenerales() {
       </Head>
 
       <main className="min-h-screen bg-white">
+        <div className="max-w-5xl mx-auto">
 
         {/* Hero */}
-        <div className="bg-[var(--color-brand)] py-14 px-4 sm:px-6 lg:px-12 2xl:px-24">
+        <div className="bg-[var(--color-brand)] py-24 px-6 sm:px-10">
           <div className="max-w-4xl mx-auto flex flex-col gap-3">
             <p className="text-sm text-white/80">Dernière mise à jour : {LAST_UPDATED}</p>
             <h1 className="text-2xl sm:text-4xl font-bold text-white leading-tight">
               Conditions générales d'utilisation
             </h1>
-            <p className="text-base text-white/90 leading-relaxed max-w-2xl">
-              Les présentes conditions générales d'utilisation régissent l'accès et l'utilisation du site newworldcourtage.com édité par New World Courtage SAS. En accédant au site, vous acceptez sans réserve les présentes conditions.
-            </p>
           </div>
         </div>
 
         {/* Content */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 py-14 flex flex-col gap-12">
+        <div className="max-w-4xl mx-auto px-6 sm:px-10 py-14 flex flex-col gap-12">
 
           <Section id="objet" title="1. Objet et acceptation">
             <p>
@@ -147,6 +145,7 @@ export default function ConditionsGenerales() {
             </p>
           </Section>
 
+        </div>
         </div>
       </main>
 

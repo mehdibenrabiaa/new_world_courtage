@@ -52,7 +52,7 @@ export default function SocialMedia() {
         <div className="rounded-xl overflow-hidden flex flex-col lg:flex-row min-h-[480px]">
 
           {/* Left — image */}
-          <div className="order-1 lg:w-1/2 h-[260px] lg:h-auto">
+          <div className="order-1 lg:w-[40%] h-[260px] lg:h-auto">
             <img
               src="/finished_scrolling.jpg"
               alt="Suivez New World Courtage"
@@ -61,7 +61,7 @@ export default function SocialMedia() {
           </div>
 
           {/* Right — content */}
-          <div className="order-2 lg:w-1/2 bg-[var(--color-light)] px-8 py-10 lg:px-14 lg:py-14 flex flex-col justify-between gap-10">
+          <div className="order-2 lg:w-[60%] bg-[var(--color-light)] px-8 py-10 lg:px-14 lg:py-14 flex flex-col justify-between gap-10">
 
             <div className="flex flex-col gap-5">
               <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
