@@ -38,8 +38,8 @@ function IconX() {
 
 
 const LINKS = [
-  { label: "Instagram",   href: "https://instagram.com/newworldcourtage",       Icon: IconInstagram },
-  { label: "Facebook",    href: "https://facebook.com/nwcourtage",               Icon: IconFacebook },
+  { label: "Instagram",   href: "https://www.instagram.com/newworldcourtage/",   Icon: IconInstagram },
+  { label: "Facebook",    href: "https://www.facebook.com/nwcourtage",            Icon: IconFacebook },
   { label: "LinkedIn",    href: "https://linkedin.com/company/newworldcourtage", Icon: IconLinkedin },
   { label: "YouTube",     href: "https://youtube.com/@newworldcourtage",        Icon: IconYoutube },
   { label: "X / Twitter", href: "https://twitter.com/newworldcourtage",         Icon: IconX },

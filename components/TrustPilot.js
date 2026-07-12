@@ -1,35 +1,26 @@
 import { libreCaslon } from "@/lib/fonts";
 
-export default function TrustPilot({
-  score = 4.8,
-  className = "",
-}) {
+export default function TrustPilot({ score = 4.8, className = "" }) {
   return (
     <div className={`w-full px-4 lg:px-12 2xl:px-24 py-8 ${className}`}>
-      <div className="max-w-3xl mx-auto py-5 flex flex-wrap justify-center items-center gap-6 sm:gap-10 lg:gap-14">
+      <div className="max-w-4xl mx-auto py-12 flex flex-wrap justify-center items-center gap-6 sm:gap-10 lg:gap-14">
 
-        {/* Trustpilot */}
-        <div className="flex flex-col items-start gap-1">
-          <img
-            src="/trustpilot.jpg"
-            alt="Trustpilot"
-            className="h-12 sm:h-16 w-auto object-contain"
-          />
-          <p className="text-[13px] sm:text-[14px] font-bold text-[var(--color-text)] leading-tight">
-            TrustScore {score} sur 5
+        {/* Trustpilot existing design */}
+        <div className="flex flex-col items-start gap-1.5">
+          <img src="/Trustpilot.svg" alt="Trustpilot" className="h-14 w-auto object-contain" />
+          <p className="text-[13px] font-semibold text-[var(--color-text)] leading-tight">
+            TrustScore <span className="text-[#00b67a]">{score}</span> sur 5
           </p>
         </div>
 
-        <div className="h-16 sm:h-24 w-px bg-gray-200 hidden sm:block" />
+        <div className="h-16 sm:h-20 w-px bg-gray-200 hidden sm:block" />
 
         {/* ORIAS */}
-        <img
-          src="/ORIAS.jpg"
-          alt="Immatriculé ORIAS n° 25006506"
-          className="h-16 sm:h-[86px] w-auto object-contain"
-        />
+        <div className="flex flex-col items-center gap-1.5">
+          <img src="/ORIAS Resgistration.svg" alt="ORIAS" className="h-14 w-auto object-contain" />
+        </div>
 
-        <div className="h-16 sm:h-24 w-px bg-gray-200 hidden sm:block" />
+        <div className="h-16 sm:h-20 w-px bg-gray-200 hidden sm:block" />
 
         {/* Sans frais */}
         <div className="flex flex-col items-start gap-0">
@@ -39,6 +30,8 @@ export default function TrustPilot({
         </div>
 
       </div>
+
+
     </div>
   );
 }

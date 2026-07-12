@@ -160,7 +160,7 @@ export default function RealCustomers() {
                 href="https://www.trustpilot.com/review/newworldcourtage.fr"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${CARD_CLASS} cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02]`}
+                className={`${CARD_CLASS} cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] max-w-[400px] mx-auto w-full`}
                 style={isDesktop && minH ? { minHeight: minH } : undefined}
               >
                 <CardInner title={title} quote={quote} name={name} />

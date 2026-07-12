@@ -44,7 +44,13 @@
       "Bash(git commit -m ' *)",
       "Bash(git push *)",
       "Bash(npm install *)",
-      "Bash(git pull *)"
+      "Bash(git pull *)",
+      "Bash(git cherry-pick *)",
+      "Bash(git reset *)",
+      "Bash(git stash *)",
+      "Bash(git clean *)",
+      "Bash(git fetch *)",
+      "WebFetch(domain:www.trustpilot.com)"
     ],
     "additionalDirectories": [
       "C:\\Users\\admin\\Desktop\\new world courtage\\illustrations"
