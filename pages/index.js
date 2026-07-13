@@ -6,7 +6,6 @@ import OurProcess from "../components/OurProcess";
 import RealCustomers from "../components/RealCustomers";
 import TrustPilot from "../components/TrustPilot";
 import FinishedScrolling from "../components/FinishedScrolling";
-import SocialMedia from "../components/SocialMedia";
 import FAQ from "../components/FAQ";
 import Footer from "../components/Footer";
 
@@ -15,11 +14,11 @@ export default function Home() {
     <>
       <Head>
         <title>
-          Assurance Auto, Habitation, Santé & Décennale — Comparez et économisez
+          L'assurance des professionnels et entrepreneurs | New World Courtage
         </title>
         <meta
           name="description"
-          content="Comparez les meilleures offres d'assurance auto, habitation, santé et décennale. Obtenez des devis gratuits en quelques minutes et économisez sur votre assurance."
+          content="New World Courtage, votre courtier en assurance pour pros et particuliers. Comparez les meilleures offres en flotte & transport, construction, immobilier, santé et moto. Devis gratuit en quelques minutes."
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://www.newworldcourtage.fr/" />
@@ -29,11 +28,11 @@ export default function Home() {
         <meta property="og:url" content="https://www.newworldcourtage.fr/" />
         <meta
           property="og:title"
-          content="Assurance Auto, Habitation, Santé & Décennale — Comparez et économisez"
+          content="Courtier en Assurance — Flotte, Construction, Immobilier & Santé | New World Courtage"
         />
         <meta
           property="og:description"
-          content="Comparez les meilleures offres d'assurance auto, habitation, santé et décennale. Obtenez des devis gratuits en quelques minutes."
+          content="New World Courtage, votre courtier en assurance pour pros et particuliers. Comparez les meilleures offres et obtenez un devis gratuit en quelques minutes."
         />
         <meta property="og:locale" content="fr_FR" />
         <meta property="og:site_name" content="New World Courtage" />
@@ -43,11 +42,11 @@ export default function Home() {
         <meta name="twitter:card" content="summary_large_image" />
         <meta
           name="twitter:title"
-          content="Assurance Auto, Habitation, Santé & Décennale"
+          content="Courtier en Assurance — Pros & Particuliers | New World Courtage"
         />
         <meta
           name="twitter:description"
-          content="Comparez les meilleures offres d'assurance et économisez."
+          content="Comparez les meilleures offres d'assurance pour pros et particuliers. Devis gratuit en quelques minutes."
         />
         <meta name="twitter:image" content="https://www.newworldcourtage.fr/hero.jpg" />
         <script
@@ -95,7 +94,6 @@ export default function Home() {
         <RealCustomers />
         <Testimonials />
         <OurProcess />
-        <SocialMedia />
         <FinishedScrolling />
         <FAQ className="px-4 lg:px-12 2xl:px-24" />
       </main>

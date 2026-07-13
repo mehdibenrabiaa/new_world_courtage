@@ -43,14 +43,11 @@ export default function FAQ({ className = "" }) {
           {ITEMS.map(({ q, a }, i) => (
             <AccordionItem key={q} open={openIndex === i}>
               <AccordionTrigger
-                onClick={(e) => {
-                  e.preventDefault();
-                  setOpenIndex(openIndex === i ? null : i);
-                }}
+                onClick={() => setOpenIndex(openIndex === i ? null : i)}
               >
                 {q}
               </AccordionTrigger>
-              <AccordionContent>{a}</AccordionContent>
+              <AccordionContent open={openIndex === i}>{a}</AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>

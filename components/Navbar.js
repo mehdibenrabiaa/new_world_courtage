@@ -3,7 +3,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import * as NavMenu from '@radix-ui/react-navigation-menu'
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { Menu, X, Phone, Mail } from 'lucide-react'
+import { Menu, X, Phone, Mail, ChevronLeft } from 'lucide-react'
 
 function WhatsAppIcon({ size = 15 }) {
   return (
@@ -28,22 +28,26 @@ function MegaMenuContent({ item }) {
   return (
     <div className="w-full bg-white">
       <div className="px-12 2xl:px-24 py-10">
-        <div className="grid grid-cols-3 gap-6 max-w-3xl">
+        <div className="grid gap-14 justify-start" style={{ gridTemplateColumns: `repeat(${item.sections.length}, auto)` }}>
           {item.sections.map((section) => (
             <div key={section.heading}>
               <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text)] mb-2.5">
                 {section.heading}
               </p>
               <ul className="space-y-0.5">
-                {section.links.map((link) => (
-                  <li key={link.href}>
-                    <NavMenu.Link asChild>
-                      <Button variant="link" asChild className="h-auto py-1 px-2 text-[13.5px] text-gray-800 font-normal justify-start">
-                        <Link href={link.href}>{link.label}</Link>
-                      </Button>
-                    </NavMenu.Link>
-                  </li>
-                ))}
+                {section.links.map((link, i) =>
+                  link.separator ? (
+                    <li key={`sep-${i}`} className="my-1.5 border-t border-gray-100" />
+                  ) : (
+                    <li key={link.href}>
+                      <NavMenu.Link asChild>
+                        <Button variant="link" asChild className="h-auto py-1 px-2 text-[13.5px] text-gray-800 font-normal justify-start">
+                          <Link href={link.href}>{link.label}</Link>
+                        </Button>
+                      </NavMenu.Link>
+                    </li>
+                  )
+                )}
               </ul>
             </div>
           ))}
@@ -67,6 +71,7 @@ function MobilePanel({ item, onBack }) {
         onClick={onBack}
         className="flex items-center gap-2 w-full px-5 py-4 text-base font-bold text-[var(--color-text)] border-b border-gray-200 hover:bg-gray-50"
       >
+        <ChevronLeft size={18} className="text-[var(--color-brand)]" />
         {item.label}
       </button>
 
@@ -76,15 +81,19 @@ function MobilePanel({ item, onBack }) {
             <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text)] mb-2">
               {section.heading}
             </p>
-            {section.links.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="block py-2.5 text-sm text-[var(--color-text)] border-b border-gray-100 last:border-0 hover:text-[var(--color-brand)]"
-              >
-                {link.label}
-              </Link>
-            ))}
+            {section.links.map((link, i) =>
+              link.separator ? (
+                <div key={`sep-${i}`} className="my-1 border-t border-gray-100" />
+              ) : (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block py-2.5 text-sm text-[var(--color-text)] border-b border-gray-100 last:border-0 hover:text-[var(--color-brand)]"
+                >
+                  {link.label}
+                </Link>
+              )
+            )}
           </div>
         ))}
 
@@ -106,6 +115,7 @@ function MobilePanel({ item, onBack }) {
 
 function MobileDrawer({ open, onClose }) {
   const [activePanel, setActivePanel] = useState(null)
+  const [animClass, setAnimClass] = useState('')
 
   useEffect(() => {
     if (!open) {
@@ -113,6 +123,16 @@ function MobileDrawer({ open, onClose }) {
       return () => clearTimeout(t)
     }
   }, [open])
+
+  const handleOpenPanel = (item) => {
+    setAnimClass('slide-in-right')
+    setActivePanel(item)
+  }
+
+  const handleBack = () => {
+    setAnimClass('slide-in-left')
+    setActivePanel(null)
+  }
 
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
@@ -129,15 +149,16 @@ function MobileDrawer({ open, onClose }) {
           </SheetClose>
         </SheetHeader>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto overflow-x-hidden">
+          <div key={activePanel?.id ?? 'main'} className={animClass}>
           {activePanel ? (
-            <MobilePanel item={activePanel} onBack={() => setActivePanel(null)} />
+            <MobilePanel item={activePanel} onBack={handleBack} />
           ) : (
             <div className="py-2">
               {NAV_ITEMS.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => setActivePanel(item)}
+                  onClick={() => handleOpenPanel(item)}
                   className="w-full text-left px-5 py-3.5 text-base font-medium text-[var(--color-text)] hover:bg-gray-50"
                 >
                   {item.label}
@@ -172,6 +193,7 @@ function MobileDrawer({ open, onClose }) {
               </div>
             </div>
           )}
+          </div>
         </div>
       </SheetContent>
     </Sheet>

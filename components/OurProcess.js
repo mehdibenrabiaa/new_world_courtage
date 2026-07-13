@@ -13,14 +13,14 @@ const STEPS = [
   {
     id: 2,
     icon: "/illustrations/step2.svg",
-    title: "Obtenez un devis personnalisé",
-    description: "Remplissez un formulaire simple et rapide. Nos agents agréés analysent votre profil pour vous proposer les meilleures offres.",
+    title: "Échangez avec un expert",
+    description: "Prenez contact avec l'un de nos conseillers agréés et transmettez-lui vos documents. Il analyse votre situation en détail.",
   },
   {
     id: 3,
     icon: "/illustrations/step3.svg",
-    title: "Mettez-vous en relation avec un expert",
-    description: "Visualisez en un coup d'œil les garanties et tarifs de plus de 100 compagnies partenaires, sans engagement.",
+    title: "Recevez les meilleures offres",
+    description: "Notre expert compare les offres de plus de 100 assureurs pour identifier les garanties les mieux adaptées à vos besoins et à votre budget.",
   },
   {
     id: 4,

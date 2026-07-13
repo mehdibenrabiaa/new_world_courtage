@@ -12,7 +12,7 @@ export default function Testimonials() {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="rounded-xl overflow-hidden flex flex-col lg:flex-row min-h-[480px] bg-[#F2693D] py-8 lg:py-14">
+        <div className="rounded-xl overflow-hidden flex flex-col lg:flex-row min-h-[480px] bg-[#F2693D] py-8 lg:py-14 gap-6 lg:gap-0">
 
           {/* Left — image (1/3) */}
           <div className="lg:w-1/3 px-4 lg:px-6 flex items-start justify-center">
@@ -26,7 +26,7 @@ export default function Testimonials() {
           {/* Right — content (2/3) */}
           <div className="lg:w-2/3 px-8 lg:px-14 flex flex-col gap-8">
 
-            <div className="flex flex-col gap-5">
+            <div className="flex flex-col gap-7">
               <span className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text)]">
                 Qui sommes-nous&nbsp;?
               </span>

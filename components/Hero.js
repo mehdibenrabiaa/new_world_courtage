@@ -46,12 +46,12 @@ function useMobileFitText() {
 }
 
 const CATEGORIES = [
-  { id: "auto", label: "Auto", href: "/assurance-auto/", icon: "/icons/car.svg" },
-  { id: "habitation", label: "Habitation", href: "/assurance-habitation/", icon: "/icons/home.svg" },
-  { id: "sante", label: "Santé", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
-  { id: "decennale", label: "Décennale", href: "/assurance-decennale/", icon: "/icons/building.svg" },
+  { id: "flotte-transport", label: "Flotte & Transport", href: "/assurance-auto/", icon: "/icons/truck.svg" },
+  { id: "pro-auto", label: "Pro de l'auto", href: "/assurance-pro-auto/", icon: "/icons/car.svg" },
+  { id: "construction", label: "Construction", href: "/assurance-construction/", icon: "/icons/building.svg" },
+  { id: "immobilier", label: "Immobilier", href: "/assurance-immobilier/", icon: "/icons/home.svg" },
   { id: "moto", label: "Moto", href: "/assurance-moto/", icon: "/icons/motorcycle.svg" },
-  { id: "poids-lourd", label: "Poids lourd", href: "/assurance-poids-lourd/", icon: "/icons/truck.svg" },
+  { id: "sante", label: "Santé", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
 ];
 
 export default function Hero() {
@@ -82,8 +82,8 @@ export default function Hero() {
                 ref={titleRef}
                 className={`sm:text-[36px] lg:text-[55px] text-[var(--color-text)] leading-[1.1] ${libreCaslon.className}`}
               >
-                <span className="block">Comparez. Choisissez.</span>
-                <span className="block"><em className={`italic ${libreCaslon.className}`}>Soyez couvert.</em></span>
+                <span className="block">La meilleure assurance</span>
+                <em className={`block italic ${libreCaslon.className}`}>au meilleur prix.</em>
               </p>
             </div>
 
