@@ -17,8 +17,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Footer from "../../components/Footer";
-
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
 function PageBreadcrumb() {
@@ -137,8 +135,6 @@ export default function AssuranceAutoPage() {
         <PageBreadcrumb />
         <HeroWithForm />
       </main>
-
-      <Footer />
     </>
   );
 }

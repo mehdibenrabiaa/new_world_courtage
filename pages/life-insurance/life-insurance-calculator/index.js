@@ -4,8 +4,6 @@ import { libreCaslon } from "@/lib/fonts";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
-import Footer from "../../../components/Footer";
-
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
 function PageBreadcrumb() {
@@ -195,8 +193,6 @@ export default function LifeInsuranceCalculatorPage() {
         <Hero />
         <Calculator />
       </main>
-
-      <Footer />
     </>
   );
 }

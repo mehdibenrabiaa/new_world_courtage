@@ -51,7 +51,7 @@ const CATEGORIES = [
   { id: "construction", label: "Construction", href: "/assurance-construction/", icon: "/icons/building.svg" },
   { id: "immobilier", label: "Immobilier", href: "/assurance-immobilier/", icon: "/icons/home.svg" },
   { id: "moto", label: "Moto", href: "/assurance-moto/", icon: "/icons/motorcycle.svg" },
-  { id: "sante", label: "SantÃ©", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
+  { id: "sante", label: "Santé", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
 ];
 
 export default function Hero() {
@@ -63,7 +63,7 @@ export default function Hero() {
         <div className="relative w-full min-h-[650px] lg:h-[75vw] lg:max-h-[90vh] lg:min-h-[600px] overflow-hidden rounded-none lg:rounded-xl">
           <img
             src="/hero.png"
-            alt="ProtÃ©gez ce qui compte le plus pour vous."
+            alt="Protégez ce qui compte le plus pour vous."
             width={1600}
             height={900}
             decoding="async"

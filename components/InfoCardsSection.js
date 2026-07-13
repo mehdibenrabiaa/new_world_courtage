@@ -84,9 +84,9 @@ function colsClass(cols) {
   return "lg:grid-cols-3";
 }
 
-function GridLayout({ items, cols, ...rest }) {
+function GridLayout({ items, cols, maxWidth, ...rest }) {
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 ${colsClass(cols)} gap-6`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 ${colsClass(cols)} gap-6 mx-auto w-full`} style={maxWidth ? { maxWidth } : undefined}>
       {items.map((item, i) => <CardItem key={i} item={item} index={i} {...rest} />)}
     </div>
   );
@@ -94,7 +94,7 @@ function GridLayout({ items, cols, ...rest }) {
 
 function ScrollLayout({ items, ...rest }) {
   return (
-    <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden -mx-4 px-4 lg:-mx-14 lg:px-14">
+    <div className="flex overflow-x-auto gap-4 pb-3 snap-x snap-mandatory [scrollbar-width:thin] [scrollbar-color:#d1d5db_transparent] [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full -mx-4 px-4 lg:-mx-14 lg:px-14">
       {items.map((item, i) => (
         <div key={i} className="flex-shrink-0 w-[300px] snap-start">
           <CardItem item={item} index={i} {...rest} />
@@ -146,6 +146,7 @@ export default function InfoCardsSection({
   cols = 3,
   ctaLabel = "",
   ctaHref = "/devis",
+  maxWidth = "1140px",
 }) {
   const cardProps = { cardStyle, showSteps, showLink, titleFont, imageVariant };
 
@@ -164,7 +165,7 @@ export default function InfoCardsSection({
   const cards =
     layout === "scroll" ? <ScrollLayout items={items} {...cardProps} /> :
     layout === "carousel" ? <CarouselLayout items={items} perPage={perPage} {...cardProps} /> :
-    <GridLayout items={items} cols={cols} {...cardProps} />;
+    <GridLayout items={items} cols={cols} maxWidth={maxWidth} {...cardProps} />;
 
   const cta = ctaLabel ? (
     <div className="flex justify-center mt-10">

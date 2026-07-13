@@ -1,4 +1,4 @@
-﻿import Image from "next/image";
+import Image from "next/image";
 import Link from "next/link";
 import { Mail, Phone, MapPin } from "lucide-react";
 
@@ -13,22 +13,21 @@ function WhatsAppIcon({ size = 16 }) {
 
 const TOP_LINKS = [
   {
-    heading: "Produits",
+    heading: "Nos assurances",
     items: [
-      { label: "Assurance Vie", href: "/life-insurance/" },
-      { label: "Assurance Habitation", href: "/assurance-habitation/" },
-      { label: "Assurance Auto", href: "/auto-insurance/" },
-      { label: "Assurance DÃ©cennale", href: "/assurance-decennale/" },
-      { label: "Calculateur d'assurance", href: "/life-insurance/life-insurance-calculator/" },
+      { label: "Flotte & Transport", href: "/assurance-transport/" },
+      { label: "Pro de l'auto", href: "/assurance-pro-auto/" },
+      { label: "Construction", href: "/assurance-construction/" },
+      { label: "Immobilier", href: "/assurance-immobilier/" },
+      { label: "Calculateur assurance auto", href: "/assurance-transport/calculateur/" },
     ],
   },
   {
     heading: "Entreprise",
     items: [
-      { label: "Ã€ propos", href: "/a-propos/" },
+      { label: "À propos", href: "/a-propos/" },
       { label: "Avis clients", href: "/a-propos/avis-clients/" },
-      { label: "ActualitÃ©s", href: "/actualites/" },
-      { label: "Recrutement", href: "/recrutement/" },
+      { label: "Actualités", href: "/actualites/" },
       { label: "Partenariats", href: "/a-propos/nos-partenaires/" },
     ],
   },
@@ -40,53 +39,53 @@ const CONTACT = {
   tel: "+33745891865",
   whatsappDisplay: "07 74 59 53 29",
   whatsappHref: "https://wa.me/33774595329",
-  address: ["455 Promenade des Anglais", "Immeuble Nice Premier â€“ Arenas Partners", "06000 Nice, France"],
+  address: ["455 Promenade des Anglais", "Immeuble Nice Premier — Arenas Partners", "06000 Nice, France"],
 };
-
-const nbsp = (s) => s.replace(/ ([?!:;Â»])/g, "Â $1");
 
 const GUIDE_LINKS = [
   {
-    heading: "Vie",
+    heading: "Flotte & Transport",
     items: [
-      { label: "Types d'assurance vie", href: "/life-insurance/types-of-life-insurance/" },
-      { label: "Assurance vieÂ : comment choisirÂ ?", href: "/life-insurance/how-to-buy-life-insurance/" },
-      { label: "De quel capital ai-je besoinÂ ?", href: "/life-insurance/life-insurance-calculator/" },
-      { label: "Comment fonctionne l'assurance vieÂ ?", href: "/life-insurance/how-does-life-insurance-work/" },
+      { label: "Assurance taxi", href: "/assurance-transport/taxi/" },
+      { label: "Assurance ambulance", href: "/assurance-transport/ambulance/" },
+      { label: "Assurance chauffeur VTC", href: "/assurance-transport/chauffeur-vtc/" },
+      { label: "Assurance poids lourd", href: "/assurance-transport/poids-lourd/" },
     ],
   },
   {
-    heading: "Habitation",
+    heading: "Pro de l'auto",
     items: [
-      { label: "Comment choisir son assurance habitationÂ ?", href: "/assurance-habitation/comment-choisir/" },
-      { label: "Quel niveau de couverture choisirÂ ?", href: "/assurance-habitation/niveau-de-couverture/" },
-      { label: "Pourquoi ma prime a-t-elle augmentÃ©Â ?", href: "/assurance-habitation/augmentation-prime/" },
+      { label: "Assurance garagiste", href: "/assurance-pro-auto/garagiste/" },
+      { label: "Assurance carrossier", href: "/assurance-pro-auto/carrossier/" },
+      { label: "Assurance auto-école", href: "/assurance-pro-auto/auto-ecole/" },
+      { label: "Assurance concessionnaire", href: "/assurance-pro-auto/concessionnaire/" },
     ],
   },
   {
-    heading: "Auto",
+    heading: "Construction",
     items: [
-      { label: "Comment choisir son assurance autoÂ ?", href: "/auto-insurance/how-to-buy-car-insurance/" },
-      { label: "Quelle couverture auto choisirÂ ?", href: "/auto-insurance/how-much-car-insurance-do-you-need/" },
-      { label: "Calculateur assurance auto", href: "/assurance-transport/calculateur/" },
+      { label: "Tous risques chantier", href: "/assurance-construction/tous-risques-chantier/" },
+      { label: "RC et décennale", href: "/assurance-construction/rc-decennale/" },
+      { label: "Dommages ouvrage", href: "/assurance-construction/dommages-ouvrage/" },
+      { label: "Assurance engins de chantier", href: "/assurance-construction/engins-chantier/" },
     ],
   },
   {
-    heading: "DÃ©cennale",
+    heading: "Immobilier",
     items: [
-      { label: "Comment fonctionne la dÃ©cennaleÂ ?", href: "/assurance-decennale/fonctionnement/" },
-      { label: "Types de garanties dÃ©cennales", href: "/assurance-decennale/types-de-garanties/" },
-      { label: "Suis-je obligÃ© de m'assurerÂ ?", href: "/assurance-decennale/obligation/" },
-      { label: "Combien coÃ»te la dÃ©cennaleÂ ?", href: "/assurance-decennale/tarifs/" },
+      { label: "Assurance copropriété", href: "/assurance-immobilier/copropriete/" },
+      { label: "Assurance immeuble", href: "/assurance-immobilier/immeuble/" },
+      { label: "Assurance loyers impayés", href: "/assurance-immobilier/loyers-impayes/" },
+      { label: "Assurance syndic", href: "/assurance-immobilier/syndic/" },
     ],
   },
 ];
 
 const LEGAL_LINKS = [
-  { label: "Politique de confidentialitÃ©", href: "/confidentialite/" },
-  { label: "AccessibilitÃ©", href: "/accessibilite/" },
-  { label: "Conditions gÃ©nÃ©rales", href: "/conditions-generales/" },
-  { label: "Mentions lÃ©gales", href: "/mentions-legales/" },
+  { label: "Politique de confidentialité", href: "/confidentialite/" },
+  { label: "Accessibilité", href: "/accessibilite/" },
+  { label: "Conditions générales", href: "/conditions-generales/" },
+  { label: "Mentions légales", href: "/mentions-legales/" },
 ];
 
 export default function Footer() {
@@ -94,19 +93,13 @@ export default function Footer() {
     <footer className="w-full bg-[var(--color-blue-navy)] mt-4">
       <div className="px-4 sm:px-6 lg:px-12 2xl:px-24 py-14">
 
-        {/* Top section â€” logo + columns */}
+        {/* Top section — logo + columns */}
         <div className="flex flex-col md:flex-row gap-10 md:gap-12 lg:gap-16 pb-12 border-b border-white/10">
 
           {/* Logo */}
           <div className="shrink-0">
-            <Link href="/" aria-label="New World Courtage â€” Accueil">
-              <Image
-                src="/nwc_logo_white.svg"
-                alt="New World Courtage"
-                width={160}
-                height={40}
-                className="h-11 w-auto"
-              />
+            <Link href="/" aria-label="New World Courtage — Accueil">
+              <Image src="/nwc_logo_white.svg" alt="New World Courtage" width={160} height={40} className="h-11 w-auto" />
             </Link>
           </div>
 
@@ -145,7 +138,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" aria-label={`WhatsApp : ${CONTACT.whatsappDisplay} (ouvre dans un nouvel onglet)`} className="flex items-center gap-2.5 text-[15px] text-white/75 hover:text-white transition-colors">
+                  <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-[15px] text-white/75 hover:text-white transition-colors">
                     <span className="shrink-0 text-white/60"><WhatsAppIcon size={15} /></span>
                     {CONTACT.whatsappDisplay}
                   </a>
@@ -174,7 +167,7 @@ export default function Footer() {
                   {items.map(({ label, href }) => (
                     <li key={href}>
                       <Link href={href} className="text-[15px] text-white/75 hover:text-white transition-colors leading-snug block">
-                        {nbsp(label)}
+                        {label}
                       </Link>
                     </li>
                   ))}
@@ -189,22 +182,22 @@ export default function Footer() {
 
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             {LEGAL_LINKS.map(({ label, href }) => (
-              <Link key={href} href={href} className="text-[14px] text-white/60 hover:text-white/70 transition-colors">
+              <Link key={href} href={href} className="text-[14px] text-white/60 transition-colors">
                 {label}
               </Link>
             ))}
           </div>
 
           <p className="text-[13px] text-white/60 leading-relaxed max-w-4xl">
-            New World Courtage SAS â€” courtier en assurance indÃ©pendant immatriculÃ© Ã  l&apos;ORIAS. Les informations fournies sur ce site ont Ã©tÃ© dÃ©veloppÃ©es Ã  des fins gÃ©nÃ©rales d&apos;information et d&apos;Ã©ducation. Nous faisons de notre mieux pour nous assurer que ces informations sont exactes et Ã  jour. Les devis ou fourchettes de primes d&apos;assurance affichÃ©s ne sont pas contractuels. La prime dÃ©finitive est dÃ©terminÃ©e par la compagnie d&apos;assurance Ã  l&apos;issue du processus de souscription.
+            New World Courtage SAS — courtier en assurance indépendant immatriculé à l&apos;ORIAS. Les informations fournies sur ce site ont été développées à des fins générales d&apos;information et d&apos;éducation. Nous faisons de notre mieux pour nous assurer que ces informations sont exactes et à jour. Les devis ou fourchettes de primes d&apos;assurance affichés ne sont pas contractuels. La prime définitive est déterminée par la compagnie d&apos;assurance à l&apos;issue du processus de souscription.
           </p>
 
           <p className="text-[13px] text-white/60 leading-relaxed max-w-4xl">
-            <strong className="text-white/60">Mention :</strong> Les images prÃ©sentes sur ce site peuvent Ãªtre gÃ©nÃ©rÃ©es par intelligence artificielle. Toute ressemblance avec des personnes rÃ©elles, vivantes ou dÃ©cÃ©dÃ©es, serait purement fortuite.
+            <strong className="text-white/60">Mention :</strong> Les images présentes sur ce site peuvent être générées par intelligence artificielle. Toute ressemblance avec des personnes réelles, vivantes ou décédées, serait purement fortuite.
           </p>
 
           <p className="text-[13px] text-white/60">
-            Â© {new Date().getFullYear()} New World Courtage. Tous droits rÃ©servÃ©s.
+            © {new Date().getFullYear()} New World Courtage. Tous droits réservés.
           </p>
 
         </div>
@@ -213,4 +206,3 @@ export default function Footer() {
     </footer>
   );
 }
-

@@ -1,9 +1,9 @@
-﻿export const NAV_ITEMS = [
+export const NAV_ITEMS = [
   {
     id: 'auto',
     label: 'Flotte & Transport',
     href: '/assurance-transport/',
-    cta: { tagline: "ProtÃ©gez votre flotte et vos vÃ©hicules professionnels", button: 'Devis gratuit', href: '/assurance-transport/' },
+    cta: { tagline: "Protégez votre flotte et vos véhicules professionnels", button: 'Devis gratuit', href: '/assurance-transport/' },
     sections: [
       {
         heading: 'Transport de personnes',
@@ -19,14 +19,14 @@
         links: [
           { label: 'Assurance poids lourd', href: '/assurance-transport/poids-lourd/' },
           { label: 'Assurance transpalette', href: '/assurance-transport/transpalette/' },
-          { label: 'Assurance marchandise transportÃ©e', href: '/assurance-transport/marchandise-transportee/' },
+          { label: 'Assurance marchandise transportée', href: '/assurance-transport/marchandise-transportee/' },
         ],
       },
       {
-        heading: 'Autres vÃ©hicules professionnels',
+        heading: 'Autres véhicules professionnels',
         links: [
           { label: 'Assurance auto mission', href: '/assurance-transport/auto-mission/' },
-          { label: 'Assurance triporteur Ã©lectrique', href: '/assurance-transport/triporteur-electrique/' },
+          { label: 'Assurance triporteur électrique', href: '/assurance-transport/triporteur-electrique/' },
           { label: 'Assurance 2 roues professionnelle', href: '/assurance-transport/2-roues-professionnelle/' },
         ],
       },
@@ -36,15 +36,15 @@
     id: 'pro-auto',
     label: "Pro de l'auto",
     href: '/assurance-pro-auto/',
-    cta: { tagline: "ProtÃ©gez votre activitÃ© automobile professionnelle", button: 'Devis gratuit', href: '/assurance-pro-auto/' },
+    cta: { tagline: "Protégez votre activité automobile professionnelle", button: 'Devis gratuit', href: '/assurance-pro-auto/' },
     sections: [
       {
-        heading: 'RÃ©paration & Entretien',
+        heading: 'Réparation & Entretien',
         links: [
           { label: 'Assurance garagiste', href: '/assurance-pro-auto/garagiste/' },
           { label: 'Assurance carrossier', href: '/assurance-pro-auto/carrossier/' },
-          { label: 'Assurance dÃ©panneur', href: '/assurance-pro-auto/depanneur/' },
-          { label: 'Assurance contrÃ´leur technique', href: '/assurance-pro-auto/controleur-technique/' },
+          { label: 'Assurance dépanneur', href: '/assurance-pro-auto/depanneur/' },
+          { label: 'Assurance contrôleur technique', href: '/assurance-pro-auto/controleur-technique/' },
           { label: 'Assurance station de lavage', href: '/assurance-pro-auto/station-de-lavage/' },
         ],
       },
@@ -52,10 +52,10 @@
         heading: 'Commerce & Services',
         links: [
           { label: 'Assurance concessionnaire automobile', href: '/assurance-pro-auto/concessionnaire/' },
-          { label: 'Assurance nÃ©gociant automobile', href: '/assurance-pro-auto/negociant/' },
+          { label: 'Assurance négociant automobile', href: '/assurance-pro-auto/negociant/' },
           { label: 'Assurance casse automobile', href: '/assurance-pro-auto/casse-automobile/' },
-          { label: 'Assurance auto-Ã©cole', href: '/assurance-pro-auto/auto-ecole/' },
-          { label: 'Assurance sociÃ©tÃ© de location de vÃ©hicule', href: '/assurance-pro-auto/location-vehicule/' },
+          { label: 'Assurance auto-école', href: '/assurance-pro-auto/auto-ecole/' },
+          { label: 'Assurance société de location de véhicule', href: '/assurance-pro-auto/location-vehicule/' },
         ],
       },
     ],
@@ -64,34 +64,34 @@
     id: 'construction',
     label: 'Construction',
     href: '/assurance-construction/',
-    cta: { tagline: "ProtÃ©gez vos chantiers et vos engins professionnels", button: 'Devis gratuit', href: '/assurance-construction/' },
+    cta: { tagline: "Protégez vos chantiers et vos engins professionnels", button: 'Devis gratuit', href: '/assurance-construction/' },
     sections: [
       {
-        heading: 'Garanties & ResponsabilitÃ©s',
+        heading: 'Garanties & Responsabilités',
         links: [
           { label: 'Tous risques chantier (TRC)', href: '/assurance-construction/tous-risques-chantier/' },
-          { label: 'ResponsabilitÃ© civile et dÃ©cennale', href: '/assurance-construction/rc-decennale/' },
+          { label: 'Responsabilité civile et décennale', href: '/assurance-construction/rc-decennale/' },
           { label: 'Dommages ouvrage', href: '/assurance-construction/dommages-ouvrage/' },
-          { label: 'Garanties financiÃ¨res d\'achÃ¨vement', href: '/assurance-construction/garanties-financieres/' },
-          { label: 'Constructeur non rÃ©alisateur', href: '/assurance-construction/constructeur-non-realisateur/' },
-          { label: 'DÃ©cennale entreprise Ã©trangÃ¨re', href: '/assurance-construction/decennale-entreprise-etrangere/' },
+          { label: "Garanties financières d'achèvement", href: '/assurance-construction/garanties-financieres/' },
+          { label: 'Constructeur non réalisateur', href: '/assurance-construction/constructeur-non-realisateur/' },
+          { label: 'Décennale entreprise étrangère', href: '/assurance-construction/decennale-entreprise-etrangere/' },
         ],
       },
       {
-        heading: 'MatÃ©riels & Engins',
+        heading: 'Matériels & Engins',
         links: [
           { label: 'Assurance engins de chantier', href: '/assurance-construction/engins-chantier/' },
-          { label: 'Assurance camion bÃ©ton / malaxeur', href: '/assurance-construction/camion-beton/' },
+          { label: 'Assurance camion béton / malaxeur', href: '/assurance-construction/camion-beton/' },
           { label: 'Grue mobile & engins de levage', href: '/assurance-construction/grue-engins-levage/' },
-          { label: 'Centrale Ã  bÃ©ton', href: '/assurance-construction/centrale-beton/' },
+          { label: 'Centrale à béton', href: '/assurance-construction/centrale-beton/' },
           { label: 'Bris de machine', href: '/assurance-construction/bris-de-machine/' },
         ],
       },
       {
-        heading: 'ActivitÃ©s spÃ©cifiques',
+        heading: 'Activités spécifiques',
         links: [
-          { label: 'Assurance dÃ©samiantage', href: '/assurance-construction/desamiantage/' },
-          { label: 'Bureaux & entrepÃ´ts', href: '/assurance-construction/bureaux-entrepots/' },
+          { label: 'Assurance désamiantage', href: '/assurance-construction/desamiantage/' },
+          { label: 'Bureaux & entrepôts', href: '/assurance-construction/bureaux-entrepots/' },
         ],
       },
     ],
@@ -100,13 +100,13 @@
     id: 'immobilier',
     label: 'Immobilier',
     href: '/assurance-immobilier/',
-    cta: { tagline: "ProtÃ©gez vos biens immobiliers avec la bonne couverture", button: 'Devis gratuit', href: '/assurance-immobilier/' },
+    cta: { tagline: "Protégez vos biens immobiliers avec la bonne couverture", button: 'Devis gratuit', href: '/assurance-immobilier/' },
     sections: [
       {
-        heading: 'CopropriÃ©tÃ© & Immeuble',
+        heading: 'Copropriété & Immeuble',
         links: [
-          { label: 'Assurance copropriÃ©tÃ©', href: '/assurance-immobilier/copropriete/' },
-          { label: 'Assurance copropriÃ©taire', href: '/assurance-immobilier/coproprietaire/' },
+          { label: 'Assurance copropriété', href: '/assurance-immobilier/copropriete/' },
+          { label: 'Assurance copropriétaire', href: '/assurance-immobilier/coproprietaire/' },
           { label: 'Assurance syndic', href: '/assurance-immobilier/syndic/' },
           { label: 'Assurance immeuble', href: '/assurance-immobilier/immeuble/' },
         ],
@@ -114,11 +114,10 @@
       {
         heading: 'Couvertures locatives',
         links: [
-          { label: 'Assurance loyers impayÃ©s', href: '/assurance-immobilier/loyers-impayes/' },
+          { label: 'Assurance loyers impayés', href: '/assurance-immobilier/loyers-impayes/' },
           { label: 'Assurance multirisques immeuble', href: '/assurance-immobilier/multirisques-immeuble/' },
         ],
       },
     ],
   },
 ]
-

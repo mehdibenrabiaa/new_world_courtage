@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Link from "next/link";
-import Footer from "@/components/Footer";
 import ReadyCta from "@/components/ReadyCta";
 
 const LAST_UPDATED = "9 juillet 2026";
@@ -150,8 +149,6 @@ export default function ConditionsGenerales() {
         </div>
         <ReadyCta />
       </main>
-
-      <Footer />
     </>
   );
 }

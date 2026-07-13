@@ -1,6 +1,5 @@
 import Head from "next/head";
 import Link from "next/link";
-import Footer from "@/components/Footer";
 import ReadyCta from "@/components/ReadyCta";
 import ManageCookiesButton from "@/components/ManageCookiesButton";
 
@@ -235,8 +234,6 @@ export default function PrivacyPolicy() {
         </div>
         <ReadyCta />
       </main>
-
-      <Footer />
     </>
   );
 }

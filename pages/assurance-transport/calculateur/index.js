@@ -3,8 +3,6 @@ import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbP
 import PageHero from "../../../components/PageHero";
 import CarCalculatorSection from "../../../components/CarCalculatorSection";
 import CarInsuranceProcess from "../../../components/CarInsuranceProcess";
-import Footer from "../../../components/Footer";
-
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
 function PageBreadcrumb() {
@@ -46,8 +44,6 @@ export default function CarInsuranceCalculatorPage() {
         <CarCalculatorSection />
         <CarInsuranceProcess />
       </main>
-
-      <Footer />
     </>
   );
 }

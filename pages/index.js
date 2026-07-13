@@ -7,7 +7,6 @@ import RealCustomers from "../components/RealCustomers";
 import TrustPilot from "../components/TrustPilot";
 import FinishedScrolling from "../components/FinishedScrolling";
 import FAQ from "../components/FAQ";
-import Footer from "../components/Footer";
 
 export default function Home() {
   return (
@@ -87,7 +86,9 @@ export default function Home() {
         <h1 className="sr-only">
           Comparez les meilleures assurances en France
         </h1>
-        <Hero />
+        <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
+          <Hero />
+        </div>
         <Partners />
         <TrustPilot />
         <RealCustomers />
@@ -96,7 +97,6 @@ export default function Home() {
         <FinishedScrolling />
         <FAQ className="px-4 lg:px-12 2xl:px-24" />
       </main>
-      <Footer />
     </>
   );
 }

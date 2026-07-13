@@ -11,18 +11,18 @@ const CURRENT_YEAR = new Date().getFullYear();
 const PERMIS_YEARS = Array.from({ length: CURRENT_YEAR - 1959 }, (_, i) => String(CURRENT_YEAR - i));
 
 const BONUS_MALUS = [
-  { label: "0,50 â€” Bonus maximum",       value: "0.50" },
-  { label: "0,60",                        value: "0.60" },
-  { label: "0,70",                        value: "0.70" },
-  { label: "0,80",                        value: "0.80" },
-  { label: "0,90",                        value: "0.90" },
-  { label: "1,00 â€” Coefficient de base",  value: "1.00" },
-  { label: "1,25",                        value: "1.25" },
-  { label: "1,50",                        value: "1.50" },
-  { label: "2,00",                        value: "2.00" },
-  { label: "2,50",                        value: "2.50" },
-  { label: "3,00",                        value: "3.00" },
-  { label: "3,50 â€” Malus maximum",        value: "3.50" },
+  { label: "0,50 — Bonus maximum",       value: "0.50" },
+  { label: "0,60",                          value: "0.60" },
+  { label: "0,70",                          value: "0.70" },
+  { label: "0,80",                          value: "0.80" },
+  { label: "0,90",                          value: "0.90" },
+  { label: "1,00 — Coefficient de base",  value: "1.00" },
+  { label: "1,25",                          value: "1.25" },
+  { label: "1,50",                          value: "1.50" },
+  { label: "2,00",                          value: "2.00" },
+  { label: "2,50",                          value: "2.50" },
+  { label: "3,00",                          value: "3.00" },
+  { label: "3,50 — Malus maximum",        value: "3.50" },
 ];
 
 function readStorage() {
@@ -113,11 +113,11 @@ export default function VehicleIdentityForm() {
     <form onSubmit={handleSubmit} className="flex flex-col gap-11">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-6">
 
-        {/* AnnÃ©e d'obtention du permis */}
-        <Field label="AnnÃ©e d'obtention du permis" required error={errors.permis}>
+        {/* Année d'obtention du permis */}
+        <Field label="Année d'obtention du permis" required error={errors.permis}>
           <Select value={permis} onValueChange={v => { setPermis(v); clearError("permis"); }}>
             <SelectTrigger className={triggerCls("permis")}>
-              <SelectValue placeholder="SÃ©lectionnez une annÃ©e" />
+              <SelectValue placeholder="Sélectionnez une année" />
             </SelectTrigger>
             <SelectContent>
               {PERMIS_YEARS.map(y => (
@@ -166,7 +166,7 @@ export default function VehicleIdentityForm() {
         </Field>
 
         {/* Immatriculation */}
-        <Field label="Immatriculation du vÃ©hicule" required htmlFor="field-immat" error={errors.immat}>
+        <Field label="Immatriculation du véhicule" required htmlFor="field-immat" error={errors.immat}>
           <input
             id="field-immat"
             type="text"
@@ -186,12 +186,12 @@ export default function VehicleIdentityForm() {
           {[
             { label: "Couverture budget",   opacity: 0.4 },
             { label: "Couverture moyenne",  opacity: 0.7 },
-            { label: "Couverture complÃ¨te", opacity: 1   },
+            { label: "Couverture complète", opacity: 1   },
           ].map(({ label, opacity }, i) => (
             <div key={i} className="grid items-center gap-x-3 py-2.5 px-3" style={{ gridTemplateColumns: "12px 1fr auto" }}>
               <div className="w-3 h-8" style={{ backgroundColor: `rgba(25, 97, 174, ${opacity})` }} />
               <span className="text-base text-gray-600">{label}</span>
-              <span className="text-[20px] font-semibold text-gray-300">â€” â€”</span>
+              <span className="text-[20px] font-semibold text-gray-300">— —</span>
             </div>
           ))}
         </div>
@@ -208,7 +208,7 @@ export default function VehicleIdentityForm() {
         </Button>
         <div className="flex items-center gap-2 my-5">
           <img src="/icons/lock.svg" alt="" aria-hidden="true" className="w-4 h-4 shrink-0 brightness-0 invert" />
-          <p className="text-xs font-medium text-white">La sÃ©curitÃ© de vos donnÃ©es est notre prioritÃ©.</p>
+          <p className="text-xs font-medium text-white">La sécurité de vos données est notre priorité.</p>
         </div>
       </div>
 
@@ -222,7 +222,7 @@ export default function VehicleIdentityForm() {
           </span>
         </summary>
         <p className="mt-3 text-sm text-white/60 leading-relaxed">
-          Nos estimations sont basÃ©es sur votre profil conducteur, votre coefficient bonus-malus et les caractÃ©ristiques de votre vÃ©hicule. Les tarifs rÃ©els sont dÃ©terminÃ©s par les compagnies d'assurance partenaires. Un conseiller agrÃ©Ã© vous contactera avec des offres personnalisÃ©es.
+          Nos estimations sont basées sur votre profil conducteur, votre coefficient bonus-malus et les caractéristiques de votre véhicule. Les tarifs réels sont déterminés par les compagnies d'assurance partenaires. Un conseiller agréé vous contactera avec des offres personnalisées.
         </p>
       </details>
 

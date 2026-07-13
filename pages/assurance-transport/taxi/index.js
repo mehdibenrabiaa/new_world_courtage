@@ -18,9 +18,9 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import Footer from "../../../components/Footer";
 import Testimonials from "../../../components/Testimonials";
 import InfoCardsSection from "../../../components/InfoCardsSection";
+import FinishedScrolling from "../../../components/FinishedScrolling";
 
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
@@ -126,7 +126,7 @@ function HeroWithForm() {
           </picture>
 
           <div className="relative z-10 h-full min-h-[560px] lg:min-h-[720px] flex flex-col justify-end">
-            <div className="bg-white pl-4 sm:pl-6 pr-4 sm:pr-16 pt-5 pb-5 w-full sm:w-[90%] lg:w-[80%] rounded-tr-none sm:rounded-tr-[60px] flex flex-col gap-4">
+            <div className="bg-white pl-4 sm:pl-6 pr-4 sm:pr-16 pt-5 pb-5 w-full sm:w-[90%] lg:w-[80%] max-w-[900px] rounded-tr-none sm:rounded-tr-[60px] flex flex-col gap-4">
 
               <h1 className={`text-[7vw] sm:text-[36px] lg:text-[55px] text-[var(--color-text)] leading-[1.15] mb-2 ${libreCaslon.className}`}>
                 Le bon contrat d&apos;assurance taxi commence par un{" "}
@@ -136,7 +136,7 @@ function HeroWithForm() {
               <div className="bg-[var(--color-brand)] rounded-lg p-6 flex flex-col md:flex-row md:items-end gap-4">
 
                 <div className="flex flex-col gap-1.5 w-full md:flex-1">
-                  <label className="text-[13px] font-semibold text-white">Type d&apos;assurance</label>
+                  <label className="text-[15px] font-semibold text-white">Type d&apos;assurance</label>
                   <Select defaultValue="taxi">
                     <SelectTrigger className="bg-white w-full h-10">
                       <SelectValue>{`Taxi`}</SelectValue>
@@ -151,7 +151,7 @@ function HeroWithForm() {
                 </div>
 
                 <div className="flex flex-col gap-1.5 w-full md:flex-1">
-                  <label className="text-[13px] font-semibold text-white">Couverture</label>
+                  <label className="text-[15px] font-semibold text-white">Couverture</label>
                   <Select defaultValue="full">
                     <SelectTrigger className="bg-white w-full h-10">
                       <SelectValue>{`Tous risques`}</SelectValue>
@@ -165,7 +165,7 @@ function HeroWithForm() {
                 </div>
 
                 <div className="flex flex-col gap-1.5 w-full md:flex-1">
-                  <label className="text-[13px] font-semibold text-white">Bonus malus</label>
+                  <label className="text-[15px] font-semibold text-white">Bonus malus</label>
                   <Select defaultValue="1.00">
                     <SelectTrigger className="bg-white w-full h-10">
                       <SelectValue>{`1.00`}</SelectValue>
@@ -216,31 +216,12 @@ export default function AssuranceTaxiPage() {
       </Head>
 
       <main>
-        <PageBreadcrumb />
-        <HeroWithForm />
-
-        <InfoCardsSection
-          title="Pas sûr par où"
-          titleItalic="commencer ?"
-          subtitle="Explorez nos guides pour tout savoir sur l'assurance taxi."
-          cardStyle="style1"
-          showLink
-          titleFont="serif"
-          layout="grid"
-          items={GUIDE_CARDS}
-        />
-
-        <InfoCardsSection
-          title="Trouvez les meilleures offres avec"
-          titleItalic="New World Courtage"
-          subtitle="Nos courtiers spécialisés négocient pour vous avec les assureurs reconnus du secteur taxi afin de vous proposer la meilleure couverture au meilleur prix."
-          cardStyle="style2"
-          showLink
-          withContainer
-          titleFont="sans"
-          layout="scroll"
-          items={OFFER_CARDS}
-        />
+        <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
+          <PageBreadcrumb />
+        </div>
+        <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
+          <HeroWithForm />
+        </div>
 
         <Testimonials
           bgColor="#f5f5f3"
@@ -255,9 +236,33 @@ export default function AssuranceTaxiPage() {
             "Protection des passagers transportés",
           ]}
         />
-      </main>
 
-      <Footer />
+        <InfoCardsSection
+          title="Pas sûr par où"
+          titleItalic="commencer ?"
+          subtitle="Explorez nos guides pour tout savoir sur l'assurance taxi."
+          cardStyle="style1"
+          showLink
+          titleFont="serif"
+          layout="grid"
+          items={GUIDE_CARDS}
+        />
+
+        <InfoCardsSection
+          title="Guides & conseils"
+          titleItalic="assurance."
+          subtitle="Tout ce que vous devez savoir avant de souscrire votre assurance taxi — expliqué simplement par nos experts."
+          cardStyle="style2"
+          showLink
+          withContainer
+          titleFont="sans"
+          layout="scroll"
+          ctaLabel="Lire plus de guides"
+          ctaHref="/assurance-transport/taxi/"
+          items={OFFER_CARDS}
+        />
+        <FinishedScrolling />
+      </main>
     </>
   );
 }

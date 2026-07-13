@@ -3,7 +3,6 @@ import { libreCaslon } from "@/lib/fonts";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import Footer from "../../components/Footer";
 import TrustPilot from "../../components/TrustPilot";
 
 const cx = "px-4 sm:px-8 lg:px-28 2xl:px-44";
@@ -186,8 +185,6 @@ export default function AvisClientsPage() {
         <TrustPilot className={cx} />
         <ExpertsSection />
       </main>
-
-      <Footer />
     </>
   );
 }

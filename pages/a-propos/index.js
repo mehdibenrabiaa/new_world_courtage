@@ -4,8 +4,6 @@ import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbP
 import { Card, CardContent } from "@/components/ui/card";
 import PageHero from "../../components/PageHero";
 import SocialMedia from "../../components/SocialMedia";
-import Footer from "../../components/Footer";
-
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
 function PageBreadcrumb() {
@@ -207,8 +205,6 @@ export default function AProposPage() {
         </div>
         <SocialMedia />
       </main>
-
-      <Footer />
     </>
   );
 }
