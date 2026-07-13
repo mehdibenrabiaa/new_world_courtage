@@ -1,4 +1,4 @@
-/** @type {import('next').NextConfig} */
+﻿/** @type {import('next').NextConfig} */
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: process.env.ANALYZE === 'true',
 })
@@ -10,12 +10,12 @@ const nextConfig = {
     return [
       {
         source: '/auto-insurance/car-insurance-calculator/devis/:path*',
-        destination: '/assurance-auto/calculateur/devis/:path*',
+        destination: '/assurance-transport/calculateur/devis/:path*',
         permanent: true,
       },
       {
         source: '/auto-insurance/car-insurance-calculator/:path*',
-        destination: '/assurance-auto/calculateur/:path*',
+        destination: '/assurance-transport/calculateur/:path*',
         permanent: true,
       },
     ]
@@ -36,3 +36,4 @@ const nextConfig = {
 }
 
 module.exports = withBundleAnalyzer(nextConfig)
+

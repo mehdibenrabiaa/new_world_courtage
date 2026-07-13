@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 import { Mail, Phone, MapPin } from "lucide-react";
 
@@ -18,16 +18,16 @@ const TOP_LINKS = [
       { label: "Assurance Vie", href: "/life-insurance/" },
       { label: "Assurance Habitation", href: "/assurance-habitation/" },
       { label: "Assurance Auto", href: "/auto-insurance/" },
-      { label: "Assurance Décennale", href: "/assurance-decennale/" },
+      { label: "Assurance DÃ©cennale", href: "/assurance-decennale/" },
       { label: "Calculateur d'assurance", href: "/life-insurance/life-insurance-calculator/" },
     ],
   },
   {
     heading: "Entreprise",
     items: [
-      { label: "À propos", href: "/a-propos/" },
+      { label: "Ã€ propos", href: "/a-propos/" },
       { label: "Avis clients", href: "/a-propos/avis-clients/" },
-      { label: "Actualités", href: "/actualites/" },
+      { label: "ActualitÃ©s", href: "/actualites/" },
       { label: "Recrutement", href: "/recrutement/" },
       { label: "Partenariats", href: "/a-propos/nos-partenaires/" },
     ],
@@ -40,53 +40,53 @@ const CONTACT = {
   tel: "+33745891865",
   whatsappDisplay: "07 74 59 53 29",
   whatsappHref: "https://wa.me/33774595329",
-  address: ["455 Promenade des Anglais", "Immeuble Nice Premier – Arenas Partners", "06000 Nice, France"],
+  address: ["455 Promenade des Anglais", "Immeuble Nice Premier â€“ Arenas Partners", "06000 Nice, France"],
 };
 
-const nbsp = (s) => s.replace(/ ([?!:;»])/g, " $1");
+const nbsp = (s) => s.replace(/ ([?!:;Â»])/g, "Â $1");
 
 const GUIDE_LINKS = [
   {
     heading: "Vie",
     items: [
       { label: "Types d'assurance vie", href: "/life-insurance/types-of-life-insurance/" },
-      { label: "Assurance vie : comment choisir ?", href: "/life-insurance/how-to-buy-life-insurance/" },
-      { label: "De quel capital ai-je besoin ?", href: "/life-insurance/life-insurance-calculator/" },
-      { label: "Comment fonctionne l'assurance vie ?", href: "/life-insurance/how-does-life-insurance-work/" },
+      { label: "Assurance vieÂ : comment choisirÂ ?", href: "/life-insurance/how-to-buy-life-insurance/" },
+      { label: "De quel capital ai-je besoinÂ ?", href: "/life-insurance/life-insurance-calculator/" },
+      { label: "Comment fonctionne l'assurance vieÂ ?", href: "/life-insurance/how-does-life-insurance-work/" },
     ],
   },
   {
     heading: "Habitation",
     items: [
-      { label: "Comment choisir son assurance habitation ?", href: "/assurance-habitation/comment-choisir/" },
-      { label: "Quel niveau de couverture choisir ?", href: "/assurance-habitation/niveau-de-couverture/" },
-      { label: "Pourquoi ma prime a-t-elle augmenté ?", href: "/assurance-habitation/augmentation-prime/" },
+      { label: "Comment choisir son assurance habitationÂ ?", href: "/assurance-habitation/comment-choisir/" },
+      { label: "Quel niveau de couverture choisirÂ ?", href: "/assurance-habitation/niveau-de-couverture/" },
+      { label: "Pourquoi ma prime a-t-elle augmentÃ©Â ?", href: "/assurance-habitation/augmentation-prime/" },
     ],
   },
   {
     heading: "Auto",
     items: [
-      { label: "Comment choisir son assurance auto ?", href: "/auto-insurance/how-to-buy-car-insurance/" },
-      { label: "Quelle couverture auto choisir ?", href: "/auto-insurance/how-much-car-insurance-do-you-need/" },
-      { label: "Calculateur assurance auto", href: "/assurance-auto/calculateur/" },
+      { label: "Comment choisir son assurance autoÂ ?", href: "/auto-insurance/how-to-buy-car-insurance/" },
+      { label: "Quelle couverture auto choisirÂ ?", href: "/auto-insurance/how-much-car-insurance-do-you-need/" },
+      { label: "Calculateur assurance auto", href: "/assurance-transport/calculateur/" },
     ],
   },
   {
-    heading: "Décennale",
+    heading: "DÃ©cennale",
     items: [
-      { label: "Comment fonctionne la décennale ?", href: "/assurance-decennale/fonctionnement/" },
-      { label: "Types de garanties décennales", href: "/assurance-decennale/types-de-garanties/" },
-      { label: "Suis-je obligé de m'assurer ?", href: "/assurance-decennale/obligation/" },
-      { label: "Combien coûte la décennale ?", href: "/assurance-decennale/tarifs/" },
+      { label: "Comment fonctionne la dÃ©cennaleÂ ?", href: "/assurance-decennale/fonctionnement/" },
+      { label: "Types de garanties dÃ©cennales", href: "/assurance-decennale/types-de-garanties/" },
+      { label: "Suis-je obligÃ© de m'assurerÂ ?", href: "/assurance-decennale/obligation/" },
+      { label: "Combien coÃ»te la dÃ©cennaleÂ ?", href: "/assurance-decennale/tarifs/" },
     ],
   },
 ];
 
 const LEGAL_LINKS = [
-  { label: "Politique de confidentialité", href: "/confidentialite/" },
-  { label: "Accessibilité", href: "/accessibilite/" },
-  { label: "Conditions générales", href: "/conditions-generales/" },
-  { label: "Mentions légales", href: "/mentions-legales/" },
+  { label: "Politique de confidentialitÃ©", href: "/confidentialite/" },
+  { label: "AccessibilitÃ©", href: "/accessibilite/" },
+  { label: "Conditions gÃ©nÃ©rales", href: "/conditions-generales/" },
+  { label: "Mentions lÃ©gales", href: "/mentions-legales/" },
 ];
 
 export default function Footer() {
@@ -94,12 +94,12 @@ export default function Footer() {
     <footer className="w-full bg-[var(--color-blue-navy)] mt-4">
       <div className="px-4 sm:px-6 lg:px-12 2xl:px-24 py-14">
 
-        {/* Top section — logo + columns */}
+        {/* Top section â€” logo + columns */}
         <div className="flex flex-col md:flex-row gap-10 md:gap-12 lg:gap-16 pb-12 border-b border-white/10">
 
           {/* Logo */}
           <div className="shrink-0">
-            <Link href="/" aria-label="New World Courtage — Accueil">
+            <Link href="/" aria-label="New World Courtage â€” Accueil">
               <Image
                 src="/nwc_logo_white.svg"
                 alt="New World Courtage"
@@ -196,15 +196,15 @@ export default function Footer() {
           </div>
 
           <p className="text-[13px] text-white/60 leading-relaxed max-w-4xl">
-            New World Courtage SAS — courtier en assurance indépendant immatriculé à l&apos;ORIAS. Les informations fournies sur ce site ont été développées à des fins générales d&apos;information et d&apos;éducation. Nous faisons de notre mieux pour nous assurer que ces informations sont exactes et à jour. Les devis ou fourchettes de primes d&apos;assurance affichés ne sont pas contractuels. La prime définitive est déterminée par la compagnie d&apos;assurance à l&apos;issue du processus de souscription.
+            New World Courtage SAS â€” courtier en assurance indÃ©pendant immatriculÃ© Ã  l&apos;ORIAS. Les informations fournies sur ce site ont Ã©tÃ© dÃ©veloppÃ©es Ã  des fins gÃ©nÃ©rales d&apos;information et d&apos;Ã©ducation. Nous faisons de notre mieux pour nous assurer que ces informations sont exactes et Ã  jour. Les devis ou fourchettes de primes d&apos;assurance affichÃ©s ne sont pas contractuels. La prime dÃ©finitive est dÃ©terminÃ©e par la compagnie d&apos;assurance Ã  l&apos;issue du processus de souscription.
           </p>
 
           <p className="text-[13px] text-white/60 leading-relaxed max-w-4xl">
-            <strong className="text-white/60">Mention :</strong> Les images présentes sur ce site peuvent être générées par intelligence artificielle. Toute ressemblance avec des personnes réelles, vivantes ou décédées, serait purement fortuite.
+            <strong className="text-white/60">Mention :</strong> Les images prÃ©sentes sur ce site peuvent Ãªtre gÃ©nÃ©rÃ©es par intelligence artificielle. Toute ressemblance avec des personnes rÃ©elles, vivantes ou dÃ©cÃ©dÃ©es, serait purement fortuite.
           </p>
 
           <p className="text-[13px] text-white/60">
-            © {new Date().getFullYear()} New World Courtage. Tous droits réservés.
+            Â© {new Date().getFullYear()} New World Courtage. Tous droits rÃ©servÃ©s.
           </p>
 
         </div>
@@ -213,3 +213,4 @@ export default function Footer() {
     </footer>
   );
 }
+

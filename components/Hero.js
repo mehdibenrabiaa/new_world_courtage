@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+﻿import { useEffect, useRef } from "react";
 import { libreCaslon } from "@/lib/fonts";
 import Link from "next/link";
 import { Card } from "@/components/ui/card";
@@ -46,12 +46,12 @@ function useMobileFitText() {
 }
 
 const CATEGORIES = [
-  { id: "flotte-transport", label: "Flotte & Transport", href: "/assurance-auto/", icon: "/icons/truck.svg" },
+  { id: "flotte-transport", label: "Flotte & Transport", href: "/assurance-transport/", icon: "/icons/truck.svg" },
   { id: "pro-auto", label: "Pro de l'auto", href: "/assurance-pro-auto/", icon: "/icons/car.svg" },
   { id: "construction", label: "Construction", href: "/assurance-construction/", icon: "/icons/building.svg" },
   { id: "immobilier", label: "Immobilier", href: "/assurance-immobilier/", icon: "/icons/home.svg" },
   { id: "moto", label: "Moto", href: "/assurance-moto/", icon: "/icons/motorcycle.svg" },
-  { id: "sante", label: "Santé", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
+  { id: "sante", label: "SantÃ©", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
 ];
 
 export default function Hero() {
@@ -61,22 +61,19 @@ export default function Hero() {
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
         <div className="relative w-full min-h-[650px] lg:h-[75vw] lg:max-h-[90vh] lg:min-h-[600px] overflow-hidden rounded-none lg:rounded-xl">
-          <picture className="absolute inset-0 w-full h-full">
-            <source media="(max-width: 1023px)" srcSet="/hero-mobile.jpg" />
-            <img
-              src="/hero.jpg"
-              alt="Protégez ce qui compte le plus pour vous."
-              width={1600}
-              height={900}
-              decoding="async"
-              loading="eager"
-              fetchpriority="high"
-              className="w-full h-full object-cover object-top"
-            />
-          </picture>
+          <img
+            src="/hero.png"
+            alt="ProtÃ©gez ce qui compte le plus pour vous."
+            width={1600}
+            height={900}
+            decoding="async"
+            loading="eager"
+            fetchpriority="high"
+            className="absolute inset-0 w-full h-full object-cover object-top"
+          />
 
           <div className="relative z-10 h-full flex flex-col">
-            {/* Headline — top left */}
+            {/* Headline â€” top left */}
             <div className="bg-white pl-4 sm:pl-6 pr-8 sm:pr-12 py-3 w-full sm:w-[90%] lg:w-[60%] rounded-br-none sm:rounded-br-[9999px]">
               <p
                 ref={titleRef}
@@ -112,3 +109,4 @@ export default function Hero() {
     </section>
   );
 }
+
