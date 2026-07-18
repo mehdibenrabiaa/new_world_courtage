@@ -118,9 +118,10 @@ export default function MentionsLegales() {
               Conformément aux articles L.612-1 et suivants du code de la consommation, en cas de litige non résolu avec New World Courtage SAS, vous pouvez saisir gratuitement le médiateur de l'assurance :
             </p>
             <div className="flex flex-col gap-2.5">
-              <Row label="Médiateur désigné" value="[NOM DU MÉDIATEUR À COMPLÉTER]" />
-              <Row label="Adresse" value="[ADRESSE DU MÉDIATEUR À COMPLÉTER]" />
-              <Row label="Site web" value="[LIEN DU MÉDIATEUR À COMPLÉTER]" />
+              <Row label="Médiateur désigné" value="La Médiation de l'Assurance" />
+              <Row label="Adresse" value="TSA 50110 - 75441 Paris Cedex 09" />
+              <Row label="Site web" value={<a href="https://www.mediation-assurance.org" target="_blank" rel="noopener noreferrer" className="text-[var(--color-brand)] hover:underline">www.mediation-assurance.org</a>} />
+              <Row label="Email" value={<a href="mailto:le.mediateur@mediation-assurance.org" className="text-[var(--color-brand)] hover:underline">le.mediateur@mediation-assurance.org</a>} />
             </div>
             <p className="text-xs text-gray-400">
               La saisine du médiateur n'est possible qu'après avoir préalablement tenté de résoudre le litige directement avec nos services à l'adresse <a href="mailto:contact@newworldcourtage.com" className="text-[var(--color-brand)] hover:underline">contact@newworldcourtage.com</a>.

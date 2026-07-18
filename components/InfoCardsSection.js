@@ -30,7 +30,7 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
       );
 
     const inner = (
-      <Card className="w-full overflow-hidden h-full transition-shadow duration-200 hover:shadow-md group flex flex-col">
+      <Card className="w-full overflow-hidden h-full rounded-[5px] transition-shadow duration-200 hover:shadow-md group flex flex-col">
         {imgHeader}
         <CardContent className="p-5 flex flex-col gap-4 flex-1">
           {showSteps && (
@@ -54,7 +54,7 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
   // style1
   const { Icon, title, description, href } = item;
   const inner = (
-    <div className="group flex flex-col bg-[#f5f5f3] rounded-2xl overflow-hidden transition-all duration-200 hover:shadow-md hover:scale-[1.02] h-full">
+    <div className="group flex flex-col bg-[#f5f5f3] rounded-[5px] overflow-hidden transition-all duration-200 hover:shadow-md hover:scale-[1.02] h-full">
       <div className="w-full flex items-center justify-center pt-8 pb-4">
         <Icon size={120} strokeWidth={1} className="text-[var(--color-brand)]" />
       </div>

@@ -1,7 +1,7 @@
 import { libreCaslon } from "@/lib/fonts";
 import VehicleIdentityForm from "./VehicleIdentityForm";
 
-export default function CarCalculatorSection() {
+export default function CarCalculatorSection({ redirectTo }) {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
@@ -10,7 +10,7 @@ export default function CarCalculatorSection() {
           {/* Left — title (1/3) */}
           <div className="hidden lg:flex lg:w-[40%] px-8 py-10 lg:px-14 lg:py-14 items-start">
             <h2 className={`text-[8vw] sm:text-[38px] lg:text-[46px] leading-[1.1] text-white ${libreCaslon.className}`}>
-              Combien d&apos;assurance auto vous faut-il et à quel <em className={`italic ${libreCaslon.className}`}>coût ?</em>
+              Recevez votre devis d&apos;assurance auto <em className={`italic ${libreCaslon.className}`}>gratuitement.</em>
             </h2>
           </div>
 
@@ -26,7 +26,7 @@ export default function CarCalculatorSection() {
               </div>
             </div>
 
-            <VehicleIdentityForm />
+            <VehicleIdentityForm redirectTo={redirectTo} />
 
           </div>
         </div>

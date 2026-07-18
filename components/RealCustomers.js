@@ -6,19 +6,22 @@ import CtaButton from "@/components/CtaButton";
 
 const TESTIMONIALS = [
   {
-    title: "Facile à utiliser",
-    quote: "Je cherchais une assurance vie pour protéger ma famille. L'équipe de New World Courtage m'a présenté plusieurs devis en quelques heures et l'intégration avec l'assureur choisi était parfaite. Je recommande !",
-    name: "Paul M.",
+    title: "Un accueil patient et efficace",
+    quote: "Une excellente expérience avec New World Courtage ! Simple, efficace et à l'écoute, l'équipe a su répondre à mes attentes. Même sans maîtriser l'informatique, j'ai reçu une aide précieuse. Un grand merci à Loubna pour sa patience et son efficacité. Ne change surtout pas !",
+    name: "Zaher",
+    href: "https://www.trustpilot.com/users/6a54c4294024a440d9a2264d",
   },
   {
-    title: "Un processus fluide et des conseils d'experts",
-    quote: "J'ai utilisé New World Courtage pour trouver une assurance vie et j'ai été vraiment impressionné. Le processus était simple et les outils de comparaison m'ont aidé à choisir la meilleure offre. Leurs conseillers sont compétents et disponibles à chaque étape.",
-    name: "Mark D.",
+    title: "Professionnalisme et gentillesse",
+    quote: "Un service de qualité, merci pour votre professionnalisme, votre gentillesse et votre patience. Mille merci !",
+    name: "Zakir Belmellat",
+    href: "https://www.trustpilot.com/reviews/6a550174923278d56dc35097",
   },
   {
-    title: "Une équipe vraiment à l'écoute",
-    quote: "Je me suis senti écouté et compris tout au long du processus. Une équipe vraiment professionnelle et disponible. Je n'hésiterai pas à les recommander à mon entourage.",
-    name: "Karen S.",
+    title: "Excellent conseiller – merci!",
+    quote: "J'ai eu le plaisir d'échanger avec une conseillère nommée Loubna. Elle était très compétente et m'a énormément aidé à choisir la formule d'assurance la plus adaptée à mes besoins. Son professionnalisme, sa disponibilité et la qualité de ses conseils ont rendu mon expérience très agréable.",
+    name: "Mehdi EL",
+    href: "https://www.trustpilot.com/users/6a5178d34024a45bb49f4793",
   },
   {
     title: "Rapide et sans mauvaise surprise",
@@ -78,7 +81,7 @@ function CardInner({ title, quote, name }) {
   );
 }
 
-const CARD_CLASS = "bg-transparent rounded-2xl p-6 flex flex-col gap-5 border border-[#e0e0e0]";
+const CARD_CLASS = "bg-transparent rounded-[5px] p-6 flex flex-col gap-5 border border-[#e0e0e0]";
 
 export default function RealCustomers() {
   const [page, setPage] = useState(0);
@@ -107,7 +110,7 @@ export default function RealCustomers() {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="relative rounded-[20px] bg-[#F0F4F8] px-4 py-10 lg:px-8 lg:py-14">
+        <div className="relative rounded-[5px] bg-[#F0F4F8] px-4 py-10 lg:px-8 lg:py-14">
 
           {/* Off-screen measurement grid — all 6 cards */}
           <div
@@ -154,10 +157,10 @@ export default function RealCustomers() {
 
           {/* Visible cards */}
           <div key={page} className={`grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}>
-            {visible.map(({ title, quote, name }) => (
+            {visible.map(({ title, quote, name, href }) => (
               <a
                 key={name}
-                href="https://www.trustpilot.com/review/newworldcourtage.fr"
+                href={href || "https://www.trustpilot.com/review/newworldcourtage.fr"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`${CARD_CLASS} cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] max-w-[400px] mx-auto w-full`}
@@ -171,8 +174,10 @@ export default function RealCustomers() {
           {/* Read more CTA */}
           <div className="flex justify-center mt-2 mb-6">
             <CtaButton
-              href="/avis/"
+              href="https://www.trustpilot.com/review/newworldcourtage.com"
               label="Voir plus d'avis"
+              target="_blank"
+              rel="noopener noreferrer"
             />
           </div>
 

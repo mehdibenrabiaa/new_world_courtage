@@ -21,7 +21,7 @@ export default function Testimonials({
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="rounded-xl overflow-hidden flex flex-col lg:flex-row min-h-[480px] py-8 lg:py-14 gap-6 lg:gap-0" style={{ backgroundColor: bgColor }}>
+        <div className="rounded-[5px] overflow-hidden flex flex-col lg:flex-row min-h-[480px] py-8 lg:py-14 gap-6 lg:gap-0" style={{ backgroundColor: bgColor }}>
 
           {/* Left — image (1/3) */}
           <div className="lg:w-1/3 px-4 lg:px-6 flex items-start justify-center">

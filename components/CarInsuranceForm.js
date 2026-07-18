@@ -2,9 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { DatePickerInput } from "@/components/DatePickerInput";
+import { MonthYearInput } from "@/components/MonthYearInput";
 import { ChevronLeft, ChevronRight, CheckCircle2, Check, Phone, Mail, CalendarDays } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,8 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Field, FieldContent, FieldLabel, FieldTitle } from "@/components/ui/field";
-
-const SECTIONS = ["Véhicule", "Conducteur", "Historique", "Couverture", "Contrat", "Contact"];
+import { Stepper, StepperNav, StepperItem, StepperTrigger, StepperIndicator, StepperSeparator, StepperTitle } from "@/components/ui/stepper";
 
 const CAR_BRANDS = [
   "Audi", "BMW", "Citroën", "Dacia", "DS Automobiles", "Fiat", "Ford", "Honda",
@@ -27,8 +28,9 @@ const MOTO_BRANDS = [
 ];
 
 // cols: 1 = half width, 2 = full width
-const STEPS = [
+const DEFAULT_STEPS = [
   // --- Véhicule ---
+  { id: 0,  cols: 2, section: "Véhicule",   type: "radio", card: true, eyebrow: "Pour commencer", question: "Quel véhicule souhaitez-vous assurer ?", options: ["Mon véhicule actuel", "Un futur achat"], values: ["current", "future"] },
   { id: 1,  cols: 2, section: "Véhicule",   type: "radio", card: true, question: "Quel type de véhicule souhaitez-vous assurer ?", options: ["Moto", "Scooter", "Voiture"], values: ["moto", "scooter", "voiture"] },
   { id: 2,  cols: 1, section: "Véhicule",   type: "select",   question: "Marque du véhicule",
     optionsFn: (answers) => {
@@ -78,6 +80,8 @@ const STEPS = [
 
 const TOKENS = {
   dark: {
+    eyebrow:         "text-white/60 font-medium",
+    bigQuestion:     "text-white",
     label:           "text-[var(--color-text)] font-semibold",
     hint:            "text-white/50",
     optional:        "text-white/30",
@@ -105,6 +109,8 @@ const TOKENS = {
     stepLineAhead:   "bg-gray-200",
   },
   light: {
+    eyebrow:         "text-gray-500 font-medium",
+    bigQuestion:     "text-[var(--color-text)]",
     label:           "text-[rgba(0,0,0,0.88)] font-normal",
     hint:            "text-gray-400",
     optional:        "text-gray-400",
@@ -292,23 +298,106 @@ function BookingPanel({ t }) {
   );
 }
 
+// ── Skip-logic (rules) ───────────────────────────────────────────────────────
+
+function isStepSkipped(step, answers) {
+  if (!step.rules || step.rules.length === 0) return false;
+  return step.rules.some(rule => {
+    if (rule.action !== "skip") return false;
+    const sourceValue = answers[rule.source_question_id];
+    if (rule.operator === "not_equals") return sourceValue !== rule.value;
+    return sourceValue === rule.value;
+  });
+}
+
+// Walks in `dir` (+1/-1) from `fromIdx`, skipping any step whose rules match, and
+// returns the first visible index (or an out-of-bounds index if none remain).
+function findVisibleStepIndex(steps, fromIdx, dir, answers) {
+  let i = fromIdx;
+  while (i >= 0 && i < steps.length && isStepSkipped(steps[i], answers)) {
+    i += dir;
+  }
+  return i;
+}
+
+// ── Resume-in-progress persistence (localStorage) ────────────────────────────
+
+function progressStorageKey(key) {
+  return `nwc_car_form_${key}`;
+}
+
+function readStoredProgress(key) {
+  if (!key) return null;
+  try {
+    const raw = localStorage.getItem(progressStorageKey(key));
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStoredProgress(key, data) {
+  if (!key) return;
+  try {
+    localStorage.setItem(progressStorageKey(key), JSON.stringify(data));
+  } catch {}
+}
+
+function clearStoredProgress(key) {
+  if (!key) return;
+  try {
+    localStorage.removeItem(progressStorageKey(key));
+  } catch {}
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function CarInsuranceForm({ initialAnswers = {}, startSection = 0, theme = "dark", onProgress }) {
-  const [sectionIdx, setSectionIdx] = useState(startSection);
+export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers = {}, startStep = 0, theme = "dark", onProgress, onSubmit, footerContent, storageKey }) {
+  const [stepIdx, setStepIdx] = useState(startStep);
+  const [direction, setDirection] = useState("next");
   const [answers, setAnswers] = useState(initialAnswers);
   const [submitted, setSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
+  const [hydrated, setHydrated] = useState(false);
 
   const t = TOKENS[theme];
-  const currentSectionName = SECTIONS[sectionIdx];
-  const sectionSteps = STEPS.filter(s => s.section === currentSectionName);
-  const isLastSection = sectionIdx === SECTIONS.length - 1;
-  const progress = Math.round(((sectionIdx + 1) / SECTIONS.length) * 100);
+  const step = steps[stepIdx];
+  const isLastStep = findVisibleStepIndex(steps, stepIdx + 1, 1, answers) >= steps.length;
+  const progress = Math.round(((stepIdx + 1) / steps.length) * 100);
+
+  // Sections, in first-appearance order, for the right-hand-side stepper.
+  const sections = [...new Set(steps.map(s => s.section).filter(Boolean))];
+  const currentSectionIdx = sections.indexOf(step.section);
 
   useEffect(() => {
     onProgress?.(progress);
   }, [progress]);
+
+  // Resume from a previous visit: merge any saved progress under `answers`
+  // (URL-derived initialAnswers still win on conflicts), jump back to the
+  // step they'd reached, then re-check skip-logic in case rules changed.
+  useEffect(() => {
+    const saved = readStoredProgress(storageKey);
+    const mergedAnswers = saved ? { ...saved.answers, ...initialAnswers } : initialAnswers;
+    let targetStep = startStep;
+    if (saved && typeof saved.stepIdx === "number") {
+      targetStep = Math.max(startStep, Math.min(saved.stepIdx, steps.length - 1));
+    }
+    if (isStepSkipped(steps[targetStep], mergedAnswers)) {
+      targetStep = Math.min(findVisibleStepIndex(steps, targetStep + 1, 1, mergedAnswers), steps.length - 1);
+    }
+    setAnswers(mergedAnswers);
+    setStepIdx(targetStep);
+    setHydrated(true);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist progress as the user fills the form, so a reload or a later visit
+  // resumes where they left off instead of starting blank.
+  useEffect(() => {
+    if (!hydrated) return;
+    writeStoredProgress(storageKey, { answers, stepIdx });
+  }, [answers, stepIdx, storageKey, hydrated]);
 
   function setAnswer(stepId, val) {
     setAnswers(prev => ({ ...prev, [stepId]: val }));
@@ -316,30 +405,47 @@ export default function CarInsuranceForm({ initialAnswers = {}, startSection = 0
   }
 
   function handleNext() {
-    const newErrors = {};
-    sectionSteps.forEach(step => {
-      if (step.optional || step.type === "checkbox") return;
+    if (!(step.optional || step.type === "checkbox")) {
       const ans = answers[step.id] ?? "";
-      if (ans === "") newErrors[step.id] = "Ce champ est requis.";
-    });
-
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      const firstId = Object.keys(newErrors)[0];
-      const el =
-        document.getElementById(`field-${firstId}`) ||
-        document.getElementById(`radio-${firstId}-0`);
-      el?.scrollIntoView({ behavior: "smooth", block: "center" });
-      return;
+      if (ans === "") {
+        setErrors({ [step.id]: "Ce champ est requis." });
+        return;
+      }
     }
 
     setErrors({});
-    if (isLastSection) setSubmitted(true);
-    else setSectionIdx(s => s + 1);
+    setDirection("next");
+    const next = findVisibleStepIndex(steps, stepIdx + 1, 1, answers);
+    if (next >= steps.length) {
+      clearStoredProgress(storageKey);
+      setSubmitted(true);
+      onSubmit?.(answers);
+    } else {
+      setStepIdx(next);
+    }
   }
 
   function handleBack() {
-    if (sectionIdx > 0) setSectionIdx(s => s - 1);
+    const prev = findVisibleStepIndex(steps, stepIdx - 1, -1, answers);
+    if (prev >= 0) {
+      setDirection("prev");
+      setStepIdx(prev);
+    }
+  }
+
+  function selectAndAdvance(stepId, val) {
+    const nextAnswers = { ...answers, [stepId]: val };
+    setAnswer(stepId, val);
+    setTimeout(() => {
+      const next = findVisibleStepIndex(steps, stepIdx + 1, 1, nextAnswers);
+      if (next >= steps.length) {
+        clearStoredProgress(storageKey);
+        setSubmitted(true);
+      } else {
+        setDirection("next");
+        setStepIdx(next);
+      }
+    }, 200);
   }
 
   if (submitted) {
@@ -347,172 +453,140 @@ export default function CarInsuranceForm({ initialAnswers = {}, startSection = 0
   }
 
   return (
+    <>
     <div className="flex flex-col gap-10">
 
-      {/* Steps — sticky below the header (64px logo row + 5px progress bar = 69px) */}
-      <div className="sticky top-[69px] z-30 bg-white -mx-4 px-4 lg:-mx-6 lg:px-6 py-4 border-b border-gray-100">
+      {/* Question — one at a time */}
+      {(() => {
+        const answer = answers[step.id] ?? (step.type === "checkbox" ? [] : "");
+        const dynamicOpts = step.optionsFn ? step.optionsFn(answers) : { options: step.options, values: step.values };
 
-        {/* Desktop */}
-        <div className="hidden sm:flex items-start">
-          {SECTIONS.map((s, i) => (
-            <div key={s} className="flex items-center flex-1 min-w-0">
-              <div className="flex flex-col items-center gap-1.5 shrink-0">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors ${
-                  i < sectionIdx ? t.stepCircleDone : i === sectionIdx ? t.stepCircleActive : t.stepCircleAhead
-                }`}>
-                  {i < sectionIdx ? <Check size={14} strokeWidth={2.5} /> : i + 1}
-                </div>
-                <span className={`text-xs whitespace-nowrap transition-colors ${
-                  i < sectionIdx ? t.stepLabelDone : i === sectionIdx ? t.stepLabelActive : t.stepLabelAhead
-                }`}>
-                  {s}
-                </span>
-              </div>
-              {i < SECTIONS.length - 1 && (
-                <div className={`flex-1 h-px mx-2 mb-5 transition-colors ${i < sectionIdx ? t.stepLine : t.stepLineAhead}`} />
+        return (
+          <div key={step.id} className={`flex flex-col gap-5 max-w-2xl ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}>
+
+            {/* Eyebrow + big question */}
+            <div className="flex flex-col gap-2">
+              {step.eyebrow && (
+                <p className={`text-sm uppercase tracking-wide ${t.eyebrow}`}>{step.eyebrow}</p>
               )}
-            </div>
-          ))}
-        </div>
-
-        {/* Mobile compact */}
-        <div className="flex sm:hidden items-center gap-3">
-          <div className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold shrink-0 ${t.stepCircleActive}`}>
-            {sectionIdx + 1}
-          </div>
-          <div className="flex flex-col gap-0.5">
-            <span className={`text-base font-semibold ${t.stepLabelActive}`}>{currentSectionName}</span>
-            <span className={`text-xs ${t.stepLabelAhead}`}>Étape {sectionIdx + 1} sur {SECTIONS.length}</span>
-          </div>
-          <div className={`flex-1 h-1.5 rounded-full overflow-hidden ml-2 ${t.stepLineAhead}`}>
-            <div className={`h-full rounded-full transition-all duration-300 ${t.stepLine}`} style={{ width: `${progress}%` }} />
-          </div>
-        </div>
-
-      </div>
-
-      {/* Questions — 2-col grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10">
-        {sectionSteps.map((step) => {
-          const answer = answers[step.id] ?? (step.type === "checkbox" ? [] : "");
-          const dynamicOpts = step.optionsFn ? step.optionsFn(answers) : { options: step.options, values: step.values };
-
-          return (
-            <div
-              key={step.id}
-              className={`flex flex-col gap-3 ${step.cols === 2 ? "col-span-1 sm:col-span-2" : "col-span-1"}`}
-            >
-              {/* Label */}
               {(step.type === "radio" || step.type === "checkbox") ? (
-                <p className={`text-base lg:text-lg leading-snug ${t.label}`}>
+                <p className={`text-2xl sm:text-[35px] font-semibold leading-snug ${t.bigQuestion}`}>
                   {step.question}
                   {step.optional && <span className={`ml-2 font-normal text-sm ${t.optional}`}>(optionnel)</span>}
                 </p>
               ) : (
-                <label htmlFor={`field-${step.id}`} className={`text-base lg:text-lg leading-snug cursor-pointer ${t.label}`}>
+                <label htmlFor={`field-${step.id}`} className={`text-2xl sm:text-[35px] font-semibold leading-snug cursor-pointer ${t.bigQuestion}`}>
                   {step.question}
                   {step.optional && <span className={`ml-2 font-normal text-sm ${t.optional}`}>(optionnel)</span>}
                 </label>
               )}
+              {step.hint && <p className={`text-sm ${t.hint}`}>{step.hint}</p>}
+            </div>
 
-              {/* Radio — card style (vehicle type) */}
-              {step.type === "radio" && step.card && (
-                <>
-                  <RadioGroup
-                    value={answer}
-                    onValueChange={val => setAnswer(step.id, val)}
-                    className="grid grid-cols-1 sm:grid-cols-3 gap-3"
-                  >
-                    {dynamicOpts.options.map((opt, i) => (
-                      <FieldLabel key={i} htmlFor={`radio-${step.id}-${i}`}>
-                        <Field
-                          orientation="horizontal"
-                          className={`transition-colors ${
-                            answer === dynamicOpts.values[i]
-                              ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
-                              : errors[step.id]
-                                ? "border-[var(--color-error)]"
-                                : "hover:border-[var(--color-brand)]"
-                          }`}
-                        >
-                          <FieldContent>
-                            <FieldTitle>{opt}</FieldTitle>
-                          </FieldContent>
-                          <RadioGroupItem value={dynamicOpts.values[i]} id={`radio-${step.id}-${i}`} />
-                        </Field>
-                      </FieldLabel>
-                    ))}
-                  </RadioGroup>
-                  {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-                </>
-              )}
-
-              {/* Radio — inline style */}
-              {step.type === "radio" && !step.card && (
-                <>
-                  <RadioGroup
-                    value={answer}
-                    onValueChange={val => setAnswer(step.id, val)}
-                  >
-                    {dynamicOpts.options.map((opt, i) => (
-                      <div key={i} className="flex items-center gap-2.5">
-                        <RadioGroupItem value={dynamicOpts.values[i]} id={`radio-${step.id}-${i}`} />
-                        <Label htmlFor={`radio-${step.id}-${i}`} className={`text-base font-normal ${t.radioText}`}>{opt}</Label>
-                      </div>
-                    ))}
-                  </RadioGroup>
-                  {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-                </>
-              )}
-
-              {/* Checkbox */}
-              {step.type === "checkbox" && (
-                <div className="flex flex-wrap gap-x-6 gap-y-4">
-                  {step.options.map((opt, i) => {
-                    const val = step.values[i];
-                    const isSelected = answer.includes(val);
-                    return (
-                      <label key={i} className="flex items-center gap-2.5 cursor-pointer group"
-                        onClick={() => setAnswer(step.id, isSelected ? answer.filter(v => v !== val) : [...answer, val])}>
-                        <span className={`w-5 h-5 border-2 flex items-center justify-center shrink-0 transition-colors ${
-                          isSelected ? t.checkBoxSelected : t.checkBox
-                        }`}>
-                          {isSelected && (
-                            <svg width="11" height="9" viewBox="0 0 10 8" fill="none">
-                              <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                            </svg>
-                          )}
-                        </span>
-                        <span className={`text-base ${t.checkText}`}>{opt}</span>
-                      </label>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Select */}
-              {step.type === "select" && (
-                <>
-                  <Select value={answer} onValueChange={val => setAnswer(step.id, val)}>
-                    <SelectTrigger
-                      id={`field-${step.id}`}
-                      className={`w-full ${errors[step.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
+            {/* Radio — card style */}
+            {step.type === "radio" && step.card && (
+              <>
+                <RadioGroup
+                  value={answer}
+                  onValueChange={val => selectAndAdvance(step.id, val)}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                >
+                  {dynamicOpts.options.map((opt, i) => (
+                    <FieldLabel
+                      key={i}
+                      htmlFor={`radio-${step.id}-${i}`}
+                      className={`transition-colors ${
+                        answer === dynamicOpts.values[i]
+                          ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
+                          : errors[step.id]
+                            ? "border-[var(--color-error)]"
+                            : "hover:border-[var(--color-brand)]"
+                      }`}
                     >
-                      <SelectValue placeholder="Sélectionnez une option" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {dynamicOpts.options.map((opt, i) => (
-                        <SelectItem key={i} value={dynamicOpts.values[i]}>{opt}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-                </>
-              )}
+                      <Field orientation="horizontal">
+                        <FieldContent>
+                          <FieldTitle>{opt}</FieldTitle>
+                        </FieldContent>
+                        <RadioGroupItem
+                          value={dynamicOpts.values[i]}
+                          id={`radio-${step.id}-${i}`}
+                          className="sr-only"
+                        />
+                      </Field>
+                    </FieldLabel>
+                  ))}
+                </RadioGroup>
+                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
+              </>
+            )}
 
-              {/* Date / month picker */}
-              {step.type === "input" && (step.inputType === "date" || step.inputType === "month") && (
-                <>
+            {/* Radio — inline style */}
+            {step.type === "radio" && !step.card && (
+              <>
+                <RadioGroup
+                  value={answer}
+                  onValueChange={val => selectAndAdvance(step.id, val)}
+                >
+                  {dynamicOpts.options.map((opt, i) => (
+                    <Label key={i} htmlFor={`radio-${step.id}-${i}`} className="flex items-center gap-2.5">
+                      <RadioGroupItem value={dynamicOpts.values[i]} id={`radio-${step.id}-${i}`} className="sr-only" />
+                      <span className={`text-base font-normal ${t.radioText}`}>{opt}</span>
+                    </Label>
+                  ))}
+                </RadioGroup>
+                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
+              </>
+            )}
+
+            {/* Checkbox */}
+            {step.type === "checkbox" && (
+              <div className="flex flex-wrap gap-x-6 gap-y-4">
+                {step.options.map((opt, i) => {
+                  const val = step.values[i];
+                  const isSelected = answer.includes(val);
+                  return (
+                    <label key={i} className="flex items-center gap-2.5 cursor-pointer group"
+                      onClick={() => setAnswer(step.id, isSelected ? answer.filter(v => v !== val) : [...answer, val])}>
+                      <span className={`w-5 h-5 border-2 flex items-center justify-center shrink-0 transition-colors ${
+                        isSelected ? t.checkBoxSelected : t.checkBox
+                      }`}>
+                        {isSelected && (
+                          <svg width="11" height="9" viewBox="0 0 10 8" fill="none">
+                            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                        )}
+                      </span>
+                      <span className={`text-base ${t.checkText}`}>{opt}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Select */}
+            {step.type === "select" && (
+              <>
+                <Select value={answer} onValueChange={val => setAnswer(step.id, val)}>
+                  <SelectTrigger
+                    id={`field-${step.id}`}
+                    className={`w-full max-w-sm bg-white h-[50px] data-[size=default]:h-[50px] ${errors[step.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
+                  >
+                    <SelectValue placeholder="Sélectionnez une option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dynamicOpts.options.map((opt, i) => (
+                      <SelectItem key={i} value={dynamicOpts.values[i]}>{opt}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
+              </>
+            )}
+
+            {/* Full date picker */}
+            {step.type === "input" && step.inputType === "date" && (
+              <>
+                <div className="max-w-sm">
                   <DatePickerInput
                     id={`field-${step.id}`}
                     value={answer}
@@ -520,51 +594,138 @@ export default function CarInsuranceForm({ initialAnswers = {}, startSection = 0
                     placeholder={step.placeholder || "Sélectionnez une date"}
                     theme={theme}
                     error={!!errors[step.id]}
+                    className="bg-white h-[50px]"
                   />
-                  {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-                </>
-              )}
+                </div>
+                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
+              </>
+            )}
 
-              {/* Text / number / email / tel */}
-              {step.type === "input" && step.inputType !== "date" && step.inputType !== "month" && (
-                <>
-                  <Input
-                    id={`field-${step.id}`}
-                    type={step.inputType}
-                    placeholder={step.placeholder}
-                    value={answer}
-                    onChange={e => setAnswer(step.id, e.target.value)}
-                    className={errors[step.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}
-                  />
-                  {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-                </>
-              )}
-            </div>
-          );
-        })}
-      </div>
+            {/* Month + year dropdowns */}
+            {step.type === "input" && step.inputType === "month" && (
+              <>
+                <MonthYearInput
+                  mode="month"
+                  value={answer}
+                  onChange={val => setAnswer(step.id, val)}
+                  error={!!errors[step.id]}
+                  className="max-w-md"
+                />
+                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
+              </>
+            )}
+
+            {/* Year-only dropdown */}
+            {step.type === "input" && step.inputType === "year" && (
+              <>
+                <MonthYearInput
+                  mode="year"
+                  value={answer}
+                  onChange={val => setAnswer(step.id, val)}
+                  error={!!errors[step.id]}
+                  className="max-w-[160px]"
+                />
+                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
+              </>
+            )}
+
+            {/* Text / number / email / tel */}
+            {step.type === "input" && !["date", "month", "year"].includes(step.inputType) && (
+              <>
+                <Input
+                  id={`field-${step.id}`}
+                  type={step.inputType}
+                  inputMode={step.inputType === "tel" ? "tel" : undefined}
+                  placeholder={step.placeholder}
+                  value={answer}
+                  onChange={e => {
+                    let v = step.inputType === "tel" ? e.target.value.replace(/[^\d\s+]/g, "") : e.target.value;
+                    if (step.uppercase) v = v.toUpperCase();
+                    setAnswer(step.id, v);
+                  }}
+                  onKeyDown={e => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleNext();
+                    }
+                  }}
+                  className={`max-w-sm bg-white h-[50px] ${errors[step.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
+                />
+                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
+              </>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Navigation */}
-      <div className="flex items-center justify-between pt-2">
-        <Button
-          variant="ghost"
-          onClick={handleBack}
-          disabled={sectionIdx === 0}
-          className={`px-0 gap-1 ${t.backBtn}`}
-        >
-          <ChevronLeft size={16} />
-          Retour
-        </Button>
+      {(() => {
+        const navButtons = (
+          <ButtonGroup>
+            <Button
+              variant="outline"
+              onClick={handleBack}
+              disabled={findVisibleStepIndex(steps, stepIdx - 1, -1, answers) < 0}
+              className="gap-1"
+            >
+              <ChevronLeft size={16} />
+              Retour
+            </Button>
 
-        <Button
-          onClick={handleNext}
-          className={`gap-1 ${t.nextBtn}`}
-        >
-          {isLastSection ? "Envoyer ma demande" : "Suivant"}
-          {!isLastSection && <ChevronRight size={16} />}
-        </Button>
-      </div>
+            <Button
+              onClick={handleNext}
+              className={`gap-1 ${t.nextBtn}`}
+            >
+              {isLastStep ? "Envoyer ma demande" : "Suivant"}
+              {!isLastStep && <ChevronRight size={16} />}
+            </Button>
+          </ButtonGroup>
+        );
+
+        if (!footerContent) {
+          return <div className="flex items-center justify-end pt-2">{navButtons}</div>;
+        }
+
+        return (
+          <div className="fixed inset-x-0 bottom-0 z-40 bg-white border-t border-gray-100 px-4 lg:px-12 py-4 flex items-center justify-between">
+            {footerContent}
+            {navButtons}
+          </div>
+        );
+      })()}
 
     </div>
+
+    {sections.length > 1 && (
+      <aside
+        className="hidden lg:block fixed right-8 xl:right-16 top-1/2 -translate-y-1/2 z-30 w-56"
+        style={{ "--primary": "var(--color-brand)", "--primary-foreground": "#ffffff" }}
+      >
+        <Stepper value={currentSectionIdx + 1} orientation="vertical">
+          <StepperNav>
+            {sections.map((section, i) => (
+              <StepperItem key={section} step={i + 1} className="relative items-start not-last:flex-1">
+                <StepperTrigger asChild className="items-start gap-2.5 pb-8 last:pb-0">
+                  <div className="flex items-start gap-2.5">
+                    <StepperIndicator>
+                      {i + 1 < currentSectionIdx + 1 ? <Check size={12} /> : i + 1}
+                    </StepperIndicator>
+                    <StepperTitle
+                      className={i === currentSectionIdx ? "text-[var(--color-text)]" : "text-gray-400"}
+                    >
+                      {section}
+                    </StepperTitle>
+                  </div>
+                </StepperTrigger>
+                {i < sections.length - 1 && (
+                  <StepperSeparator className="absolute inset-y-0 top-6 left-3 -order-1 -translate-x-1/2" />
+                )}
+              </StepperItem>
+            ))}
+          </StepperNav>
+        </Stepper>
+      </aside>
+    )}
+    </>
   );
 }

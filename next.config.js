@@ -10,7 +10,7 @@ const nextConfig = {
     return [
       {
         source: '/auto-insurance/car-insurance-calculator/devis/:path*',
-        destination: '/assurance-transport/calculateur/devis/:path*',
+        destination: '/assurance-transport/devis/:path*',
         permanent: true,
       },
       {

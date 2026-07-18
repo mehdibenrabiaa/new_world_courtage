@@ -1,15 +1,7 @@
 import Head from "next/head";
-import Link from "next/link";
-import { libreCaslon } from "@/lib/fonts";
-import { Button } from "@/components/ui/button";
+import PageHero from "@/components/PageHero";
+import CarCalculatorSection from "@/components/CarCalculatorSection";
 import { ClipboardCheck, Umbrella, Scale } from "lucide-react";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -110,98 +102,6 @@ function PageBreadcrumb() {
   );
 }
 
-function HeroWithForm() {
-  return (
-    <section className="w-full py-4">
-      <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="relative w-full min-h-[560px] lg:min-h-[720px] overflow-hidden rounded-none lg:rounded-xl">
-
-          <picture className="absolute inset-0 w-full h-full">
-            <source media="(max-width: 1023px)" srcSet="/taxi_page.png" />
-            <img
-              src="/taxi_page.png"
-              alt="Assurance taxi New World Courtage"
-              className="w-full h-full object-cover object-center"
-            />
-          </picture>
-
-          <div className="relative z-10 h-full min-h-[560px] lg:min-h-[720px] flex flex-col justify-end">
-            <div className="bg-white pl-4 sm:pl-6 pr-4 sm:pr-16 pt-5 pb-5 w-full sm:w-[90%] lg:w-[80%] max-w-[900px] rounded-tr-none sm:rounded-tr-[60px] flex flex-col gap-4">
-
-              <h1 className={`text-[7vw] sm:text-[36px] lg:text-[55px] text-[var(--color-text)] leading-[1.15] mb-2 ${libreCaslon.className}`}>
-                Le bon contrat d&apos;assurance taxi commence par un{" "}
-                <em className={`italic ${libreCaslon.className}`}>simple devis.</em>
-              </h1>
-
-              <div className="bg-[var(--color-brand)] rounded-lg p-6 flex flex-col md:flex-row md:items-end gap-4">
-
-                <div className="flex flex-col gap-1.5 w-full md:flex-1">
-                  <label className="text-[15px] font-semibold text-white">Type d&apos;assurance</label>
-                  <Select defaultValue="taxi">
-                    <SelectTrigger className="bg-white w-full h-10">
-                      <SelectValue>{`Taxi`}</SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="taxi">Taxi</SelectItem>
-                      <SelectItem value="vtc">Chauffeur VTC</SelectItem>
-                      <SelectItem value="ambulance">Ambulance</SelectItem>
-                      <SelectItem value="transport-public">Transport public de voyageurs</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex flex-col gap-1.5 w-full md:flex-1">
-                  <label className="text-[15px] font-semibold text-white">Couverture</label>
-                  <Select defaultValue="full">
-                    <SelectTrigger className="bg-white w-full h-10">
-                      <SelectValue>{`Tous risques`}</SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="full">Tous risques</SelectItem>
-                      <SelectItem value="third-party">Au tiers</SelectItem>
-                      <SelectItem value="third-party-plus">Au tiers étendu</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="flex flex-col gap-1.5 w-full md:flex-1">
-                  <label className="text-[15px] font-semibold text-white">Bonus malus</label>
-                  <Select defaultValue="1.00">
-                    <SelectTrigger className="bg-white w-full h-10">
-                      <SelectValue>{`1.00`}</SelectValue>
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="0.50">0.50 — Bonus maximum</SelectItem>
-                      <SelectItem value="0.60">0.60</SelectItem>
-                      <SelectItem value="0.70">0.70</SelectItem>
-                      <SelectItem value="0.80">0.80</SelectItem>
-                      <SelectItem value="0.90">0.90</SelectItem>
-                      <SelectItem value="1.00">1.00 — Référence</SelectItem>
-                      <SelectItem value="1.25">1.25</SelectItem>
-                      <SelectItem value="1.50">1.50</SelectItem>
-                      <SelectItem value="2.00">2.00</SelectItem>
-                      <SelectItem value="2.50">2.50</SelectItem>
-                      <SelectItem value="3.50">3.50 — Malus maximum</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <Link href="/assurance-transport/calculateur/" className="w-full md:w-auto shrink-0">
-                  <Button className="h-10 bg-white hover:bg-gray-100 text-black font-semibold px-6 rounded-md w-full">
-                    Commencer
-                  </Button>
-                </Link>
-
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export default function AssuranceTaxiPage() {
   return (
     <>
@@ -219,9 +119,15 @@ export default function AssuranceTaxiPage() {
         <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
           <PageBreadcrumb />
         </div>
-        <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
-          <HeroWithForm />
-        </div>
+        <PageHero
+          title={<>Le bon contrat d&apos;assurance taxi commence par un{" "}<em className="italic">simple devis.</em></>}
+          image="/taxi_page.png"
+          imageAlt="Assurance taxi New World Courtage"
+          titlePosition="bottom"
+          titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[55px]"
+        />
+
+        <CarCalculatorSection redirectTo="/assurance-transport/taxi/devis/" />
 
         <Testimonials
           bgColor="#f5f5f3"

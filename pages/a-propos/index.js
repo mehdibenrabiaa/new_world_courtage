@@ -168,7 +168,8 @@ export default function AProposPage() {
           <section className="flex flex-col gap-4">
             <h2 className="text-xl font-bold text-[#131212]">Questions fréquentes</h2>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <Card className="bg-[var(--color-light)] border-0 shadow-none">
+              <Card className="bg-[var(--color-light)] border-0 shadow-none overflow-hidden rounded-t-none rounded-b-[var(--radius)]">
+                <div className="h-2 bg-[var(--color-brand)]" />
                 <CardContent className="p-6 flex flex-col gap-3">
                   <h3 className="text-[15px] font-semibold text-[#131212] leading-snug">
                     Est-il moins cher de souscrire une assurance via New World Courtage ?
@@ -178,7 +179,8 @@ export default function AProposPage() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="bg-[var(--color-light)] border-0 shadow-none">
+              <Card className="bg-[var(--color-light)] border-0 shadow-none overflow-hidden rounded-t-none rounded-b-[var(--radius)]">
+                <div className="h-2 bg-[var(--color-brand)]" />
                 <CardContent className="p-6 flex flex-col gap-3">
                   <h3 className="text-[15px] font-semibold text-[#131212] leading-snug">
                     New World Courtage est-il affilié à une compagnie d&apos;assurance ?

@@ -22,6 +22,10 @@ export function DatePickerInput({ id, value, onChange, placeholder = "Sélection
   const [open, setOpen] = React.useState(false)
   const [date, setDate] = React.useState(() => parseDate(value))
 
+  React.useEffect(() => {
+    setDate(parseDate(value))
+  }, [value])
+
   function handleSelect(selected) {
     setDate(selected)
     setOpen(false)
@@ -35,6 +39,7 @@ export function DatePickerInput({ id, value, onChange, placeholder = "Sélection
       <PopoverTrigger asChild>
         <Button
           id={id}
+          type="button"
           variant="outline"
           className={cn(
             "w-full justify-start font-normal text-base",
