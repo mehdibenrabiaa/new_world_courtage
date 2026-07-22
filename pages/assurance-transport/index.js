@@ -45,28 +45,28 @@ const TRANSPORT_CARDS = [
 
 const PRO_AUTO_CARDS = [
   {
-    image: "/assurance-transport-page.png",
+    image: "/card_head_garagiste.png",
     imageAlt: "Assurance garagiste",
     title: "Assurance garagiste",
     description: "Une couverture adaptée aux garagistes : véhicules confiés, outillage et responsabilité professionnelle.",
     href: "/assurance-pro-auto/garagiste/",
   },
   {
-    image: "/auto-insurance-calculator.jpg",
+    image: "/card_head_carrossier.png",
     imageAlt: "Assurance carrossier",
     title: "Assurance carrossier",
     description: "Protégez votre activité de carrosserie contre les risques liés aux véhicules confiés et à l'atelier.",
     href: "/assurance-pro-auto/carrossier/",
   },
   {
-    image: "/auto-insurance-calculator-mobile.jpg",
+    image: "/card_head_auto-ecole.png",
     imageAlt: "Assurance auto-école",
     title: "Assurance auto-école",
     description: "Une assurance pensée pour les auto-écoles : véhicules-écoles, moniteurs et élèves conducteurs.",
     href: "/assurance-pro-auto/auto-ecole/",
   },
   {
-    image: "/taxi_page.png",
+    image: "/card_head_concessionnaire.png",
     imageAlt: "Assurance concessionnaire",
     title: "Assurance concessionnaire",
     description: "Des garanties sur-mesure pour les concessionnaires automobiles et leur parc de véhicules.",
