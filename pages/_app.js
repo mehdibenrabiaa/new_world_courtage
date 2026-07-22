@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CookieBanner from "../components/CookieBanner";
-import FieldDemo from "../components/TestingShadcn";
 const geistSans = Geist({
   subsets: ["latin"],
   display: "optional",

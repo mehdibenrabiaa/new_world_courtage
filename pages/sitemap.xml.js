@@ -2,6 +2,7 @@
 
 const PAGES = [
   { path: "/",                      changefreq: "weekly",  priority: "1.0" },
+  { path: "/nos-assurances/",       changefreq: "weekly",  priority: "0.9" },
   { path: "/assurance-transport/",      changefreq: "weekly",  priority: "0.9" },
   { path: "/assurance-pro-auto/",    changefreq: "weekly",  priority: "0.9" },
   { path: "/assurance-construction/",changefreq: "weekly",  priority: "0.9" },

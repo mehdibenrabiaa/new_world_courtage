@@ -15,6 +15,7 @@ const TOP_LINKS = [
   {
     heading: "Nos assurances",
     items: [
+      { label: "Toutes nos assurances", href: "/nos-assurances/" },
       { label: "Flotte & Transport", href: "/assurance-transport/" },
       { label: "Pro de l'auto", href: "/assurance-pro-auto/" },
       { label: "Construction", href: "/assurance-construction/" },

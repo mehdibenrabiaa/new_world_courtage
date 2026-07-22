@@ -30,7 +30,7 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
       );
 
     const inner = (
-      <Card className="w-full overflow-hidden h-full rounded-[5px] transition-shadow duration-200 hover:shadow-md group flex flex-col">
+      <Card className="w-full max-w-[280px] mx-auto overflow-hidden h-full rounded-[5px] transition-shadow duration-200 hover:shadow-md group flex flex-col">
         {imgHeader}
         <CardContent className="p-5 flex flex-col gap-4 flex-1">
           {showSteps && (
@@ -48,7 +48,7 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
         </CardContent>
       </Card>
     );
-    return href ? <Link href={href} className="flex flex-col h-full">{inner}</Link> : inner;
+    return href ? <Link href={href} className="flex flex-col h-full w-full">{inner}</Link> : inner;
   }
 
   // style1

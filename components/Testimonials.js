@@ -14,7 +14,7 @@ export default function Testimonials({
   headingItalic = "vous attendent.",
   description = "New World Courtage est votre courtier de confiance pour comparer et optimiser vos assurances. Non affiliés à aucun assureur — notre seul objectif est de vous aider à faire le meilleur choix.",
   points = DEFAULT_POINTS,
-  image = "/famille-assurance.jpg",
+  image = "/taxi-insurance-driver-pic.png",
   imageAlt = "Clients satisfaits",
   bgColor = "#F2693D",
 }) {
