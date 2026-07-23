@@ -86,7 +86,7 @@ function colsClass(cols) {
 
 function GridLayout({ items, cols, maxWidth, ...rest }) {
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 ${colsClass(cols)} gap-6 mx-auto w-full`} style={maxWidth ? { maxWidth } : undefined}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 ${colsClass(cols)} gap-6 sm:gap-4 lg:gap-6 mx-auto w-full`} style={maxWidth ? { maxWidth } : undefined}>
       {items.map((item, i) => <CardItem key={i} item={item} index={i} {...rest} />)}
     </div>
   );
@@ -177,7 +177,7 @@ export default function InfoCardsSection({
     return (
       <section className="w-full py-4">
         <div className="px-4 lg:px-12 2xl:px-24">
-          <div className="rounded-xl bg-[var(--color-light)] px-8 py-10 lg:px-14 lg:py-14 overflow-hidden">
+          <div className="rounded-xl bg-[var(--color-light)] px-4 py-10 sm:px-8 lg:px-14 lg:py-14 overflow-hidden">
             {header}
             {cards}
             {cta}
