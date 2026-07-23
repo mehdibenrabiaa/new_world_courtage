@@ -172,7 +172,7 @@ export default function NosAssurancesPage() {
           image="/assurance-transport-page.png"
           imageAlt="Assurance professionnelle New World Courtage"
           titleWidth="lg:w-[60%]"
-          titleClassName="!text-[7vw]"
+          titleClassName="!text-[29px] sm:!text-[36px] lg:!text-[48px]"
         />
 
         <InfoCardsSection
