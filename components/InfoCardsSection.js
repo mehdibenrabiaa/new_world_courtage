@@ -38,7 +38,7 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
               {index + 1}
             </Badge>
           )}
-          <h3 className={`text-[20px] ${titleClass}`}>{title}</h3>
+          <h3 className={`text-[19px] ${titleClass}`}>{title}</h3>
           <p className="text-[15px] text-gray-600 leading-relaxed flex-1">{description}</p>
           {showLink && (
             <div className="mt-8 flex items-center gap-1 text-[14px] font-semibold text-[var(--color-brand)] group-hover:underline">
@@ -142,6 +142,7 @@ export default function InfoCardsSection({
   withContainer = false,
   titleFont = "serif",
   layout = "grid",
+  mobileLayout = null,
   perPage = 3,
   cols = 3,
   ctaLabel = "",
@@ -162,10 +163,22 @@ export default function InfoCardsSection({
     </div>
   ) : null;
 
-  const cards =
-    layout === "scroll" ? <ScrollLayout items={items} {...cardProps} /> :
-    layout === "carousel" ? <CarouselLayout items={items} perPage={perPage} {...cardProps} /> :
-    <GridLayout items={items} cols={cols} maxWidth={maxWidth} {...cardProps} />;
+  function renderLayout(layoutType) {
+    if (layoutType === "scroll") return <ScrollLayout items={items} {...cardProps} />;
+    if (layoutType === "carousel") return <CarouselLayout items={items} perPage={perPage} {...cardProps} />;
+    return <GridLayout items={items} cols={cols} maxWidth={maxWidth} {...cardProps} />;
+  }
+
+  // mobileLayout lets a section use a different layout below lg: than at
+  // lg:+ (e.g. carousel on mobile, horizontal scroll on desktop) — both
+  // render (CSS-only visibility toggle) so there's no client-side media
+  // query / hydration flash.
+  const cards = mobileLayout ? (
+    <>
+      <div className="lg:hidden">{renderLayout(mobileLayout)}</div>
+      <div className="hidden lg:block">{renderLayout(layout)}</div>
+    </>
+  ) : renderLayout(layout);
 
   const cta = ctaLabel ? (
     <div className="flex justify-center mt-10">

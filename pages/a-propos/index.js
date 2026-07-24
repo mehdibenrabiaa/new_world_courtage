@@ -1,9 +1,10 @@
 import Head from "next/head";
 import Link from "next/link";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import PageHero from "../../components/PageHero";
 import SocialMedia from "../../components/SocialMedia";
+import AccentCardGrid from "../../components/AccentCardGrid";
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
 function PageBreadcrumb() {
@@ -165,33 +166,19 @@ export default function AProposPage() {
           </section>
 
           {/* FAQ cards */}
-          <section className="flex flex-col gap-4">
-            <h2 className="text-xl font-bold text-[#131212]">Questions fréquentes</h2>
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <Card className="bg-[var(--color-light)] border-0 shadow-none overflow-hidden rounded-t-none rounded-b-[var(--radius)]">
-                <div className="h-2 bg-[var(--color-brand)]" />
-                <CardContent className="p-6 flex flex-col gap-3">
-                  <h3 className="text-[15px] font-semibold text-[#131212] leading-snug">
-                    Est-il moins cher de souscrire une assurance via New World Courtage ?
-                  </h3>
-                  <p className="text-[15px] text-gray-600 leading-relaxed">
-                    Les tarifs d&apos;assurance sont réglementés par la loi. Chaque assureur évalue le risque différemment — c&apos;est pourquoi notre comparateur vous permet de trouver facilement les meilleures offres adaptées à vos besoins.
-                  </p>
-                </CardContent>
-              </Card>
-              <Card className="bg-[var(--color-light)] border-0 shadow-none overflow-hidden rounded-t-none rounded-b-[var(--radius)]">
-                <div className="h-2 bg-[var(--color-brand)]" />
-                <CardContent className="p-6 flex flex-col gap-3">
-                  <h3 className="text-[15px] font-semibold text-[#131212] leading-snug">
-                    New World Courtage est-il affilié à une compagnie d&apos;assurance ?
-                  </h3>
-                  <p className="text-[15px] text-gray-600 leading-relaxed">
-                    Non. Nous sommes un cabinet de courtage indépendant, non détenu par une compagnie d&apos;assurance. Nous commercialisons des polices auprès de plusieurs assureurs sans parti pris afin de défendre vos intérêts.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </section>
+          <AccentCardGrid
+            title="Questions fréquentes"
+            items={[
+              {
+                heading: "Est-il moins cher de souscrire une assurance via New World Courtage ?",
+                body: "Les tarifs d'assurance sont réglementés par la loi. Chaque assureur évalue le risque différemment — c'est pourquoi notre comparateur vous permet de trouver facilement les meilleures offres adaptées à vos besoins.",
+              },
+              {
+                heading: "New World Courtage est-il affilié à une compagnie d'assurance ?",
+                body: "Non. Nous sommes un cabinet de courtage indépendant, non détenu par une compagnie d'assurance. Nous commercialisons des polices auprès de plusieurs assureurs sans parti pris afin de défendre vos intérêts.",
+              },
+            ]}
+          />
 
           {/* Nos agréments */}
           <section className="flex flex-col gap-4">

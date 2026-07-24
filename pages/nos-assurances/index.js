@@ -107,7 +107,7 @@ const CONSTRUCTION_CARDS = [
 
 const IMMOBILIER_CARDS = [
   {
-    image: "/assurance-transport-page.png",
+    image: "/card_head_copropriete.png",
     imageAlt: "Assurance copropriété",
     title: "Assurance copropriété",
     description: "Une couverture complète pour les parties communes et la responsabilité civile de la copropriété.",
@@ -177,7 +177,7 @@ export default function NosAssurancesPage() {
 
         <InfoCardsSection
           title="Assurance"
-          titleItalic="automobile."
+          titleItalic="automobile"
           subtitle="Taxi, ambulance, VTC, poids lourd, garagistes, carrossiers, auto-écoles, concessionnaires — une couverture adaptée à chaque activité liée à l'automobile."
           cardStyle="style2"
           showLink
@@ -190,7 +190,7 @@ export default function NosAssurancesPage() {
 
         <InfoCardsSection
           title="Assurance"
-          titleItalic="construction."
+          titleItalic="construction"
           subtitle="Tous risques chantier, RC décennale, dommages ouvrage — protégez chaque étape de vos projets."
           cardStyle="style2"
           showLink
@@ -203,7 +203,7 @@ export default function NosAssurancesPage() {
 
         <InfoCardsSection
           title="Assurance"
-          titleItalic="immobilier."
+          titleItalic="immobilier"
           subtitle="Copropriété, immeuble, syndic, loyers impayés — sécurisez votre patrimoine immobilier."
           cardStyle="style2"
           showLink

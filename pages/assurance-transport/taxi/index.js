@@ -21,19 +21,19 @@ const GUIDE_CARDS = [
     Icon: ClipboardCheck,
     title: "Comment souscrire une assurance taxi ?",
     description: "Vous pouvez souscrire directement auprès d'un assureur, via un agent ou en faisant appel à un courtier spécialisé comme New World Courtage pour comparer les offres du marché.",
-    href: "/assurance-transport/taxi/comment-souscrire/",
+    href: "/assurance-transport/comment-souscrire-assurance-taxi/",
   },
   {
     Icon: Umbrella,
     title: "De quelle couverture ai-je besoin ?",
     description: "Choisir la bonne couverture dépend de la valeur de votre véhicule, de votre historique de sinistres et du niveau de risque lié à votre activité de chauffeur de taxi.",
-    href: "/assurance-transport/taxi/couverture/",
+    href: "/assurance-transport/quelle-couverture-assurance-taxi/",
   },
   {
     Icon: Scale,
     title: "Comment choisir son assurance taxi ?",
     description: "Garanties, franchise, exclusions, tarif — notre équipe vous guide vers le contrat le plus adapté à votre activité, pour vous protéger au meilleur prix.",
-    href: "/assurance-transport/taxi/comment-choisir/",
+    href: "/assurance-transport/comment-choisir-assurance-taxi/",
   },
 ];
 
@@ -43,21 +43,21 @@ const OFFER_CARDS = [
     imageAlt: "Assurance artisan taxi",
     title: "Nous assurons les artisans taxi depuis plus de 10 ans",
     description: "Nous proposons une assurance taxi avec une couverture optimale au meilleur tarif. Nous négocions pour vous avec des assureurs spécialistes et reconnus de l'assurance taxi.",
-    href: "/assurance-transport/taxi/comment-souscrire/",
+    href: "/assurance-transport/comment-souscrire-assurance-taxi/",
   },
   {
     image: "/taxi-insurance-driver-pic.png",
     imageAlt: "Couverture assurance taxi",
     title: "Une couverture adaptée aux risques de votre activité",
     description: "L'assurance taxi comporte de nombreuses spécificités : RC professionnelle, couverture du véhicule, assurance du chauffeur et des passagers. Ces garanties sont incluses dans tous nos contrats de base.",
-    href: "/assurance-transport/taxi/couverture/",
+    href: "/assurance-transport/quelle-couverture-assurance-taxi/",
   },
   {
     image: "/auto-insurance-calculator-mobile.jpg",
     imageAlt: "Devis assurance taxi",
     title: "Votre assurance taxi moins chère",
     description: "Nous bénéficions de tarifs exceptionnels négociés avec les plus grandes compagnies d'assurance, entièrement répercutés auprès de nos clients. Devis sous 24h.",
-    href: "/assurance-transport/taxi/comment-choisir/",
+    href: "/assurance-transport/comment-choisir-assurance-taxi/",
   },
   {
     image: "/taxi_page.png",
@@ -164,6 +164,7 @@ export default function AssuranceTaxiPage() {
           withContainer
           titleFont="sans"
           layout="scroll"
+          mobileLayout="carousel"
           ctaLabel="Lire plus de guides"
           ctaHref="/assurance-transport/taxi/"
           items={OFFER_CARDS}

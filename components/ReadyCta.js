@@ -6,7 +6,7 @@ export default function ReadyCta() {
     <section className="w-full py-20 bg-white">
       <div className="flex flex-col items-center text-center gap-6 px-6">
         <h2
-          className={`text-[28px] sm:text-[36px] lg:text-[42px] font-bold leading-tight text-[var(--color-text)] max-w-2xl`}
+          className={`text-[28px] sm:text-[36px] lg:text-[42px] font-medium leading-tight text-[var(--color-text)] max-w-2xl`}
         >
           Prêt à trouver votre assurance ?
         </h2>

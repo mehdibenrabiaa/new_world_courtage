@@ -1,7 +1,13 @@
 import { libreCaslon } from "@/lib/fonts";
 import VehicleIdentityForm from "./VehicleIdentityForm";
+import BusinessIdentityForm from "./BusinessIdentityForm";
 
-export default function CarCalculatorSection({ redirectTo }) {
+export default function CarCalculatorSection({
+  redirectTo,
+  variant = "vehicle",
+  title = <>Recevez votre devis d&apos;assurance auto <em className={`italic ${libreCaslon.className}`}>gratuitement.</em></>,
+  subtitle = "Votre devis assurance auto au même prix que chez l'assureur, tout simplement.",
+}) {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
@@ -10,7 +16,7 @@ export default function CarCalculatorSection({ redirectTo }) {
           {/* Left — title (1/3) */}
           <div className="hidden lg:flex lg:w-[40%] px-8 py-10 lg:px-14 lg:py-14 items-start">
             <h2 className={`text-[8vw] sm:text-[38px] lg:text-[46px] leading-[1.1] text-white ${libreCaslon.className}`}>
-              Recevez votre devis d&apos;assurance auto <em className={`italic ${libreCaslon.className}`}>gratuitement.</em>
+              {title}
             </h2>
           </div>
 
@@ -21,12 +27,16 @@ export default function CarCalculatorSection({ redirectTo }) {
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-semibold text-white">0 frais. 0 commission.</p>
                 <p className="text-sm text-white/80 leading-snug">
-                  Votre devis assurance auto au même prix que chez l&apos;assureur, tout simplement.
+                  {subtitle}
                 </p>
               </div>
             </div>
 
-            <VehicleIdentityForm redirectTo={redirectTo} />
+            {variant === "business" ? (
+              <BusinessIdentityForm redirectTo={redirectTo} />
+            ) : (
+              <VehicleIdentityForm redirectTo={redirectTo} />
+            )}
 
           </div>
         </div>
