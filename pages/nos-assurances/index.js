@@ -14,28 +14,28 @@ const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
 const TRANSPORT_CARDS = [
   {
-    image: "/card_head_taxi.png",
+    image: "/card_head_taxi.webp",
     imageAlt: "Assurance taxi",
     title: "Assurance taxi",
     description: "Une couverture complète pour les artisans taxi, négociée avec les meilleurs assureurs du marché.",
     href: "/assurance-transport/taxi/",
   },
   {
-    image: "/card_head_ambulance.png",
+    image: "/card_head_ambulance.webp",
     imageAlt: "Assurance ambulance",
     title: "Assurance ambulance",
     description: "Protégez votre activité de transport sanitaire avec une assurance adaptée aux exigences du secteur.",
     href: "/assurance-transport/ambulance/",
   },
   {
-    image: "/card_head_vtc.png",
+    image: "/card_head_vtc.webp",
     imageAlt: "Assurance chauffeur VTC",
     title: "Assurance chauffeur VTC",
     description: "Une couverture pensée pour les chauffeurs VTC, du véhicule à la responsabilité civile professionnelle.",
     href: "/assurance-transport/chauffeur-vtc/",
   },
   {
-    image: "/card_head_poid_lourd.png",
+    image: "/card_head_poid_lourd.webp",
     imageAlt: "Assurance poids lourd",
     title: "Assurance poids lourd",
     description: "Des garanties sur-mesure pour les professionnels du transport routier et poids lourds.",
@@ -45,28 +45,28 @@ const TRANSPORT_CARDS = [
 
 const PRO_AUTO_CARDS = [
   {
-    image: "/card_head_garagiste.png",
+    image: "/card_head_carrossier.webp",
     imageAlt: "Assurance garagiste",
     title: "Assurance garagiste",
     description: "Une couverture adaptée aux garagistes : véhicules confiés, outillage et responsabilité professionnelle.",
     href: "/assurance-pro-auto/garagiste/",
   },
   {
-    image: "/card_head_carrossier.png",
+    image: "/card_head_carrossier.webp",
     imageAlt: "Assurance carrossier",
     title: "Assurance carrossier",
     description: "Protégez votre activité de carrosserie contre les risques liés aux véhicules confiés et à l'atelier.",
     href: "/assurance-pro-auto/carrossier/",
   },
   {
-    image: "/card_head_auto-ecole.png",
+    image: "/card_head_auto-ecole.webp",
     imageAlt: "Assurance auto-école",
     title: "Assurance auto-école",
     description: "Une assurance pensée pour les auto-écoles : véhicules-écoles, moniteurs et élèves conducteurs.",
     href: "/assurance-pro-auto/auto-ecole/",
   },
   {
-    image: "/card_head_concessionnaire.png",
+    image: "/card_head_concessionnaire.webp",
     imageAlt: "Assurance concessionnaire",
     title: "Assurance concessionnaire",
     description: "Des garanties sur-mesure pour les concessionnaires automobiles et leur parc de véhicules.",
@@ -76,28 +76,28 @@ const PRO_AUTO_CARDS = [
 
 const CONSTRUCTION_CARDS = [
   {
-    image: "/construction_site.png",
+    image: "/construction_site.webp",
     imageAlt: "Tous risques chantier",
     title: "Tous risques chantier",
     description: "Couvrez les dommages matériels survenant sur votre chantier, du premier coup de pelle à la livraison.",
     href: "/assurance-construction/tous-risques-chantier/",
   },
   {
-    image: "/construction_site_rc.png",
+    image: "/construction_site_rc.webp",
     imageAlt: "RC et décennale",
     title: "RC et décennale",
     description: "Une protection obligatoire pour les professionnels du bâtiment, contre les dommages engageant votre responsabilité.",
     href: "/assurance-construction/rc-decennale/",
   },
   {
-    image: "/dommages_ouvrage.png",
+    image: "/dommages_ouvrage.webp",
     imageAlt: "Dommages ouvrage",
     title: "Dommages ouvrage",
     description: "Anticipez la réparation rapide des désordres, sans attendre qu'une responsabilité soit établie.",
     href: "/assurance-construction/dommages-ouvrage/",
   },
   {
-    image: "/engins_de_chantier.png",
+    image: "/engins_de_chantier.webp",
     imageAlt: "Assurance engins de chantier",
     title: "Assurance engins de chantier",
     description: "Protégez vos engins et machines de chantier contre le vol, le vandalisme et les dommages.",
@@ -107,28 +107,28 @@ const CONSTRUCTION_CARDS = [
 
 const IMMOBILIER_CARDS = [
   {
-    image: "/card_head_copropriete.png",
+    image: "/assurance_copropriete.webp",
     imageAlt: "Assurance copropriété",
     title: "Assurance copropriété",
     description: "Une couverture complète pour les parties communes et la responsabilité civile de la copropriété.",
     href: "/assurance-immobilier/copropriete/",
   },
   {
-    image: "/auto-insurance-calculator.jpg",
+    image: "/immeuble.webp",
     imageAlt: "Assurance immeuble",
     title: "Assurance immeuble",
     description: "Protégez votre patrimoine immobilier locatif contre les sinistres et pertes de loyers.",
     href: "/assurance-immobilier/immeuble/",
   },
   {
-    image: "/auto-insurance-calculator-mobile.jpg",
+    image: "/loyers_impayee.webp",
     imageAlt: "Assurance loyers impayés",
     title: "Assurance loyers impayés",
     description: "Sécurisez vos revenus locatifs en cas de défaut de paiement de vos locataires.",
     href: "/assurance-immobilier/loyers-impayes/",
   },
   {
-    image: "/taxi_page.png",
+    image: "/syndic.webp",
     imageAlt: "Assurance syndic",
     title: "Assurance syndic",
     description: "Une couverture dédiée à la responsabilité civile professionnelle des syndics de copropriété.",
@@ -169,7 +169,8 @@ export default function NosAssurancesPage() {
         <PageBreadcrumb />
         <PageHero
           title="Nos domaines d'assurance professionnelle"
-          image="/assurance-transport-page.png"
+          image="/nos-assurances-hero-desktop.webp"
+          mobileImage="/nos-assurances-hero-mobile.webp"
           imageAlt="Assurance professionnelle New World Courtage"
           titleWidth="lg:w-[60%]"
           titleClassName="!text-[29px] sm:!text-[36px] lg:!text-[48px]"

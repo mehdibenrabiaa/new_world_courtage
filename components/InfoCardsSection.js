@@ -30,7 +30,7 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
       );
 
     const inner = (
-      <Card className="w-full max-w-[280px] mx-auto overflow-hidden h-full rounded-[5px] transition-shadow duration-200 hover:shadow-md group flex flex-col">
+      <Card className="w-full max-w-none sm:max-w-[280px] mx-auto overflow-hidden h-full rounded-[5px] transition-shadow duration-200 hover:shadow-md group flex flex-col">
         {imgHeader}
         <CardContent className="p-5 flex flex-col gap-4 flex-1">
           {showSteps && (
@@ -190,7 +190,7 @@ export default function InfoCardsSection({
     return (
       <section className="w-full py-4">
         <div className="px-4 lg:px-12 2xl:px-24">
-          <div className="rounded-xl bg-[var(--color-light)] px-8 py-10 lg:px-14 lg:py-14 overflow-hidden">
+          <div className="rounded-xl bg-[var(--color-light)] px-4 py-10 sm:px-8 lg:px-14 lg:py-14 overflow-hidden">
             {header}
             {cards}
             {cta}
