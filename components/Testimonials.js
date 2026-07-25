@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { CheckCircle2 } from "lucide-react";
 import { libreCaslon } from "@/lib/fonts";
 
@@ -25,11 +26,15 @@ export default function Testimonials({
 
           {/* Left — image (1/3) */}
           <div className="lg:w-1/3 px-4 lg:px-6 flex items-start justify-center">
-            <img
-              src={image}
-              alt={imageAlt}
-              className="w-full aspect-square object-cover object-top rounded-xl"
-            />
+            <div className="relative w-full aspect-square rounded-xl overflow-hidden">
+              <Image
+                src={image}
+                alt={imageAlt}
+                fill
+                className="object-cover object-top"
+                sizes="(max-width: 1023px) 100vw, 33vw"
+              />
+            </div>
           </div>
 
           {/* Right — content (2/3) */}

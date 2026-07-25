@@ -32,7 +32,7 @@ export default function Partners() {
               {LOGOS.map(({ id, name, src }, i) => (
                 <div key={id} className="flex items-center h-10">
                   {i > 0 && <Separator orientation="vertical" className="mx-6 lg:mx-8 h-8" />}
-                  <img src={src} alt={name} className="h-7 lg:h-9 w-auto object-contain max-w-[80px] lg:max-w-[110px]" />
+                  <img src={src} alt={name} loading="lazy" className="h-7 lg:h-9 w-auto object-contain max-w-[80px] lg:max-w-[110px]" />
                 </div>
               ))}
             </div>

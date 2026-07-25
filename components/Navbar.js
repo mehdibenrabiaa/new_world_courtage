@@ -64,7 +64,7 @@ function MegaMenuContent({ item }) {
 
 // ── Mobile second-level panel ──────────────────────────────────────────────
 
-function MobilePanel({ item, onBack }) {
+function MobilePanel({ item, onBack, onClose }) {
   return (
     <div>
       <button
@@ -88,6 +88,7 @@ function MobilePanel({ item, onBack }) {
                 <Link
                   key={link.href}
                   href={link.href}
+                  onClick={onClose}
                   className="block py-2.5 text-sm text-[var(--color-text)] border-b border-gray-100 last:border-0 hover:text-[var(--color-brand)]"
                 >
                   {link.label}
@@ -101,6 +102,7 @@ function MobilePanel({ item, onBack }) {
           <p className="text-[13.5px] font-medium text-[var(--color-text)] mb-3">{item.cta.tagline}</p>
           <Link
             href={item.cta.href}
+            onClick={onClose}
             className="block text-center py-3 bg-[var(--color-brand)] text-white text-sm font-bold rounded-full hover:bg-[var(--color-brand-hover)] transition-colors"
           >
             {item.cta.button}
@@ -152,7 +154,7 @@ function MobileDrawer({ open, onClose }) {
         <div className="flex-1 overflow-y-auto overflow-x-hidden">
           <div key={activePanel?.id ?? 'main'} className={animClass}>
           {activePanel ? (
-            <MobilePanel item={activePanel} onBack={handleBack} />
+            <MobilePanel item={activePanel} onBack={handleBack} onClose={onClose} />
           ) : (
             <div className="py-2">
               {NAV_ITEMS.map((item) => (

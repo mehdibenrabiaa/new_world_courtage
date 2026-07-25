@@ -51,7 +51,6 @@ const CATEGORIES = [
   { id: "construction", label: "Construction", href: "/assurance-construction/", icon: "/icons/building.svg" },
   { id: "immobilier", label: "Immobilier", href: "/assurance-immobilier/", icon: "/icons/home.svg" },
   { id: "moto", label: "Moto", href: "/assurance-moto/", icon: "/icons/motorcycle.svg" },
-  { id: "sante", label: "Santé", href: "/assurance-sante/", icon: "/icons/heart-angle.svg" },
 ];
 
 export default function Hero() {

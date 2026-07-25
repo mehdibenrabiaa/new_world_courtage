@@ -159,7 +159,7 @@ export default function InfoCardsSection({
           {titleItalic && <em className={`italic ${libreCaslon.className}`}>{titleItalic}</em>}
         </h2>
       )}
-      {subtitle && <p className="text-[16px] text-gray-500">{subtitle}</p>}
+      {subtitle && <p className="text-[16px] text-gray-600">{subtitle}</p>}
     </div>
   ) : null;
 

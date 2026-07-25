@@ -44,7 +44,7 @@ const PER_PAGE = 3;
 
 function Stars() {
   return (
-    <img src="/trustpilot_starts.svg" alt="5 étoiles Trustpilot" className="h-5 w-auto" />
+    <img src="/trustpilot_starts.svg" alt="5 étoiles Trustpilot" loading="lazy" className="h-5 w-auto" />
   );
 }
 
@@ -70,7 +70,7 @@ function CardInner({ title, quote, name }) {
 
       <div>
         <div className="flex items-start gap-2">
-          <img src="/quotation-mark.svg" alt="" aria-hidden="true" className="shrink-0 h-7 w-auto mt-0.5" />
+          <img src="/quotation-mark.svg" alt="" aria-hidden="true" loading="lazy" className="shrink-0 h-7 w-auto mt-0.5" />
           <h3 className="text-[17px] font-bold text-[var(--color-text)] leading-snug">{title}</h3>
         </div>
         <p className="text-[16px] text-black leading-relaxed mt-3">{quote}</p>
