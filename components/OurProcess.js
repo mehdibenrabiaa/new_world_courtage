@@ -1,9 +1,11 @@
 ﻿import InfoCardsSection from "@/components/InfoCardsSection";
+import { Search, MessageCircle, Star, ShieldCheck } from "lucide-react";
 
 const STEPS = [
   {
     image: "/sections/step-choose-insurance.webp",
     imageAlt: "Choose your insurance type",
+    Icon: Search,
     title: "Choisissez votre type d'assurance",
     description:
       "Sélectionnez parmi nos catégories — auto, habitation, santé ou décennale — selon vos besoins spécifiques.",
@@ -11,6 +13,7 @@ const STEPS = [
   {
     image: "/sections/step-talk-to-expert.webp",
     imageAlt: "Talk to an expert",
+    Icon: MessageCircle,
     title: "Échangez avec un expert",
     description:
       "Prenez contact avec l'un de nos conseillers agréés et transmettez-lui vos documents. Il analyse votre situation en détail.",
@@ -18,6 +21,7 @@ const STEPS = [
   {
     image: "/sections/step-receive-offers.webp",
     imageAlt: "Receive the best offers",
+    Icon: Star,
     title: "Recevez les meilleures offres",
     description:
       "Notre expert compare les offres de plus de 100 assureurs pour identifier les garanties les mieux adaptées à vos besoins et à votre budget.",
@@ -25,6 +29,7 @@ const STEPS = [
   {
     image: "/sections/step-subscribe-protected.webp",
     imageAlt: "Subscribe and get protected",
+    Icon: ShieldCheck,
     title: "Souscrivez et soyez protégé",
     description:
       "Choisissez l'offre qui vous convient et finalisez votre souscription en ligne en quelques minutes.",
