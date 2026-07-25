@@ -21,7 +21,7 @@ export default function Home() {
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://www.newworldcourtage.fr/" />
-        <link rel="preload" as="image" href="/hero.png" />
+        <link rel="preload" as="image" href="/home-hero-desktop.webp" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.newworldcourtage.fr/" />
         <meta

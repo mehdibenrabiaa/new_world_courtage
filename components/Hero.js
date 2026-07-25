@@ -61,16 +61,17 @@ export default function Hero() {
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
         <div className="relative w-full min-h-[650px] lg:h-[75vw] lg:max-h-[90vh] lg:min-h-[600px] overflow-hidden rounded-none lg:rounded-[5px]">
-          <img
-            src="/hero.png"
-            alt="Protégez ce qui compte le plus pour vous."
-            width={1600}
-            height={900}
-            decoding="async"
-            loading="eager"
-            fetchpriority="high"
-            className="absolute inset-0 w-full h-full object-cover object-top"
-          />
+          <picture className="absolute inset-0 w-full h-full">
+            <source media="(max-width: 1023px)" srcSet="/home-hero-mobile.webp" />
+            <img
+              src="/home-hero-desktop.webp"
+              alt="Protégez ce qui compte le plus pour vous."
+              decoding="async"
+              loading="eager"
+              fetchpriority="high"
+              className="w-full h-full object-cover object-top"
+            />
+          </picture>
 
           <div className="relative z-10 h-full flex flex-col">
             {/* Headline â€” top left */}
