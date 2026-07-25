@@ -58,7 +58,7 @@ export default function ArticleHero({
         )}
 
         {/* Title */}
-        <h1 className={`text-[45px] leading-[1.15] text-[var(--color-text)] ${libreCaslon.className}`}>
+        <h1 className={`text-[28px] sm:text-[36px] lg:text-[45px] leading-[1.15] text-[var(--color-text)] ${libreCaslon.className}`}>
           {title}
         </h1>
 

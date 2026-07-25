@@ -45,7 +45,7 @@ const TRANSPORT_CARDS = [
 
 const PRO_AUTO_CARDS = [
   {
-    image: "/card_head_carrossier.webp",
+    image: "/garagist.webp",
     imageAlt: "Assurance garagiste",
     title: "Assurance garagiste",
     description: "Une couverture adaptée aux garagistes : véhicules confiés, outillage et responsabilité professionnelle.",

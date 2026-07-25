@@ -87,7 +87,8 @@ export default function AssuranceAmbulancePage() {
         </div>
         <PageHero
           title={<>Votre activité de transport sanitaire mérite une couverture{" "}<em className="italic">sur-mesure.</em></>}
-          image="/ambulance.jpg"
+          image="/ambulance-hero-desktop.webp"
+          mobileImage="/ambulance-mobile.webp"
           imageAlt="Assurance ambulance New World Courtage"
           titlePosition="bottom"
           titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[55px]"

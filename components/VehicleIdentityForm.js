@@ -260,7 +260,7 @@ export default function VehicleIdentityForm({ redirectTo = "/assurance-transport
         <button
           type="button"
           onClick={toggleFaq}
-          className="flex w-full items-center justify-between gap-4 cursor-pointer"
+          className="flex w-full items-center justify-between gap-4 cursor-pointer text-left"
         >
           <span className="text-sm font-semibold text-white">Comment calculons-nous vos estimations ?</span>
           <span className="shrink-0 text-white/60">

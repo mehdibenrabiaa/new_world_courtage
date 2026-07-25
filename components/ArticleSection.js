@@ -4,7 +4,7 @@
 export default function ArticleSection({ title, children }) {
   return (
     <section className="flex flex-col gap-4">
-      <h2 className="text-xl font-bold text-[#131212]">{title}</h2>
+      <h2 className="text-[17px] sm:text-xl font-bold text-[#131212]">{title}</h2>
       <div className="flex flex-col gap-3 text-[15px] text-gray-600 leading-relaxed">{children}</div>
     </section>
   );

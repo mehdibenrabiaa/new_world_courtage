@@ -121,7 +121,8 @@ export default function AssuranceTaxiPage() {
         </div>
         <PageHero
           title={<>Le bon contrat d&apos;assurance taxi commence par un{" "}<em className="italic">simple devis.</em></>}
-          image="/taxi_page.png"
+          image="/taxi-hero-desktop.webp"
+          mobileImage="/taxi-hero-mobile.webp"
           imageAlt="Assurance taxi New World Courtage"
           titlePosition="bottom"
           titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[55px]"
