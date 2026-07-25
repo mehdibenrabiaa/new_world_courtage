@@ -30,11 +30,15 @@ export default function FinishedScrolling() {
 
           {/* Right — image */}
           <div className="order-1 lg:order-2 lg:w-1/2 h-[260px] lg:h-auto">
-            <img
-              src="/sections/done-scrolling.webp"
-              alt=""
-              className="w-full h-full object-cover object-top"
-            />
+            <picture className="w-full h-full">
+              <source media="(max-width: 1023px)" srcSet="/sections/done-scrolling-mobile.webp" />
+              <img
+                src="/sections/done-scrolling-desktop.webp"
+                alt=""
+                loading="lazy"
+                className="w-full h-full object-cover object-top"
+              />
+            </picture>
           </div>
 
         </div>
