@@ -16,15 +16,15 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
     const { Icon } = item;
     const imgHeader =
       imageVariant === "icon" && Icon ? (
-        <div className="w-full h-36 lg:h-44 bg-[var(--color-light)] flex items-center justify-center shrink-0">
+        <div className="w-full h-44 bg-[var(--color-light)] flex items-center justify-center shrink-0">
           <Icon size={64} strokeWidth={1.2} className="text-[var(--color-brand)]" />
         </div>
       ) : imageVariant === "contain" ? (
-        <div className="w-full h-36 lg:h-44 bg-[var(--color-light)] flex items-center justify-center p-6 shrink-0">
+        <div className="w-full h-44 bg-[var(--color-light)] flex items-center justify-center p-6 shrink-0">
           <img src={image} alt={imageAlt} className="max-w-[90px] lg:max-w-[110px] max-h-full object-contain" />
         </div>
       ) : (
-        <div className="w-full h-36 lg:h-44 relative overflow-hidden shrink-0">
+        <div className="w-full h-44 relative overflow-hidden shrink-0">
           <img src={image} alt={imageAlt} className="absolute inset-0 w-full h-full object-cover" />
         </div>
       );
@@ -32,7 +32,7 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
     const inner = (
       <Card className="w-full max-w-none sm:max-w-[280px] mx-auto overflow-hidden h-full rounded-[5px] transition-shadow duration-200 hover:shadow-md group flex flex-col">
         {imgHeader}
-        <CardContent className="p-5 flex flex-col gap-4 flex-1">
+        <CardContent className="p-5 flex flex-col gap-4 flex-1 min-h-[280px] lg:min-h-0">
           {showSteps && (
             <Badge className="w-8 h-8 p-0 flex items-center justify-center rounded-full bg-[var(--color-text)] border-transparent text-white text-sm">
               {index + 1}
