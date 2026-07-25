@@ -1,4 +1,4 @@
-import Head from "next/head";
+﻿import Head from "next/head";
 import Link from "next/link";
 import {
   Breadcrumb,
@@ -56,7 +56,7 @@ export default function CommentSouscrirePage() {
           categoryHref="/assurance-transport/taxi/"
           title="Comment obtenir un devis d'assurance taxi ?"
           intro="Souscrire une assurance taxi demande de réunir quelques documents clés et de comparer les offres du marché — voici comment procéder étape par étape."
-          author={{ name: "Loubna Moucharref", avatar: "/loubna_moucharref_profile.jpeg" }}
+          author={{ name: "Loubna Moucharref", avatar: "/team/loubna-moucharref.jpeg" }}
           editor={{ name: "Anna Swartz" }}
           reviewer={{ name: "Fabio Faschi, PLCS, SBCS, CLCS" }}
           updatedDate="22 juillet 2026"

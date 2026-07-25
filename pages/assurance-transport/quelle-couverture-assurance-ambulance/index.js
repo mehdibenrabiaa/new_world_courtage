@@ -1,4 +1,4 @@
-import Head from "next/head";
+﻿import Head from "next/head";
 import Link from "next/link";
 import {
   Breadcrumb,
@@ -56,7 +56,7 @@ export default function QuelleCouvertureAmbulancePage() {
           categoryHref="/assurance-transport/ambulance/"
           title="De quelle couverture ai-je besoin pour mon ambulance ?"
           intro="New World Courtage est spécialisé dans l'assurance ambulance et le transport sanitaire au sens large (VSL, transport sanitaire assis...) — un développement naturel de notre offre assurance transport professionnel, avec des contrats complets offrant le maximum de garanties."
-          author={{ name: "Loubna Moucharref", avatar: "/loubna_moucharref_profile.jpeg" }}
+          author={{ name: "Loubna Moucharref", avatar: "/team/loubna-moucharref.jpeg" }}
           updatedDate="22 juillet 2026"
           readingTime="4 minutes"
           expertReviewed={false}

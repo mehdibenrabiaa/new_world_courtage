@@ -1,4 +1,4 @@
-import Head from "next/head";
+﻿import Head from "next/head";
 import PageHero from "@/components/PageHero";
 import CarCalculatorSection from "@/components/CarCalculatorSection";
 import { ClipboardCheck, Umbrella, Scale } from "lucide-react";
@@ -46,14 +46,14 @@ const OFFER_CARDS = [
     href: "/assurance-transport/comment-souscrire-assurance-taxi/",
   },
   {
-    image: "/taxi-insurance-driver-pic.png",
+    image: "/pages/taxi-driver.png",
     imageAlt: "Couverture assurance taxi",
     title: "Une couverture adaptée aux risques de votre activité",
     description: "L'assurance taxi comporte de nombreuses spécificités : RC professionnelle, couverture du véhicule, assurance du chauffeur et des passagers. Ces garanties sont incluses dans tous nos contrats de base.",
     href: "/assurance-transport/quelle-couverture-assurance-taxi/",
   },
   {
-    image: "/auto-insurance-calculator-mobile.jpg",
+    image: "/pages/calculator-mobile.jpg",
     imageAlt: "Devis assurance taxi",
     title: "Votre assurance taxi moins chère",
     description: "Nous bénéficions de tarifs exceptionnels négociés avec les plus grandes compagnies d'assurance, entièrement répercutés auprès de nos clients. Devis sous 24h.",
@@ -67,14 +67,14 @@ const OFFER_CARDS = [
     href: "/assurance-transport/taxi/rc-professionnelle/",
   },
   {
-    image: "/taxi-insurance-driver-pic.png",
+    image: "/pages/taxi-driver.png",
     imageAlt: "Options assurance taxi",
     title: "Des options pour renforcer votre couverture",
     description: "Perte de recette, assistance dépannage, garantie car-jacking, récupération de points... Personnalisez votre contrat selon vos besoins réels.",
     href: "/assurance-transport/taxi/options/",
   },
   {
-    image: "/auto-insurance-calculator-mobile.jpg",
+    image: "/pages/calculator-mobile.jpg",
     imageAlt: "Devis en ligne taxi",
     title: "Devis en ligne sous 24h",
     description: "Remplissez notre formulaire dédié et l'un de nos experts vous envoie par mail une proposition détaillée sous 24h, sans engagement.",
@@ -121,8 +121,8 @@ export default function AssuranceTaxiPage() {
         </div>
         <PageHero
           title={<>Le bon contrat d&apos;assurance taxi commence par un{" "}<em className="italic">simple devis.</em></>}
-          image="/taxi-hero-desktop.webp"
-          mobileImage="/taxi-hero-mobile.webp"
+          image="/heroes/taxi-desktop.webp"
+          mobileImage="/heroes/taxi-mobile.webp"
           imageAlt="Assurance taxi New World Courtage"
           titlePosition="bottom"
           titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[55px]"
@@ -132,7 +132,7 @@ export default function AssuranceTaxiPage() {
 
         <Testimonials
           bgColor="#f5f5f3"
-          image="/taxi-insurance-driver-pic.png"
+          image="/pages/taxi-driver.png"
           label="Garanties incluses"
           heading="Ce que couvre votre"
           headingItalic="assurance taxi."

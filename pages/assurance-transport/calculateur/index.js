@@ -1,4 +1,4 @@
-import Head from "next/head";
+﻿import Head from "next/head";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import PageHero from "../../../components/PageHero";
 import CarCalculatorSection from "../../../components/CarCalculatorSection";
@@ -40,7 +40,7 @@ export default function CarInsuranceCalculatorPage() {
 
       <main>
         <PageBreadcrumb />
-        <PageHero title={<>Calculez <em className="italic">rapidement</em> vos besoins en<br className="hidden lg:block" />assurance automobile.</>} image="/auto-insurance-calculator.jpg" imageAlt="Calculateur assurance auto" titlePosition="bottom" titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[48px]" />
+        <PageHero title={<>Calculez <em className="italic">rapidement</em> vos besoins en<br className="hidden lg:block" />assurance automobile.</>} image="/pages/calculator-desktop.jpg" imageAlt="Calculateur assurance auto" titlePosition="bottom" titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[48px]" />
         <CarCalculatorSection />
         <CarInsuranceProcess />
       </main>

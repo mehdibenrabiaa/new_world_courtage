@@ -1,4 +1,4 @@
-import Head from "next/head";
+﻿import Head from "next/head";
 import Link from "next/link";
 import {
   Breadcrumb,
@@ -56,7 +56,7 @@ export default function QuelleCouverturePage() {
           categoryHref="/assurance-transport/taxi/"
           title="De quelle couverture ai-je besoin ?"
           intro="Choisir la bonne couverture dépend de la valeur de votre véhicule, de votre historique de sinistres et du niveau de risque lié à votre activité de chauffeur de taxi."
-          author={{ name: "Loubna Moucharref", avatar: "/loubna_moucharref_profile.jpeg" }}
+          author={{ name: "Loubna Moucharref", avatar: "/team/loubna-moucharref.jpeg" }}
           updatedDate="22 juillet 2026"
           readingTime="4 minutes"
           expertReviewed={false}

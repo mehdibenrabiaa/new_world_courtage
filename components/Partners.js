@@ -1,15 +1,15 @@
-import { libreCaslon } from "@/lib/fonts";
+﻿import { libreCaslon } from "@/lib/fonts";
 import CtaButton from "@/components/CtaButton";
 import { Separator } from "@/components/ui/separator";
 
 const LOGOS = [
-  { id: "axa",       name: "AXA",        src: "/insurances_logos/AXA_Versicherungen_Logo.svg" },
-  { id: "maif",      name: "MAIF",       src: "/insurances_logos/Logo_Maif_2019.svg" },
-  { id: "allianz",   name: "Allianz",    src: "/insurances_logos/Allianz.svg" },
-  { id: "groupama",  name: "Groupama",   src: "/insurances_logos/Logo_Groupama_2024.svg" },
-  { id: "generali",  name: "Generali",   src: "/insurances_logos/Assicurazioni_Generali.svg" },
-  { id: "swisslife", name: "Swiss Life", src: "/insurances_logos/SLHN.SW_BIG.svg" },
-  { id: "gmf",       name: "GMF",        src: "/insurances_logos/GMF_logo.svg" },
+  { id: "axa",       name: "AXA",        src: "/partners/axa.svg" },
+  { id: "maif",      name: "MAIF",       src: "/partners/maif.svg" },
+  { id: "allianz",   name: "Allianz",    src: "/partners/allianz.svg" },
+  { id: "groupama",  name: "Groupama",   src: "/partners/groupama.svg" },
+  { id: "generali",  name: "Generali",   src: "/partners/generali.svg" },
+  { id: "swisslife", name: "Swiss Life", src: "/partners/swiss-life.svg" },
+  { id: "gmf",       name: "GMF",        src: "/partners/gmf.svg" },
 ];
 
 export default function Partners() {

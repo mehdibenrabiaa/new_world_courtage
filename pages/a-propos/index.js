@@ -1,4 +1,4 @@
-import Head from "next/head";
+﻿import Head from "next/head";
 import Link from "next/link";
 import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Card } from "@/components/ui/card";
@@ -45,7 +45,7 @@ function QuickNav() {
               <Card className="shadow-none rounded-xl w-full lg:w-[190px] lg:h-[130px] flex flex-row items-center lg:flex-col lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-3 lg:py-0 border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
                 <img src={icon} alt="" aria-hidden="true" className="shrink-0 w-8 h-8 lg:w-11 lg:h-11" />
                 <span className="flex-1 lg:flex-none text-[16px] font-medium text-[var(--color-text)] lg:text-center leading-tight">{label}</span>
-                <img src="/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="lg:hidden shrink-0 opacity-40" />
+                <img src="/icons/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="lg:hidden shrink-0 opacity-40" />
               </Card>
             </Link>
           ))}
@@ -98,7 +98,7 @@ export default function AProposPage() {
                 "@type": "InsuranceAgency",
                 name: "New World Courtage",
                 url: "https://www.newworldcourtage.fr",
-                logo: "https://www.newworldcourtage.fr/nwc_logo.svg",
+                logo: "https://www.newworldcourtage.fr/logos/nwc-logo.svg",
                 telephone: "+33745891865",
                 email: "contact@newworldcourtage.com",
                 address: {
@@ -124,7 +124,7 @@ export default function AProposPage() {
 
       <main>
         <PageBreadcrumb />
-        <PageHero title="À propos de nous" image="/about-hero.jpg" mobileImage="/about-hero-mobile.jpg" imageAlt="L'équipe New World Courtage" titleWidth="lg:w-[50%]" />
+        <PageHero title="À propos de nous" image="/heroes/about-desktop.jpg" mobileImage="/heroes/about-mobile.jpg" imageAlt="L'équipe New World Courtage" titleWidth="lg:w-[50%]" />
         <QuickNav />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 py-14 flex flex-col gap-12">
 

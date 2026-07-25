@@ -1,4 +1,4 @@
-import { libreCaslon } from "@/lib/fonts";
+﻿import { libreCaslon } from "@/lib/fonts";
 
 export default function TrustPilot({ score = 4.8, className = "" }) {
   return (
@@ -7,7 +7,7 @@ export default function TrustPilot({ score = 4.8, className = "" }) {
 
         {/* Trustpilot existing design */}
         <div className="flex flex-col items-start gap-1.5">
-          <img src="/trustpilot.svg" alt="Trustpilot" loading="lazy" className="h-14 w-auto object-contain" />
+          <img src="/logos/trustpilot.svg" alt="Trustpilot" loading="lazy" className="h-14 w-auto object-contain" />
           <p className="text-[13px] font-semibold text-[var(--color-text)] leading-tight">
             TrustScore <span className="text-[#00593a]">{score}</span> sur 5
           </p>
@@ -17,7 +17,7 @@ export default function TrustPilot({ score = 4.8, className = "" }) {
 
         {/* ORIAS */}
         <div className="flex flex-col items-center gap-1.5">
-          <img src="/ORIAS Resgistration.svg" alt="ORIAS" loading="lazy" className="h-14 w-auto object-contain" />
+          <img src="/logos/orias.svg" alt="ORIAS" loading="lazy" className="h-14 w-auto object-contain" />
         </div>
 
         <div className="h-16 sm:h-20 w-px bg-gray-200 hidden sm:block" />

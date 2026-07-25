@@ -1,4 +1,4 @@
-import Head from "next/head";
+﻿import Head from "next/head";
 import Hero from "../components/Hero";
 import Testimonials from "../components/Testimonials";
 import Partners from "../components/Partners";
@@ -21,7 +21,7 @@ export default function Home() {
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://www.newworldcourtage.fr/" />
-        <link rel="preload" as="image" href="/home-hero-desktop.webp" />
+        <link rel="preload" as="image" href="/heroes/home-desktop.webp" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://www.newworldcourtage.fr/" />
         <meta

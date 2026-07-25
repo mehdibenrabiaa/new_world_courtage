@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -58,7 +58,7 @@ export default function TaxiDevisPage() {
         style={{ background: "linear-gradient(90deg,rgba(232, 232, 232, 1) 0%, rgba(255, 255, 255, 1) 100%)" }}
       >
         <div className="flex items-center justify-between px-4 lg:px-12 h-16">
-          <Image src="/nwc_logo.svg" alt="New World Courtage" width={120} height={33} className="h-7 w-auto" />
+          <Image src="/logos/nwc-logo.svg" alt="New World Courtage" width={120} height={33} className="h-7 w-auto" />
           <a
             href="tel:+33745891865"
             className="flex items-center gap-2.5 border border-[var(--color-brand)] hover:bg-[var(--color-brand)]/5 text-[var(--color-brand)] rounded-lg px-4 py-2.5 transition-colors"

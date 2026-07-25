@@ -1,4 +1,4 @@
-import Head from "next/head";
+﻿import Head from "next/head";
 import Link from "next/link";
 import {
   Breadcrumb,
@@ -56,7 +56,7 @@ export default function CommentChoisirPage() {
           categoryHref="/assurance-transport/taxi/"
           title="Comment choisir son assurance taxi ?"
           intro="Garanties, franchise, exclusions, tarif — voici les critères à comparer pour choisir le contrat le plus adapté à votre activité, et vous protéger au meilleur prix."
-          author={{ name: "Loubna Moucharref", avatar: "/loubna_moucharref_profile.jpeg" }}
+          author={{ name: "Loubna Moucharref", avatar: "/team/loubna-moucharref.jpeg" }}
           updatedDate="22 juillet 2026"
           readingTime="4 minutes"
           expertReviewed={false}

@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 import { Mail, Phone, MapPin } from "lucide-react";
 
@@ -100,7 +100,7 @@ export default function Footer() {
           {/* Logo */}
           <div className="shrink-0">
             <Link href="/" aria-label="New World Courtage — Accueil">
-              <Image src="/nwc_logo_white.svg" alt="New World Courtage" width={160} height={40} className="h-11 w-auto" />
+              <Image src="/logos/nwc-logo-white.svg" alt="New World Courtage" width={160} height={40} className="h-11 w-auto" />
             </Link>
           </div>
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import Head from "next/head";
 import PageHero from "@/components/PageHero";
 import CarCalculatorSection from "@/components/CarCalculatorSection";
@@ -87,8 +87,8 @@ export default function AssuranceAmbulancePage() {
         </div>
         <PageHero
           title={<>Votre activité de transport sanitaire mérite une couverture{" "}<em className="italic">sur-mesure.</em></>}
-          image="/ambulance-hero-desktop.webp"
-          mobileImage="/ambulance-mobile.webp"
+          image="/heroes/ambulance-desktop.webp"
+          mobileImage="/heroes/ambulance-mobile.webp"
           imageAlt="Assurance ambulance New World Courtage"
           titlePosition="bottom"
           titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[55px]"
@@ -103,7 +103,7 @@ export default function AssuranceAmbulancePage() {
 
         <Testimonials
           bgColor="#f5f5f3"
-          image="/ambulance_small.jpg"
+          image="/pages/ambulance-professional.jpg"
           label="Garanties incluses"
           heading="Ce que couvre votre"
           headingItalic="assurance ambulance."

@@ -1,4 +1,4 @@
-import Head from "next/head";
+﻿import Head from "next/head";
 import Link from "next/link";
 import {
   Breadcrumb,
@@ -56,7 +56,7 @@ export default function CommentSouscrireAmbulancePage() {
           categoryHref="/assurance-transport/ambulance/"
           title="Comment souscrire une assurance ambulance ?"
           intro="Vous pouvez souscrire directement auprès d'un assureur, via un agent local, ou en passant par un courtier spécialisé comme New World Courtage pour comparer les offres du marché sans démarches répétées."
-          author={{ name: "Loubna Moucharref", avatar: "/loubna_moucharref_profile.jpeg" }}
+          author={{ name: "Loubna Moucharref", avatar: "/team/loubna-moucharref.jpeg" }}
           updatedDate="22 juillet 2026"
           readingTime="4 minutes"
           expertReviewed={false}

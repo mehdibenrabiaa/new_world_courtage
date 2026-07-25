@@ -61,9 +61,9 @@ export default function Hero() {
       <div className="px-4 lg:px-12 2xl:px-24">
         <div className="relative w-full min-h-[650px] lg:h-[75vw] lg:max-h-[90vh] lg:min-h-[600px] overflow-hidden rounded-none lg:rounded-[5px]">
           <picture className="absolute inset-0 w-full h-full">
-            <source media="(max-width: 1023px)" srcSet="/home-hero-mobile.webp" />
+            <source media="(max-width: 1023px)" srcSet="/heroes/home-mobile.webp" />
             <img
-              src="/home-hero-desktop.webp"
+              src="/heroes/home-desktop.webp"
               alt="Protégez ce qui compte le plus pour vous."
               decoding="async"
               loading="eager"
@@ -96,7 +96,7 @@ export default function Hero() {
                       <Card className="shadow-none rounded-xl w-full lg:w-[124px] lg:h-[124px] flex flex-row items-center lg:flex-col lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-1 lg:py-0 border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
                         <img src={icon} alt="" width={42} height={42} aria-hidden="true" className="shrink-0 w-8 h-8 lg:w-11 lg:h-11" />
                         <span className="flex-1 lg:flex-none text-[16px] font-medium text-[var(--color-text)] lg:text-center leading-tight">{label}</span>
-                        <img src="/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="lg:hidden shrink-0 opacity-40" />
+                        <img src="/icons/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="lg:hidden shrink-0 opacity-40" />
                       </Card>
                     </Link>
                   ))}

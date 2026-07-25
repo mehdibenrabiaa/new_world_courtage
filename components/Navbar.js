@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+﻿import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import * as NavMenu from '@radix-ui/react-navigation-menu'
@@ -18,7 +18,7 @@ import { NAV_ITEMS } from './navData'
 
 function Logo() {
   return (
-    <Image src="/nwc_logo.svg" alt="New World Courtage" width={182} height={223} className="h-11 w-auto" priority />
+    <Image src="/logos/nwc-logo.svg" alt="New World Courtage" width={182} height={223} className="h-11 w-auto" priority />
   )
 }
 
