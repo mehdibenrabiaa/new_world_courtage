@@ -26,7 +26,7 @@ export default function CarCalculatorSection({
             <div className="inline-flex items-start bg-white/10 border border-white/20 rounded-xl px-5 py-4 max-w-lg">
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-semibold text-white">0 frais. 0 commission.</p>
-                <p className="text-sm text-white/80 leading-snug">
+                <p className="text-sm text-white leading-snug">
                   {subtitle}
                 </p>
               </div>

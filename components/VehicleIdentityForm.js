@@ -166,7 +166,7 @@ export default function VehicleIdentityForm({ redirectTo = "/assurance-transport
             Année d&apos;obtention du permis <span className="ml-0.5">*</span>
           </FieldLabel>
           <Select value={permis} onValueChange={v => { setPermis(v); clearError("permis"); updateQuery({ permis: v }); }}>
-            <SelectTrigger className={triggerCls("permis")}>
+            <SelectTrigger className={triggerCls("permis")} aria-label="Année d'obtention du permis">
               <SelectValue placeholder="Sélectionnez une année" />
             </SelectTrigger>
             <SelectContent>
@@ -184,7 +184,7 @@ export default function VehicleIdentityForm({ redirectTo = "/assurance-transport
             Coefficient bonus-malus <span className="ml-0.5">*</span>
           </FieldLabel>
           <Select value={bonusMalus} onValueChange={v => { setBonusMalus(v); clearError("bonusMalus"); updateQuery({ bonusMalus: v }); }}>
-            <SelectTrigger className={triggerCls("bonusMalus")}>
+            <SelectTrigger className={triggerCls("bonusMalus")} aria-label="Coefficient bonus-malus">
               <SelectValue placeholder="Votre coefficient" />
             </SelectTrigger>
             <SelectContent>

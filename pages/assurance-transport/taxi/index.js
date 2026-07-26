@@ -39,7 +39,7 @@ const GUIDE_CARDS = [
 
 const OFFER_CARDS = [
   {
-    image: "/taxi_page.png",
+    image: "/heroes/taxi-desktop.webp",
     imageAlt: "Assurance artisan taxi",
     title: "Nous assurons les artisans taxi depuis plus de 10 ans",
     description: "Nous proposons une assurance taxi avec une couverture optimale au meilleur tarif. Nous négocions pour vous avec des assureurs spécialistes et reconnus de l'assurance taxi.",
@@ -60,7 +60,7 @@ const OFFER_CARDS = [
     href: "/assurance-transport/comment-choisir-assurance-taxi/",
   },
   {
-    image: "/taxi_page.png",
+    image: "/pages/driving-car.jpg",
     imageAlt: "Responsabilité civile taxi",
     title: "Responsabilité civile : une protection indispensable",
     description: "La RC professionnelle spécifique aux artisans taxi couvre les dommages causés à vos passagers et aux tiers lors de votre activité de transport rémunéré.",
