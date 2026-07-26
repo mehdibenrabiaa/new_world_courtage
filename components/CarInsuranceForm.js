@@ -569,6 +569,7 @@ export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers
                 <Select value={answer} onValueChange={val => setAnswer(step.id, val)}>
                   <SelectTrigger
                     id={`field-${step.id}`}
+                    aria-label={step.label || "Sélectionnez une option"}
                     className={`w-full max-w-sm bg-white h-[50px] data-[size=default]:h-[50px] ${errors[step.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
                   >
                     <SelectValue placeholder="Sélectionnez une option" />

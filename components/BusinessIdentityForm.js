@@ -170,7 +170,7 @@ export default function BusinessIdentityForm({ redirectTo = "/assurance-transpor
             Statut juridique <span className="ml-0.5">*</span>
           </FieldLabel>
           <Select value={statutJuridique} onValueChange={v => { setStatutJuridique(v); clearError("statutJuridique"); updateQuery({ statutJuridique: v }); }}>
-            <SelectTrigger className={triggerCls("statutJuridique")}>
+            <SelectTrigger className={triggerCls("statutJuridique")} aria-label="Statut juridique">
               <SelectValue placeholder="Sélectionnez un statut" />
             </SelectTrigger>
             <SelectContent>

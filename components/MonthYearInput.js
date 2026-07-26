@@ -28,7 +28,7 @@ export function MonthYearInput({ value, onChange, mode = "month", error = false,
   if (mode === "year") {
     return (
       <Select value={yearPart} onValueChange={setYear}>
-        <SelectTrigger className={`w-full ${triggerCls} ${className}`}>
+        <SelectTrigger className={`w-full ${triggerCls} ${className}`} aria-label="Année">
           <SelectValue placeholder="Année" />
         </SelectTrigger>
         <SelectContent>
@@ -43,7 +43,7 @@ export function MonthYearInput({ value, onChange, mode = "month", error = false,
   return (
     <div className={`flex gap-3 ${className}`}>
       <Select value={monthPart} onValueChange={setMonth}>
-        <SelectTrigger className={`flex-1 ${triggerCls}`}>
+        <SelectTrigger className={`flex-1 ${triggerCls}`} aria-label="Mois">
           <SelectValue placeholder="Mois" />
         </SelectTrigger>
         <SelectContent>
@@ -53,7 +53,7 @@ export function MonthYearInput({ value, onChange, mode = "month", error = false,
         </SelectContent>
       </Select>
       <Select value={yearPart} onValueChange={setYear}>
-        <SelectTrigger className={`flex-1 ${triggerCls}`}>
+        <SelectTrigger className={`flex-1 ${triggerCls}`} aria-label="Année">
           <SelectValue placeholder="Année" />
         </SelectTrigger>
         <SelectContent>
