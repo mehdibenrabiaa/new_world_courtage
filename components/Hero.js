@@ -79,8 +79,8 @@ export default function Hero() {
                 ref={titleRef}
                 className={`sm:text-[36px] lg:text-[55px] text-[var(--color-text)] leading-[1.1] ${libreCaslon.className}`}
               >
-                <span className="block">La meilleure assurance</span>
-                <em className={`block italic ${libreCaslon.className}`}>au meilleur prix.</em>
+                <span className="block whitespace-nowrap">La meilleure assurance</span>
+                <em className={`block italic whitespace-nowrap ${libreCaslon.className}`}>au meilleur prix.</em>
               </p>
             </div>
 
