@@ -1,7 +1,8 @@
 ﻿import Head from "next/head";
 import PageHero from "@/components/PageHero";
 import CarCalculatorSection from "@/components/CarCalculatorSection";
-import { ClipboardCheck, Umbrella, Scale } from "lucide-react";
+import { ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText } from "lucide-react";
+import { fetchGuideCardsByCategory } from "@/lib/api";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -16,7 +17,9 @@ import FinishedScrolling from "../../../components/FinishedScrolling";
 
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
-const GUIDE_CARDS = [
+const GUIDE_ICONS = [ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText];
+
+const FALLBACK_GUIDE_CARDS = [
   {
     Icon: ClipboardCheck,
     title: "Comment souscrire une assurance taxi ?",
@@ -102,7 +105,24 @@ function PageBreadcrumb() {
   );
 }
 
-export default function AssuranceTaxiPage() {
+export async function getServerSideProps() {
+  try {
+    const guides = await fetchGuideCardsByCategory("Taxi");
+    return { props: { guideData: guides } };
+  } catch {
+    return { props: { guideData: null } };
+  }
+}
+
+export default function AssuranceTaxiPage({ guideData }) {
+  const guideCards = guideData?.length > 0
+    ? guideData.map((g, i) => ({
+        Icon: GUIDE_ICONS[i % GUIDE_ICONS.length],
+        title: g.title,
+        description: g.intro || "",
+        href: `/assurance-transport/${g.slug}/`,
+      }))
+    : FALLBACK_GUIDE_CARDS;
   return (
     <>
       <Head>
@@ -153,7 +173,7 @@ export default function AssuranceTaxiPage() {
           showLink
           titleFont="serif"
           layout="grid"
-          items={GUIDE_CARDS}
+          items={guideCards}
         />
 
         <InfoCardsSection

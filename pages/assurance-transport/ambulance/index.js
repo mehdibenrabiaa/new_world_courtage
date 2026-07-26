@@ -1,9 +1,8 @@
-﻿import { useEffect, useState } from "react";
-import Head from "next/head";
+﻿import Head from "next/head";
 import PageHero from "@/components/PageHero";
 import CarCalculatorSection from "@/components/CarCalculatorSection";
 import { libreCaslon } from "@/lib/fonts";
-import { ClipboardCheck, Umbrella, Scale } from "lucide-react";
+import { ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText } from "lucide-react";
 import {
   Breadcrumb,
   BreadcrumbList,
@@ -15,11 +14,37 @@ import {
 import Testimonials from "../../../components/Testimonials";
 import InfoCardsSection from "../../../components/InfoCardsSection";
 import FinishedScrolling from "../../../components/FinishedScrolling";
-import { fetchGuides } from "@/lib/api";
+import { fetchGuideCardsByCategory } from "@/lib/api";
 
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
-const GUIDE_CARDS = [
+const GUIDE_ICONS = [ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText];
+
+const OFFER_CARDS = [
+  {
+    image: "/heroes/ambulance-desktop.webp",
+    imageAlt: "Assurance ambulance professionnelle",
+    title: "Nous assurons les ambulanciers depuis plus de 10 ans",
+    description: "Nous proposons une assurance ambulance avec une couverture optimale au meilleur tarif, négociée avec des assureurs spécialistes reconnus du transport sanitaire.",
+    href: "/assurance-transport/comment-souscrire-assurance-ambulance/",
+  },
+  {
+    image: "/pages/ambulance-side-angle.webp",
+    imageAlt: "Couverture assurance transport sanitaire",
+    title: "Une couverture adaptée au transport sanitaire",
+    description: "Responsabilité civile professionnelle, véhicule, matériel médical embarqué et protection des patients — toutes ces garanties sont incluses dans nos contrats de base.",
+    href: "/assurance-transport/quelle-couverture-assurance-ambulance/",
+  },
+  {
+    image: "/pages/calculator-mobile.jpg",
+    imageAlt: "Devis assurance ambulance",
+    title: "Votre assurance ambulance moins chère",
+    description: "Nous bénéficions de tarifs exceptionnels négociés avec les plus grandes compagnies d'assurance spécialisées dans le transport sanitaire. Devis sous 24h.",
+    href: "/assurance-transport/comment-choisir-assurance-ambulance/",
+  },
+];
+
+const FALLBACK_GUIDE_CARDS = [
   {
     Icon: ClipboardCheck,
     title: "Comment souscrire une assurance ambulance ?",
@@ -60,14 +85,24 @@ function PageBreadcrumb() {
   );
 }
 
-export default function AssuranceAmbulancePage() {
-  const [guides, setGuides] = useState([]);
+export async function getServerSideProps() {
+  try {
+    const guides = await fetchGuideCardsByCategory("Ambulance");
+    return { props: { guideData: guides } };
+  } catch {
+    return { props: { guideData: null } };
+  }
+}
 
-  useEffect(() => {
-    fetchGuides("ambulance")
-      .then(setGuides)
-      .catch(() => {});
-  }, []);
+export default function AssuranceAmbulancePage({ guideData }) {
+  const guideCards = guideData?.length > 0
+    ? guideData.map((g, i) => ({
+        Icon: GUIDE_ICONS[i % GUIDE_ICONS.length],
+        title: g.title,
+        description: g.intro || "",
+        href: `/assurance-transport/${g.slug}/`,
+      }))
+    : FALLBACK_GUIDE_CARDS;
 
   return (
     <>
@@ -124,7 +159,7 @@ export default function AssuranceAmbulancePage() {
           showLink
           titleFont="serif"
           layout="grid"
-          items={GUIDE_CARDS}
+          items={guideCards}
         />
 
         <InfoCardsSection
@@ -139,7 +174,7 @@ export default function AssuranceAmbulancePage() {
           mobileLayout="carousel"
           ctaLabel="Lire plus de guides"
           ctaHref="/assurance-transport/ambulance/"
-          items={guides}
+          items={OFFER_CARDS}
         />
         <FinishedScrolling />
       </main>
