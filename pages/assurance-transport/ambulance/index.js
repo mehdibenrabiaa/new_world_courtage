@@ -103,7 +103,7 @@ export default function AssuranceAmbulancePage() {
 
         <Testimonials
           bgColor="#f5f5f3"
-          image="/pages/ambulance-professional.jpg"
+          image="/pages/ambulance-side-angle.webp"
           label="Garanties incluses"
           heading="Ce que couvre votre"
           headingItalic="assurance ambulance."
