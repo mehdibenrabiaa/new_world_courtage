@@ -44,26 +44,6 @@ const OFFER_CARDS = [
   },
 ];
 
-const FALLBACK_GUIDE_CARDS = [
-  {
-    Icon: ClipboardCheck,
-    title: "Comment souscrire une assurance ambulance ?",
-    description: "Vous pouvez souscrire directement auprès d'un assureur, via un agent ou en faisant appel à un courtier spécialisé comme New World Courtage pour comparer les offres du marché.",
-    href: "/assurance-transport/comment-souscrire-assurance-ambulance/",
-  },
-  {
-    Icon: Umbrella,
-    title: "De quelle couverture ai-je besoin ?",
-    description: "Véhicules, locaux, matériel médical embarqué : le niveau de couverture dépend de la nature de votre activité (ambulance, VSL) et de votre statut, mono-véhicule ou flotte.",
-    href: "/assurance-transport/quelle-couverture-assurance-ambulance/",
-  },
-  {
-    Icon: Scale,
-    title: "Comment choisir son assurance ambulance ?",
-    description: "Garanties, franchise, exclusions, tarif — notre équipe vous guide vers le contrat le plus adapté à votre activité de transport sanitaire.",
-    href: "/assurance-transport/comment-choisir-assurance-ambulance/",
-  },
-];
 
 function PageBreadcrumb() {
   return (
@@ -95,14 +75,12 @@ export async function getServerSideProps() {
 }
 
 export default function AssuranceAmbulancePage({ guideData }) {
-  const guideCards = guideData?.length > 0
-    ? guideData.map((g, i) => ({
-        Icon: GUIDE_ICONS[i % GUIDE_ICONS.length],
-        title: g.title,
-        description: g.intro || "",
-        href: `/assurance-transport/${g.slug}/`,
-      }))
-    : FALLBACK_GUIDE_CARDS;
+  const guideCards = (guideData ?? []).map((g, i) => ({
+    Icon: GUIDE_ICONS[i % GUIDE_ICONS.length],
+    title: g.title,
+    description: g.intro || "",
+    href: `/assurance-transport/${g.slug}/`,
+  }));
 
   return (
     <>
@@ -151,16 +129,18 @@ export default function AssuranceAmbulancePage({ guideData }) {
           ]}
         />
 
-        <InfoCardsSection
-          title="Pas sûr par où"
-          titleItalic="commencer ?"
-          subtitle="Explorez nos guides pour tout savoir sur l'assurance ambulance."
-          cardStyle="style1"
-          showLink
-          titleFont="serif"
-          layout="grid"
-          items={guideCards}
-        />
+        {guideCards.length > 0 && (
+          <InfoCardsSection
+            title="Pas sûr par où"
+            titleItalic="commencer ?"
+            subtitle="Explorez nos guides pour tout savoir sur l'assurance ambulance."
+            cardStyle="style1"
+            showLink
+            titleFont="serif"
+            layout="grid"
+            items={guideCards}
+          />
+        )}
 
         <InfoCardsSection
           title="Guides & conseils"

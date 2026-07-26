@@ -19,26 +19,6 @@ const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
 const GUIDE_ICONS = [ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText];
 
-const FALLBACK_GUIDE_CARDS = [
-  {
-    Icon: ClipboardCheck,
-    title: "Comment souscrire une assurance taxi ?",
-    description: "Vous pouvez souscrire directement auprès d'un assureur, via un agent ou en faisant appel à un courtier spécialisé comme New World Courtage pour comparer les offres du marché.",
-    href: "/assurance-transport/comment-souscrire-assurance-taxi/",
-  },
-  {
-    Icon: Umbrella,
-    title: "De quelle couverture ai-je besoin ?",
-    description: "Choisir la bonne couverture dépend de la valeur de votre véhicule, de votre historique de sinistres et du niveau de risque lié à votre activité de chauffeur de taxi.",
-    href: "/assurance-transport/quelle-couverture-assurance-taxi/",
-  },
-  {
-    Icon: Scale,
-    title: "Comment choisir son assurance taxi ?",
-    description: "Garanties, franchise, exclusions, tarif — notre équipe vous guide vers le contrat le plus adapté à votre activité, pour vous protéger au meilleur prix.",
-    href: "/assurance-transport/comment-choisir-assurance-taxi/",
-  },
-];
 
 const OFFER_CARDS = [
   {
@@ -115,14 +95,12 @@ export async function getServerSideProps() {
 }
 
 export default function AssuranceTaxiPage({ guideData }) {
-  const guideCards = guideData?.length > 0
-    ? guideData.map((g, i) => ({
-        Icon: GUIDE_ICONS[i % GUIDE_ICONS.length],
-        title: g.title,
-        description: g.intro || "",
-        href: `/assurance-transport/${g.slug}/`,
-      }))
-    : FALLBACK_GUIDE_CARDS;
+  const guideCards = (guideData ?? []).map((g, i) => ({
+    Icon: GUIDE_ICONS[i % GUIDE_ICONS.length],
+    title: g.title,
+    description: g.intro || "",
+    href: `/assurance-transport/${g.slug}/`,
+  }));
   return (
     <>
       <Head>
@@ -165,16 +143,18 @@ export default function AssuranceTaxiPage({ guideData }) {
           ]}
         />
 
-        <InfoCardsSection
-          title="Pas sûr par où"
-          titleItalic="commencer ?"
-          subtitle="Explorez nos guides pour tout savoir sur l'assurance taxi."
-          cardStyle="style1"
-          showLink
-          titleFont="serif"
-          layout="grid"
-          items={guideCards}
-        />
+        {guideCards.length > 0 && (
+          <InfoCardsSection
+            title="Pas sûr par où"
+            titleItalic="commencer ?"
+            subtitle="Explorez nos guides pour tout savoir sur l'assurance taxi."
+            cardStyle="style1"
+            showLink
+            titleFont="serif"
+            layout="grid"
+            items={guideCards}
+          />
+        )}
 
         <InfoCardsSection
           title="Guides & conseils"
