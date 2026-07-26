@@ -3,7 +3,7 @@
 export default function TrustPilot({ score = 4.8, className = "" }) {
   return (
     <div className={`w-full px-4 lg:px-12 2xl:px-24 py-8 ${className}`}>
-      <div className="max-w-4xl mx-auto py-12 flex flex-col sm:flex-row flex-wrap justify-center items-center gap-10 sm:gap-10 lg:gap-14">
+      <div className="max-w-4xl mx-auto py-12 flex flex-col sm:flex-row flex-wrap justify-center items-center gap-16 sm:gap-10 lg:gap-14">
 
         {/* Trustpilot existing design */}
         <div className="flex flex-col items-start gap-2">
@@ -13,14 +13,14 @@ export default function TrustPilot({ score = 4.8, className = "" }) {
           </p>
         </div>
 
-        <div className="h-16 sm:h-20 w-px bg-gray-200 hidden sm:block" />
+        <div className="h-px sm:h-20 w-24 sm:w-px bg-gray-200 block" />
 
         {/* ORIAS */}
         <div className="flex flex-col items-center gap-1.5">
           <img src="/logos/orias.svg" alt="ORIAS" loading="lazy" className="h-20 sm:h-14 w-auto object-contain" />
         </div>
 
-        <div className="h-16 sm:h-20 w-px bg-gray-200 hidden sm:block" />
+        <div className="h-px sm:h-20 w-24 sm:w-px bg-gray-200 block" />
 
         {/* Sans frais */}
         <div className="flex flex-col items-center sm:items-start gap-0">
