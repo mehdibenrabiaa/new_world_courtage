@@ -46,7 +46,7 @@ const OFFER_CARDS = [
     href: "/assurance-transport/comment-souscrire-assurance-taxi/",
   },
   {
-    image: "/pages/taxi-driver.png",
+    image: "/pages/taxi-driver.webp",
     imageAlt: "Couverture assurance taxi",
     title: "Une couverture adaptée aux risques de votre activité",
     description: "L'assurance taxi comporte de nombreuses spécificités : RC professionnelle, couverture du véhicule, assurance du chauffeur et des passagers. Ces garanties sont incluses dans tous nos contrats de base.",
@@ -67,7 +67,7 @@ const OFFER_CARDS = [
     href: "/assurance-transport/taxi/rc-professionnelle/",
   },
   {
-    image: "/pages/taxi-driver.png",
+    image: "/pages/taxi-driver.webp",
     imageAlt: "Options assurance taxi",
     title: "Des options pour renforcer votre couverture",
     description: "Perte de recette, assistance dépannage, garantie car-jacking, récupération de points... Personnalisez votre contrat selon vos besoins réels.",
@@ -132,7 +132,7 @@ export default function AssuranceTaxiPage() {
 
         <Testimonials
           bgColor="#f5f5f3"
-          image="/pages/taxi-driver.png"
+          image="/pages/taxi-driver.webp"
           label="Garanties incluses"
           heading="Ce que couvre votre"
           headingItalic="assurance taxi."
