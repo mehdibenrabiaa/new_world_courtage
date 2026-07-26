@@ -47,8 +47,8 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
               {index + 1}
             </Badge>
           )}
-          <h3 className={`text-[21px] ${titleClass}`}>{title}</h3>
-          <p className="text-[16px] text-gray-600 leading-relaxed flex-1">{description}</p>
+          <h3 className={`text-[23px] lg:text-[19px] ${titleClass}`}>{title}</h3>
+          <p className="text-[17px] lg:text-[15px] text-gray-600 leading-relaxed flex-1">{description}</p>
           {showLink && (
             <div className="mt-8 flex items-center gap-1 text-[14px] font-semibold text-[var(--color-brand)] group-hover:underline">
               En savoir plus <ChevronRight size={15} />
