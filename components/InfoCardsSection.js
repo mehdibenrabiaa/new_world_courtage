@@ -28,9 +28,15 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
           <div className="lg:hidden w-full h-44 bg-[var(--color-light)] flex items-center justify-center shrink-0">
             <Icon size={64} strokeWidth={1.2} className="text-[var(--color-brand)]" />
           </div>
-          <div className="hidden lg:block w-full h-44 relative overflow-hidden shrink-0">
-            <img src={image} alt={imageAlt} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
-          </div>
+          {image ? (
+            <div className="hidden lg:block w-full h-44 relative overflow-hidden shrink-0">
+              <img src={image} alt={imageAlt} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+            </div>
+          ) : (
+            <div className="hidden lg:block w-full h-44 bg-[var(--color-light)] flex items-center justify-center shrink-0">
+              <Icon size={64} strokeWidth={1.2} className="text-[var(--color-brand)]" />
+            </div>
+          )}
         </>
       ) : (
         <div className="w-full h-44 relative overflow-hidden shrink-0">

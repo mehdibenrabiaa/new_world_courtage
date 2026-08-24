@@ -18,31 +18,28 @@ import { fetchGuideCardsByCategory } from "@/lib/api";
 
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
-const GUIDE_ICONS = [ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText];
-
-const OFFER_CARDS = [
+const GUIDE_CARDS = [
   {
-    image: "/heroes/ambulance-desktop.webp",
-    imageAlt: "Assurance ambulance professionnelle",
-    title: "Nous assurons les ambulanciers depuis plus de 10 ans",
-    description: "Nous proposons une assurance ambulance avec une couverture optimale au meilleur tarif, négociée avec des assureurs spécialistes reconnus du transport sanitaire.",
+    Icon: ClipboardCheck,
+    title: "Comment souscrire une assurance ambulance ?",
+    description: "Vous pouvez souscrire directement auprès d'un assureur, via un agent ou en faisant appel à un courtier spécialisé comme New World Courtage pour comparer les offres du marché.",
     href: "/assurance-transport/comment-souscrire-assurance-ambulance/",
   },
   {
-    image: "/pages/ambulance-side-angle.webp",
-    imageAlt: "Couverture assurance transport sanitaire",
-    title: "Une couverture adaptée au transport sanitaire",
-    description: "Responsabilité civile professionnelle, véhicule, matériel médical embarqué et protection des patients — toutes ces garanties sont incluses dans nos contrats de base.",
+    Icon: Umbrella,
+    title: "De quelle couverture ai-je besoin ?",
+    description: "Véhicules, locaux, matériel médical embarqué : le niveau de couverture dépend de la nature de votre activité (ambulance, VSL) et de votre statut, mono-véhicule ou flotte.",
     href: "/assurance-transport/quelle-couverture-assurance-ambulance/",
   },
   {
-    image: "/pages/calculator-mobile.jpg",
-    imageAlt: "Devis assurance ambulance",
-    title: "Votre assurance ambulance moins chère",
-    description: "Nous bénéficions de tarifs exceptionnels négociés avec les plus grandes compagnies d'assurance spécialisées dans le transport sanitaire. Devis sous 24h.",
+    Icon: Scale,
+    title: "Comment choisir son assurance ambulance ?",
+    description: "Garanties, franchise, exclusions, tarif — notre équipe vous guide vers le contrat le plus adapté à votre activité de transport sanitaire.",
     href: "/assurance-transport/comment-choisir-assurance-ambulance/",
   },
 ];
+
+const GUIDE_ICONS = [ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText];
 
 
 function PageBreadcrumb() {
@@ -75,8 +72,10 @@ export async function getServerSideProps() {
 }
 
 export default function AssuranceAmbulancePage({ guideData }) {
-  const guideCards = (guideData ?? []).map((g, i) => ({
-    Icon: GUIDE_ICONS[i % GUIDE_ICONS.length],
+  const offerCards = (guideData ?? []).map((g, i) => ({
+    ...(g.image_url
+      ? { image: g.image_url, imageAlt: g.title }
+      : { Icon: GUIDE_ICONS[i % GUIDE_ICONS.length] }),
     title: g.title,
     description: g.intro || "",
     href: `/assurance-transport/${g.slug}/`,
@@ -129,33 +128,33 @@ export default function AssuranceAmbulancePage({ guideData }) {
           ]}
         />
 
-        {guideCards.length > 0 && (
+        <InfoCardsSection
+          title="Pas sûr par où"
+          titleItalic="commencer ?"
+          subtitle="Explorez nos guides pour tout savoir sur l'assurance ambulance."
+          cardStyle="style1"
+          showLink
+          titleFont="serif"
+          layout="grid"
+          items={GUIDE_CARDS}
+        />
+
+        {offerCards.length > 0 && (
           <InfoCardsSection
-            title="Pas sûr par où"
-            titleItalic="commencer ?"
-            subtitle="Explorez nos guides pour tout savoir sur l'assurance ambulance."
-            cardStyle="style1"
+            title="Guides & conseils"
+            titleItalic="assurance."
+            subtitle="Tout ce que vous devez savoir avant de souscrire votre assurance ambulance — expliqué simplement par nos experts."
+            cardStyle="style2"
             showLink
-            titleFont="serif"
-            layout="grid"
-            items={guideCards}
+            withContainer
+            titleFont="sans"
+            layout="scroll"
+            mobileLayout="carousel"
+            ctaLabel="Lire plus de guides"
+            ctaHref="/assurance-transport/ambulance/"
+            items={offerCards}
           />
         )}
-
-        <InfoCardsSection
-          title="Guides & conseils"
-          titleItalic="assurance."
-          subtitle="Tout ce que vous devez savoir avant de souscrire votre assurance ambulance — expliqué simplement par nos experts."
-          cardStyle="style2"
-          showLink
-          withContainer
-          titleFont="sans"
-          layout="scroll"
-          mobileLayout="carousel"
-          ctaLabel="Lire plus de guides"
-          ctaHref="/assurance-transport/ambulance/"
-          items={OFFER_CARDS}
-        />
         <FinishedScrolling />
       </main>
     </>

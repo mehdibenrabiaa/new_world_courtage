@@ -17,53 +17,28 @@ import FinishedScrolling from "../../../components/FinishedScrolling";
 
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
-const GUIDE_ICONS = [ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText];
-
-
-const OFFER_CARDS = [
+const GUIDE_CARDS = [
   {
-    image: "/heroes/taxi-desktop.webp",
-    imageAlt: "Assurance artisan taxi",
-    title: "Nous assurons les artisans taxi depuis plus de 10 ans",
-    description: "Nous proposons une assurance taxi avec une couverture optimale au meilleur tarif. Nous négocions pour vous avec des assureurs spécialistes et reconnus de l'assurance taxi.",
+    Icon: ClipboardCheck,
+    title: "Comment souscrire une assurance taxi ?",
+    description: "Vous pouvez souscrire directement auprès d'un assureur, via un agent ou en faisant appel à un courtier spécialisé comme New World Courtage pour comparer les offres du marché.",
     href: "/assurance-transport/comment-souscrire-assurance-taxi/",
   },
   {
-    image: "/pages/taxi-driver.webp",
-    imageAlt: "Couverture assurance taxi",
-    title: "Une couverture adaptée aux risques de votre activité",
-    description: "L'assurance taxi comporte de nombreuses spécificités : RC professionnelle, couverture du véhicule, assurance du chauffeur et des passagers. Ces garanties sont incluses dans tous nos contrats de base.",
+    Icon: Umbrella,
+    title: "De quelle couverture ai-je besoin ?",
+    description: "Choisir la bonne couverture dépend de la valeur de votre véhicule, de votre historique de sinistres et du niveau de risque lié à votre activité de chauffeur de taxi.",
     href: "/assurance-transport/quelle-couverture-assurance-taxi/",
   },
   {
-    image: "/pages/calculator-mobile.jpg",
-    imageAlt: "Devis assurance taxi",
-    title: "Votre assurance taxi moins chère",
-    description: "Nous bénéficions de tarifs exceptionnels négociés avec les plus grandes compagnies d'assurance, entièrement répercutés auprès de nos clients. Devis sous 24h.",
+    Icon: Scale,
+    title: "Comment choisir son assurance taxi ?",
+    description: "Garanties, franchise, exclusions, tarif — notre équipe vous guide vers le contrat le plus adapté à votre activité, pour vous protéger au meilleur prix.",
     href: "/assurance-transport/comment-choisir-assurance-taxi/",
   },
-  {
-    image: "/pages/driving-car.jpg",
-    imageAlt: "Responsabilité civile taxi",
-    title: "Responsabilité civile : une protection indispensable",
-    description: "La RC professionnelle spécifique aux artisans taxi couvre les dommages causés à vos passagers et aux tiers lors de votre activité de transport rémunéré.",
-    href: "/assurance-transport/taxi/rc-professionnelle/",
-  },
-  {
-    image: "/pages/taxi-driver.webp",
-    imageAlt: "Options assurance taxi",
-    title: "Des options pour renforcer votre couverture",
-    description: "Perte de recette, assistance dépannage, garantie car-jacking, récupération de points... Personnalisez votre contrat selon vos besoins réels.",
-    href: "/assurance-transport/taxi/options/",
-  },
-  {
-    image: "/pages/calculator-mobile.jpg",
-    imageAlt: "Devis en ligne taxi",
-    title: "Devis en ligne sous 24h",
-    description: "Remplissez notre formulaire dédié et l'un de nos experts vous envoie par mail une proposition détaillée sous 24h, sans engagement.",
-    href: "/assurance-transport/calculateur/",
-  },
 ];
+
+const GUIDE_ICONS = [ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText];
 
 function PageBreadcrumb() {
   return (
@@ -95,8 +70,10 @@ export async function getServerSideProps() {
 }
 
 export default function AssuranceTaxiPage({ guideData }) {
-  const guideCards = (guideData ?? []).map((g, i) => ({
-    Icon: GUIDE_ICONS[i % GUIDE_ICONS.length],
+  const offerCards = (guideData ?? []).map((g, i) => ({
+    ...(g.image_url
+      ? { image: g.image_url, imageAlt: g.title }
+      : { Icon: GUIDE_ICONS[i % GUIDE_ICONS.length] }),
     title: g.title,
     description: g.intro || "",
     href: `/assurance-transport/${g.slug}/`,
@@ -143,33 +120,33 @@ export default function AssuranceTaxiPage({ guideData }) {
           ]}
         />
 
-        {guideCards.length > 0 && (
+        <InfoCardsSection
+          title="Pas sûr par où"
+          titleItalic="commencer ?"
+          subtitle="Explorez nos guides pour tout savoir sur l'assurance taxi."
+          cardStyle="style1"
+          showLink
+          titleFont="serif"
+          layout="grid"
+          items={GUIDE_CARDS}
+        />
+
+        {offerCards.length > 0 && (
           <InfoCardsSection
-            title="Pas sûr par où"
-            titleItalic="commencer ?"
-            subtitle="Explorez nos guides pour tout savoir sur l'assurance taxi."
-            cardStyle="style1"
+            title="Guides & conseils"
+            titleItalic="assurance."
+            subtitle="Tout ce que vous devez savoir avant de souscrire votre assurance taxi — expliqué simplement par nos experts."
+            cardStyle="style2"
             showLink
-            titleFont="serif"
-            layout="grid"
-            items={guideCards}
+            withContainer
+            titleFont="sans"
+            layout="scroll"
+            mobileLayout="carousel"
+            ctaLabel="Lire plus de guides"
+            ctaHref="/assurance-transport/taxi/"
+            items={offerCards}
           />
         )}
-
-        <InfoCardsSection
-          title="Guides & conseils"
-          titleItalic="assurance."
-          subtitle="Tout ce que vous devez savoir avant de souscrire votre assurance taxi — expliqué simplement par nos experts."
-          cardStyle="style2"
-          showLink
-          withContainer
-          titleFont="sans"
-          layout="scroll"
-          mobileLayout="carousel"
-          ctaLabel="Lire plus de guides"
-          ctaHref="/assurance-transport/taxi/"
-          items={OFFER_CARDS}
-        />
         <FinishedScrolling />
       </main>
     </>
