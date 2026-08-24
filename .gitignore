@@ -41,3 +41,5 @@ screenshot_temp.js
 
 # design working files, not web assets
 *.psd
+
+nwc.db
