@@ -94,7 +94,7 @@ function Block({ block }) {
   if (block.type === "bullet-card") {
     return (
       <div className="overflow-hidden rounded-b-[var(--radius)]">
-        <div className="h-2 bg-[var(--color-brand)]" />
+        {block.topLine !== false && <div className="h-2 bg-[var(--color-brand)]" />}
         <div className="bg-[var(--color-light)] p-6 flex flex-col gap-3">
           {block.title && <h3 className="text-[15px] font-semibold text-[#131212] leading-snug">{block.title}</h3>}
           <ul className="list-disc pl-5 flex flex-col gap-1.5 text-[15px] text-gray-600 leading-relaxed">
