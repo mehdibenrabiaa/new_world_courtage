@@ -64,7 +64,7 @@ function PageBreadcrumb() {
 
 export async function getServerSideProps() {
   try {
-    const guides = await fetchGuideCardsByCategory("Ambulance");
+    const guides = await fetchGuideCardsByCategory("Assurance Ambulance");
     return { props: { guideData: guides } };
   } catch {
     return { props: { guideData: null } };

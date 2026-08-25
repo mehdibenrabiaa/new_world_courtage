@@ -115,7 +115,7 @@ export default function ArticleHero({
 
         {/* Intro paragraph — serif, sits after the byline card */}
         {intro && (
-          <p className={`text-2xl sm:text-[28px] leading-[1.2] text-[var(--color-text)] my-6 text-center sm:text-left ${libreCaslon.className}`}>
+          <p className={`text-2xl sm:text-[28px] leading-[1.2] text-[var(--color-text)] my-6 text-justify ${libreCaslon.className}`}>
             {intro}
           </p>
         )}
