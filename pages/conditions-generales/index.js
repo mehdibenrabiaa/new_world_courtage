@@ -31,7 +31,7 @@ export default function ConditionsGenerales() {
         {/* Hero */}
         <div className="bg-[var(--color-brand)] py-24 px-6 sm:px-10">
           <div className="max-w-4xl mx-auto flex flex-col gap-3">
-            <p className="text-sm text-white/80">Dernière mise à jour : {LAST_UPDATED}</p>
+            <p className="text-sm text-white/90">Dernière mise à jour : {LAST_UPDATED}</p>
             <h1 className="text-2xl sm:text-4xl font-bold text-white leading-tight">
               Conditions générales d'utilisation
             </h1>

@@ -1,4 +1,5 @@
 import "../global.css";
+import Head from "next/head";
 import { Geist } from "next/font/google";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
@@ -26,6 +27,9 @@ export default function MyApp({ Component, pageProps }) {
       className={geistSans.className}
       style={{ minHeight: "100vh", overflowX: "clip" }}
     >
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
       {!hideNav && <Navbar />}
       <div className="max-w-[1600px] mx-auto">
         <AnimatePresence mode="wait" initial={false}>
