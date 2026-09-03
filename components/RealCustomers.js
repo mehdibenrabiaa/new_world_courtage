@@ -160,7 +160,7 @@ export default function RealCustomers() {
             {visible.map(({ title, quote, name, href }) => (
               <a
                 key={name}
-                href={href || "https://www.trustpilot.com/review/newworldcourtage.fr"}
+                href={href || "https://www.trustpilot.com/review/newworldcourtage.com"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`${CARD_CLASS} cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] max-w-[400px] mx-auto w-full`}
