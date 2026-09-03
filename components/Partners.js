@@ -1,16 +1,7 @@
 ﻿import { libreCaslon } from "@/lib/fonts";
 import CtaButton from "@/components/CtaButton";
 import { Separator } from "@/components/ui/separator";
-
-const LOGOS = [
-  { id: "axa",       name: "AXA",        src: "/partners/axa.svg" },
-  { id: "allianz",   name: "Allianz",    src: "/partners/allianz.svg" },
-  { id: "groupama",  name: "Groupama",   src: "/partners/groupama.svg" },
-  { id: "swisslife", name: "Swiss Life", src: "/partners/swiss-life.svg" },
-  { id: "gmf",       name: "GMF",        src: "/partners/gmf.svg" },
-  { id: "areas",     name: "Areas",      src: "/partners/areas.svg" },
-  { id: "gan",       name: "GAN",        src: "/partners/gan.svg" },
-];
+import { PARTNERS } from "@/lib/partners";
 
 export default function Partners() {
   return (
@@ -29,7 +20,7 @@ export default function Partners() {
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-y-6">
-              {LOGOS.map(({ id, name, src }, i) => (
+              {PARTNERS.map(({ id, name, src }, i) => (
                 <div key={id} className="flex items-center h-14">
                   {i > 0 && <Separator orientation="vertical" className="mx-6 lg:mx-8 h-10" />}
                   <img src={src} alt={name} loading="lazy" className="h-10 lg:h-14 w-auto object-contain max-w-[110px] lg:max-w-[150px]" />
