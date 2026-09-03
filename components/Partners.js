@@ -10,6 +10,8 @@ const LOGOS = [
   { id: "generali",  name: "Generali",   src: "/partners/generali.svg" },
   { id: "swisslife", name: "Swiss Life", src: "/partners/swiss-life.svg" },
   { id: "gmf",       name: "GMF",        src: "/partners/gmf.svg" },
+  { id: "areas",     name: "Areas",      src: "/partners/areas.svg" },
+  { id: "gan",       name: "GAN",        src: "/partners/gan.svg" },
 ];
 
 export default function Partners() {
