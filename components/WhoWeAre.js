@@ -20,7 +20,7 @@ export default function WhoWeAre({
   statSub = "sur vos contrats d'assurance",
   ctaSubtext = "Prêt à économiser ? Découvrez en 2 minutes les meilleures offres adaptées à votre profil.",
   ctaText = "Obtenir mon devis gratuit",
-  ctaHref = "/life-insurance/start",
+  ctaHref = "/devis/",
   badge = "Courtier indépendant — ORIAS n° 25006506",
 }) {
   return (

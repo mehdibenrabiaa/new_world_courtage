@@ -191,7 +191,7 @@ function MobileDrawer({ open, onClose }) {
                 </a>
               </div>
               <div className="mx-5 mt-3 mb-2" onClick={onClose}>
-                <CtaButton href="/life-insurance/start" className="w-full justify-center" />
+                <CtaButton href="/devis/" className="w-full justify-center" />
               </div>
             </div>
           )}
@@ -241,12 +241,12 @@ export default function Navbar() {
             <Button variant="link" asChild className="px-5 py-2 text-base font-semibold hover:no-underline hover:text-[var(--color-text)]">
               <Link href="/a-propos/">À propos</Link>
             </Button>
-            <CtaButton href="/life-insurance/start" />
+            <CtaButton href="/devis/" />
           </div>
 
           {/* Mobile right — Get a Quote (sm) + hamburger */}
           <div className="lg:hidden ml-auto flex items-center gap-2 shrink-0">
-            <CtaButton href="/life-insurance/start" />
+            <CtaButton href="/devis/" />
             <Button variant="ghost" size="icon" onClick={() => setDrawerOpen(true)} aria-label="Open menu">
               <Menu size={22} />
             </Button>
