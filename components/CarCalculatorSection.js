@@ -7,6 +7,7 @@ export default function CarCalculatorSection({
   variant = "vehicle",
   title = <>Recevez votre devis d&apos;assurance auto <em className={`italic ${libreCaslon.className}`}>gratuitement.</em></>,
   subtitle = "Votre devis assurance auto au même prix que chez l'assureur, tout simplement.",
+  children,
 }) {
   return (
     <section className="w-full py-4">
@@ -32,7 +33,7 @@ export default function CarCalculatorSection({
               </div>
             </div>
 
-            {variant === "business" ? (
+            {children ? children : variant === "business" ? (
               <BusinessIdentityForm redirectTo={redirectTo} />
             ) : (
               <VehicleIdentityForm redirectTo={redirectTo} />

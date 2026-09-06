@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
@@ -6,31 +6,31 @@ import { Phone, ChevronRight, Mail } from "lucide-react";
 import CarInsuranceForm from "@/components/CarInsuranceForm";
 import { fetchQuestionnaire, createLead } from "@/lib/api";
 
-function bucketBonusMalus(raw) {
-  const n = parseFloat(raw);
-  if (Number.isNaN(n)) return "";
-  if (n <= 0.50) return "0.50";
-  if (n <= 0.79) return "0.51-0.79";
-  if (n <= 0.99) return "0.80-0.99";
-  if (n <= 1.00) return "1.00";
-  if (n <= 1.25) return "1.01-1.25";
-  if (n <= 2.00) return "1.26-2.00";
-  return "2.01-3.50";
-}
+// Prefill map: GarageIdentityForm's query params -> catalog keys of the
+// matching questionnaire questions, so answering them again isn't required.
+const PREFILL_KEYS = {
+  name: "representant_legal",
+  phone: "mobile",
+  email: "email_principal",
+  siret: "siret",
+  raisonSociale: "raison_sociale",
+  codeApe: "code_ape",
+  communeNaissance: "commune_naissance",
+  dateNaissance: "date_naissance",
+};
 
 function buildInitialAnswers(steps, query) {
   const byKey = Object.fromEntries(steps.map((s) => [s.key, s]));
   const answers = {};
-  if (query.permis && byKey.permis_date) {
-    answers[byKey.permis_date.id] = `${query.permis}-01`;
-  }
-  if (query.bonusMalus && byKey.bonus_malus) {
-    answers[byKey.bonus_malus.id] = bucketBonusMalus(query.bonusMalus);
+  for (const [queryParam, catalogKey] of Object.entries(PREFILL_KEYS)) {
+    if (query[queryParam] && byKey[catalogKey]) {
+      answers[byKey[catalogKey].id] = query[queryParam];
+    }
   }
   return answers;
 }
 
-export default function TaxiDevisPage() {
+export default function GaragisteDevisPage() {
   const router = useRouter();
   const [steps, setSteps] = useState(null);
   const [initialAnswers, setInitialAnswers] = useState({});
@@ -39,7 +39,7 @@ export default function TaxiDevisPage() {
 
   useEffect(() => {
     if (!router.isReady) return;
-    fetchQuestionnaire("taxi")
+    fetchQuestionnaire("garage")
       .then((fetchedSteps) => {
         setSteps(fetchedSteps);
         setInitialAnswers(buildInitialAnswers(fetchedSteps, router.query));
@@ -47,31 +47,38 @@ export default function TaxiDevisPage() {
       .catch((err) => setError(err.message));
   }, [router.isReady]);
 
-  // Identity fields (name, phone, permis, naissance, immat) arrive via the
-  // query string from VehicleIdentityForm's redirect, not through the
-  // questionnaire itself — merge them with whatever the questionnaire
-  // collected (email, if asked) to create the lead.
+  // GarageIdentityForm (on the landing page) already collected identity and
+  // redirected here with it as query params — same pattern as taxi's
+  // VehicleIdentityForm. Fall back to the questionnaire's own answers for
+  // name/phone (its Coordonnées section asks the same questions again) in
+  // case someone lands here directly without going through that form.
   function handleSubmit(answers) {
-    const { name, phone, permis, naissance, immat } = router.query;
+    const byKey = Object.fromEntries((steps || []).map((s) => [s.key, s]));
+    const byId = Object.fromEntries((steps || []).map((s) => [s.id, s]));
+
+    const { name: qName, phone: qPhone, email: qEmail, siret: qSiret } = router.query;
+    const name = qName || (byKey.representant_legal ? answers[byKey.representant_legal.id] : undefined);
+    const phone = qPhone || (byKey.mobile ? answers[byKey.mobile.id] : undefined);
+    const email = qEmail || (byKey.email_principal ? answers[byKey.email_principal.id] : undefined);
+    const siret = qSiret || (byKey.siret ? answers[byKey.siret.id] : undefined);
+    const activite = byKey.activite_principale ? answers[byKey.activite_principale.id] : undefined;
+
     if (!name || !phone) {
       console.warn(
-        "[taxi devis] Lead not submitted: missing name/phone in the URL query.",
-        "This page expects to be reached via the vehicle-identity form's redirect " +
-          "(?name=...&phone=...&...) — loading /devis directly skips that step.",
-        router.query
+        "[garagiste devis] Lead not submitted: missing name/phone (neither the URL query " +
+          "from GarageIdentityForm nor the questionnaire's own representant_legal/mobile answers had them).",
+        { query: router.query, answers }
       );
       setSubmitStatus("skipped-no-identity");
       return;
     }
 
-    const byId = Object.fromEntries((steps || []).map((s) => [s.id, s]));
-    const emailStep = (steps || []).find((s) => s.key === "email");
-    const email = emailStep ? answers[emailStep.id] : undefined;
-
-    // Each questionnaire answer becomes its own LeadAnswer row (not a single
-    // freeform notes blob) so answers stay individually queryable in the DB.
+    // Fields already mapped to a dedicated Lead column (name/phone/email/
+    // siret/activite) are excluded here so they aren't duplicated as generic
+    // LeadAnswer rows.
+    const IDENTITY_KEYS = new Set(["representant_legal", "mobile", "email_principal", "siret", "activite_principale"]);
     const leadAnswers = Object.entries(answers)
-      .filter(([id]) => byId[id] && byId[id].key !== "email")
+      .filter(([id]) => byId[id] && !IDENTITY_KEYS.has(byId[id].key))
       .map(([id, value]) => {
         const step = byId[id];
         const values = Array.isArray(value) ? value : [value];
@@ -83,25 +90,24 @@ export default function TaxiDevisPage() {
       });
 
     const payload = {
-      type: "Assurance Taxi",
+      type: "Assurance Garage",
       name: String(name),
       phone: String(phone),
       email: email || undefined,
-      permis: permis ? String(permis) : undefined,
-      naissance: naissance ? String(naissance) : undefined,
-      immat: immat ? String(immat) : undefined,
+      siret: siret ? String(siret) : undefined,
+      activite: activite ? String(activite) : undefined,
       source: router.pathname,
       answers: leadAnswers,
     };
-    console.info("[taxi devis] Submitting lead:", payload);
+    console.info("[garagiste devis] Submitting lead:", payload);
 
     createLead(payload)
       .then((lead) => {
-        console.info("[taxi devis] Lead created:", lead);
+        console.info("[garagiste devis] Lead created:", lead);
         setSubmitStatus("sent");
       })
       .catch((err) => {
-        console.error("[taxi devis] Failed to submit lead:", err);
+        console.error("[garagiste devis] Failed to submit lead:", err);
         setSubmitStatus("error");
       });
   }
@@ -109,7 +115,7 @@ export default function TaxiDevisPage() {
   return (
     <>
       <Head>
-        <title>Votre devis assurance taxi — New World Courtage</title>
+        <title>Votre devis assurance garage — New World Courtage</title>
         <meta name="robots" content="noindex" />
       </Head>
 
@@ -150,7 +156,7 @@ export default function TaxiDevisPage() {
           )}
           {submitStatus === "skipped-no-identity" && (
             <p className="text-sm text-[var(--color-error)] mb-4">
-              La demande n&apos;a pas été enregistrée : nom/téléphone manquants dans l&apos;URL. Voir la console pour le détail.
+              La demande n&apos;a pas été enregistrée : nom/mobile manquants. Voir la console pour le détail.
             </p>
           )}
           {steps && steps.length > 0 && (
@@ -159,7 +165,7 @@ export default function TaxiDevisPage() {
               initialAnswers={initialAnswers}
               onSubmit={handleSubmit}
               theme="light"
-              storageKey="taxi"
+              storageKey="garagiste"
               footerContent={
                 <a
                   href="mailto:contact@newworldcourtage.com"

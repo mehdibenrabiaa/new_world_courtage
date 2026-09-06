@@ -7,14 +7,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { MonthYearInput } from "@/components/MonthYearInput";
-import { ChevronLeft, ChevronRight, CheckCircle2, Check, Phone, Mail, CalendarDays } from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckCircle2, Phone, Mail, CalendarDays, Car, User, ListChecks, Shield, FileText, Circle, AlertTriangle, Wallet } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Field, FieldContent, FieldLabel, FieldTitle } from "@/components/ui/field";
-import { Stepper, StepperNav, StepperItem, StepperTrigger, StepperIndicator, StepperSeparator, StepperTitle } from "@/components/ui/stepper";
 
 const CAR_BRANDS = [
   "Audi", "BMW", "Citroën", "Dacia", "DS Automobiles", "Fiat", "Ford", "Honda",
@@ -77,6 +76,20 @@ const DEFAULT_STEPS = [
   { id: 34, cols: 1, section: "Contact",    type: "input",    question: "Adresse e-mail", inputType: "email", placeholder: "exemple@email.com" },
   { id: 35, cols: 1, section: "Contact",    type: "input",    question: "Numéro de téléphone", inputType: "tel", placeholder: "Ex : 06 12 34 56 78" },
 ];
+
+const SECTION_ICONS = {
+  "Véhicule": Car,
+  "Conducteur": User,
+  "Historique": ListChecks,
+  "Couverture": Shield,
+  "Contrat": FileText,
+  "Contact": Phone,
+  "Coordonnées": User,
+  "Risques": AlertTriangle,
+  "Antécédents": ListChecks,
+  "Flotte auto propre": Car,
+  "Tarification": Wallet,
+};
 
 const TOKENS = {
   dark: {
@@ -441,6 +454,7 @@ export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers
       if (next >= steps.length) {
         clearStoredProgress(storageKey);
         setSubmitted(true);
+        onSubmit?.(nextAnswers);
       } else {
         setDirection("next");
         setStepIdx(next);
@@ -455,6 +469,59 @@ export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers
   return (
     <>
     <div className="flex flex-col gap-10">
+
+      {/* Section tabs — full icon+label tabs on tablet/desktop; on mobile,
+          icon-only tabs (so all sections always fit in one row with no
+          side-scrolling) plus a caption naming the current section. */}
+      {sections.length > 1 && (
+        <>
+          <div
+            className="hidden sm:grid gap-0.5"
+            style={{ gridTemplateColumns: `repeat(${sections.length}, minmax(0, 1fr))` }}
+          >
+            {sections.map((section, i) => {
+              const Icon = SECTION_ICONS[section] || Circle;
+              const isActive = i === currentSectionIdx;
+              return (
+                <div
+                  key={section}
+                  className={`flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-semibold uppercase tracking-wide transition-colors ${
+                    isActive ? "bg-[var(--color-brand)] text-white" : "bg-gray-200 text-gray-500"
+                  }`}
+                >
+                  <Icon size={16} className="shrink-0" />
+                  <span className="truncate">{section}</span>
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="sm:hidden flex flex-col gap-2">
+            <div
+              className="grid gap-0.5"
+              style={{ gridTemplateColumns: `repeat(${sections.length}, minmax(0, 1fr))` }}
+            >
+              {sections.map((section, i) => {
+                const Icon = SECTION_ICONS[section] || Circle;
+                const isActive = i === currentSectionIdx;
+                return (
+                  <div
+                    key={section}
+                    className={`flex items-center justify-center py-3 transition-colors ${
+                      isActive ? "bg-[var(--color-brand)] text-white" : "bg-gray-200 text-gray-500"
+                    }`}
+                  >
+                    <Icon size={18} />
+                  </div>
+                );
+              })}
+            </div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 text-center">
+              Étape {currentSectionIdx + 1}/{sections.length} · {sections[currentSectionIdx]}
+            </p>
+          </div>
+        </>
+      )}
 
       {/* Question — one at a time */}
       {(() => {
@@ -696,37 +763,6 @@ export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers
       })()}
 
     </div>
-
-    {sections.length > 1 && (
-      <aside
-        className="hidden lg:block fixed right-8 xl:right-16 top-1/2 -translate-y-1/2 z-30 w-56"
-        style={{ "--primary": "var(--color-brand)", "--primary-foreground": "#ffffff" }}
-      >
-        <Stepper value={currentSectionIdx + 1} orientation="vertical">
-          <StepperNav>
-            {sections.map((section, i) => (
-              <StepperItem key={section} step={i + 1} className="relative items-start not-last:flex-1">
-                <StepperTrigger asChild className="items-start gap-2.5 pb-8 last:pb-0">
-                  <div className="flex items-start gap-2.5">
-                    <StepperIndicator>
-                      {i + 1 < currentSectionIdx + 1 ? <Check size={12} /> : i + 1}
-                    </StepperIndicator>
-                    <StepperTitle
-                      className={i === currentSectionIdx ? "text-[var(--color-text)]" : "text-gray-400"}
-                    >
-                      {section}
-                    </StepperTitle>
-                  </div>
-                </StepperTrigger>
-                {i < sections.length - 1 && (
-                  <StepperSeparator className="absolute inset-y-0 top-6 left-3 -order-1 -translate-x-1/2" />
-                )}
-              </StepperItem>
-            ))}
-          </StepperNav>
-        </Stepper>
-      </aside>
-    )}
     </>
   );
 }

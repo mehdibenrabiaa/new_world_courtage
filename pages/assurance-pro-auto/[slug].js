@@ -45,7 +45,7 @@ function PageBreadcrumb({ category, categoryHref, title }) {
   );
 }
 
-// A guide's CTA href is authored relative to the domain root (e.g. "assurance-transport/taxi"),
+// A guide's CTA href is authored relative to the domain root (e.g. "assurance-pro-auto/garagiste"),
 // with or without a leading slash — normalize to always resolve from root, never relative to the
 // current page. Absolute URLs pass through untouched.
 function toRootPath(href) {
@@ -143,7 +143,7 @@ export default function GuidePage({ guide }) {
   // page shell before the new page's data has arrived, and this crashed
   // instead of just skipping that one frame.
   if (!guide) return null;
-  const canonical = `https://www.newworldcourtage.fr/assurance-transport/${guide.slug}/`;
+  const canonical = `https://www.newworldcourtage.fr/assurance-pro-auto/${guide.slug}/`;
 
   return (
     <>
@@ -183,7 +183,7 @@ export default function GuidePage({ guide }) {
             Vous voulez comparer les offres adaptées à votre situation ?{" "}
             <Link href="/contact/" className="text-[var(--color-brand)] hover:underline">Contactez nos conseillers</Link>{" "}
             ou{" "}
-            <Link href="/assurance-transport/" className="text-[var(--color-brand)] hover:underline">obtenez votre devis gratuit</Link>.
+            <Link href="/assurance-pro-auto/garagiste/" className="text-[var(--color-brand)] hover:underline">obtenez votre devis gratuit</Link>.
           </p>
         </div>
 
