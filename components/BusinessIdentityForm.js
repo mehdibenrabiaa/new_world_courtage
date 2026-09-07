@@ -134,6 +134,7 @@ export default function BusinessIdentityForm({ redirectTo = "/assurance-transpor
           <Input
             id="field-name"
             type="text"
+            autoFocus
             value={name}
             onChange={e => { setName(e.target.value); clearError("name"); updateQuery({ name: e.target.value }); }}
             placeholder="Ex : Ambulances Dupont"

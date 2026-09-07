@@ -29,7 +29,7 @@ const Checkbox = React.forwardRef(function Checkbox(
       disabled={disabled}
       onClick={toggle}
       className={cn(
-        "peer border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground data-[state=checked]:border-primary focus-visible:border-ring focus-visible:ring-ring/50 size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 flex items-center justify-center",
+        "peer border-input data-[state=checked]:bg-[var(--color-brand)] data-[state=checked]:text-white data-[state=checked]:border-[var(--color-brand)] focus-visible:border-ring focus-visible:ring-ring/50 size-4 shrink-0 rounded-[4px] border shadow-xs transition-shadow outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 flex items-center justify-center",
         className
       )}
       {...props}

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { Phone, ChevronRight, Mail } from "lucide-react";
 import CarInsuranceForm from "@/components/CarInsuranceForm";
+import { Spinner } from "@/components/ui/spinner";
 import { fetchQuestionnaire, createLead } from "@/lib/api";
 
 function bucketBonusMalus(raw) {
@@ -113,10 +114,7 @@ export default function TaxiDevisPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <header
-        className="sticky top-0 z-40 w-full"
-        style={{ background: "linear-gradient(90deg,rgba(232, 232, 232, 1) 0%, rgba(255, 255, 255, 1) 100%)" }}
-      >
+      <header className="sticky top-0 z-40 w-full bg-gray-200">
         <div className="flex items-center justify-between px-4 lg:px-12 h-16">
           <Image src="/logos/nwc-logo.svg" alt="New World Courtage" width={120} height={33} className="h-7 w-auto" />
           <a
@@ -138,7 +136,10 @@ export default function TaxiDevisPage() {
             </p>
           )}
           {!error && !steps && (
-            <p className="text-sm text-gray-400">Chargement du questionnaire…</p>
+            <div className="flex items-center gap-2 text-gray-400">
+              <Spinner className="size-4" />
+              <p className="text-sm">Chargement du questionnaire…</p>
+            </div>
           )}
           {steps && steps.length === 0 && (
             <p className="text-sm text-gray-400">Ce questionnaire ne contient encore aucune question.</p>

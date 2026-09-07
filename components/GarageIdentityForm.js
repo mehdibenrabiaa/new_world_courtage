@@ -32,8 +32,7 @@ function clearStorage() {
 // Business-identity counterpart to VehicleIdentityForm — same redirect-with-
 // query-params pattern, but the fields match what a garage subscription
 // actually needs (see app/question_catalog.py's "garage" catalog on the
-// backend, "Coordonnées" section). Code APE is optional there, so it's
-// optional here too.
+// backend, "Coordonnées" section).
 export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/garagiste/devis/" }) {
   const router = useRouter();
 
@@ -41,8 +40,6 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [siret, setSiret] = useState("");
-  const [raisonSociale, setRaisonSociale] = useState("");
-  const [codeApe, setCodeApe] = useState("");
   const [communeNaissance, setCommuneNaissance] = useState("");
   const [dateNaissance, setDateNaissance] = useState("");
   const [errors, setErrors] = useState({});
@@ -52,25 +49,22 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
     const saved = readStorage();
     const {
       name: qName, phone: qPhone, email: qEmail, siret: qSiret,
-      raisonSociale: qRaisonSociale, codeApe: qCodeApe,
       communeNaissance: qCommuneNaissance, dateNaissance: qDateNaissance,
     } = router.query;
     setName(qName || saved.name || "");
     setPhone(qPhone || saved.phone || "");
     setEmail(qEmail || saved.email || "");
     setSiret(qSiret || saved.siret || "");
-    setRaisonSociale(qRaisonSociale || saved.raisonSociale || "");
-    setCodeApe(qCodeApe || saved.codeApe || "");
     setCommuneNaissance(qCommuneNaissance || saved.communeNaissance || "");
     setDateNaissance(qDateNaissance || saved.dateNaissance || "");
   }, [router.isReady]);
 
   useEffect(() => {
-    writeStorage({ name, phone, email, siret, raisonSociale, codeApe, communeNaissance, dateNaissance });
-  }, [name, phone, email, siret, raisonSociale, codeApe, communeNaissance, dateNaissance]);
+    writeStorage({ name, phone, email, siret, communeNaissance, dateNaissance });
+  }, [name, phone, email, siret, communeNaissance, dateNaissance]);
 
   function updateQuery(patch) {
-    const merged = { name, phone, email, siret, raisonSociale, codeApe, communeNaissance, dateNaissance, ...patch };
+    const merged = { name, phone, email, siret, communeNaissance, dateNaissance, ...patch };
     const nextQuery = Object.fromEntries(Object.entries(merged).filter(([, v]) => v !== ""));
     router.replace({ pathname: router.pathname, query: nextQuery }, undefined, { shallow: true, scroll: false });
   }
@@ -86,17 +80,13 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
     if (!phone) newErrors.phone = "Ce champ est requis.";
     if (!email) newErrors.email = "Ce champ est requis.";
     if (!siret) newErrors.siret = "Ce champ est requis.";
-    if (!raisonSociale) newErrors.raisonSociale = "Ce champ est requis.";
     if (!communeNaissance) newErrors.communeNaissance = "Ce champ est requis.";
     if (!dateNaissance) newErrors.dateNaissance = "Ce champ est requis.";
-    // Code APE is intentionally not validated — optional per the questionnaire.
     if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
 
     clearStorage();
     const q = new URLSearchParams({
-      name, phone, email, siret, raisonSociale,
-      ...(codeApe ? { codeApe } : {}),
-      communeNaissance, dateNaissance,
+      name, phone, email, siret, communeNaissance, dateNaissance,
     });
     router.push(`${redirectTo}?${q.toString()}`);
   }
@@ -115,6 +105,7 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
           <Input
             id="field-name"
             type="text"
+            autoFocus
             value={name}
             onChange={(e) => { setName(e.target.value); clearError("name"); updateQuery({ name: e.target.value }); }}
             placeholder="Ex : Jean Dupont"
@@ -172,35 +163,6 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
             className={inputCls("siret")}
           />
           {errors.siret && <FieldError errors={[{ message: errors.siret }]} className="text-[#F2693D]" />}
-        </Field>
-
-        <Field className="border-0 p-0" data-invalid={!!errors.raisonSociale}>
-          <FieldLabel htmlFor="field-raison-sociale" className="flex w-auto! text-white text-[15px] font-semibold">
-            Raison sociale <span className="ml-0.5">*</span>
-          </FieldLabel>
-          <Input
-            id="field-raison-sociale"
-            type="text"
-            value={raisonSociale}
-            onChange={(e) => { setRaisonSociale(e.target.value); clearError("raisonSociale"); updateQuery({ raisonSociale: e.target.value }); }}
-            placeholder="Ex : Garage Dupont SARL"
-            className={inputCls("raisonSociale")}
-          />
-          {errors.raisonSociale && <FieldError errors={[{ message: errors.raisonSociale }]} className="text-[#F2693D]" />}
-        </Field>
-
-        <Field className="border-0 p-0">
-          <FieldLabel htmlFor="field-code-ape" className="flex w-auto! text-white text-[15px] font-semibold">
-            Code APE <span className="ml-1 font-normal text-white/60">(optionnel)</span>
-          </FieldLabel>
-          <Input
-            id="field-code-ape"
-            type="text"
-            value={codeApe}
-            onChange={(e) => { setCodeApe(e.target.value); updateQuery({ codeApe: e.target.value }); }}
-            placeholder="Ex : 4520A"
-            className={inputCls("codeApe")}
-          />
         </Field>
 
         <Field className="border-0 p-0" data-invalid={!!errors.communeNaissance}>

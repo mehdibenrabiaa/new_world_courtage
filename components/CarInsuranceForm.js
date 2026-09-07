@@ -1,9 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { MonthYearInput } from "@/components/MonthYearInput";
@@ -12,6 +13,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Field, FieldContent, FieldLabel, FieldTitle } from "@/components/ui/field";
 
@@ -95,7 +97,7 @@ const TOKENS = {
   dark: {
     eyebrow:         "text-white/60 font-medium",
     bigQuestion:     "text-white",
-    label:           "text-[var(--color-text)] font-semibold",
+    label:           "text-white font-semibold",
     hint:            "text-white/50",
     optional:        "text-white/30",
     radioText:       "text-white",
@@ -124,7 +126,7 @@ const TOKENS = {
   light: {
     eyebrow:         "text-gray-500 font-medium",
     bigQuestion:     "text-[var(--color-text)]",
-    label:           "text-[rgba(0,0,0,0.88)] font-normal",
+    label:           "text-[rgba(0,0,0,0.88)] font-semibold",
     hint:            "text-gray-400",
     optional:        "text-gray-400",
     radioText:       "text-[rgba(0,0,0,0.88)]",
@@ -313,7 +315,14 @@ function BookingPanel({ t }) {
 
 // ── Skip-logic (rules) ───────────────────────────────────────────────────────
 
-function isStepSkipped(step, answers) {
+function isStepSkipped(step, answers, selectedProducts) {
+  if (step.alwaysSkip) return true;
+  // Product-gated question (e.g. garage-only "Surface du risque") — skipped
+  // unless the prospect picked at least one of its allowed products on the
+  // gate screen.
+  if (step.products && selectedProducts && !step.products.some(p => selectedProducts.includes(p))) {
+    return true;
+  }
   if (!step.rules || step.rules.length === 0) return false;
   return step.rules.some(rule => {
     if (rule.action !== "skip") return false;
@@ -323,11 +332,19 @@ function isStepSkipped(step, answers) {
   });
 }
 
-// Walks in `dir` (+1/-1) from `fromIdx`, skipping any step whose rules match, and
-// returns the first visible index (or an out-of-bounds index if none remain).
-function findVisibleStepIndex(steps, fromIdx, dir, answers) {
+// All questions belonging to `section` that aren't currently skipped —
+// what actually renders in that section's field grid.
+function sectionFields(steps, section, answers, selectedProducts) {
+  return steps.filter(s => s.section === section && !isStepSkipped(s, answers, selectedProducts));
+}
+
+// Walks in `dir` (+1/-1) from `fromIdx`, skipping any section that ends up
+// with zero visible fields (e.g. every question in it was URL-prefilled or
+// none of it applies to the selected products), and returns the first
+// visible section index (or an out-of-bounds index).
+function findVisibleSectionIndex(sections, steps, fromIdx, dir, answers, selectedProducts) {
   let i = fromIdx;
-  while (i >= 0 && i < steps.length && isStepSkipped(steps[i], answers)) {
+  while (i >= 0 && i < sections.length && sectionFields(steps, sections[i], answers, selectedProducts).length === 0) {
     i += dir;
   }
   return i;
@@ -363,9 +380,37 @@ function clearStoredProgress(key) {
   } catch {}
 }
 
+// Half-width by default; full-width for anything that tends to need more
+// horizontal room (option groups, free text) or that explicitly asks for it
+// via a catalog-level cols: 2.
+function isWideField(step) {
+  if (step.cols === 2) return true;
+  if (step.cols === 1) return false;
+  if (step.type === "radio" || step.type === "checkbox") return true;
+  if (step.type === "input" && step.inputType === "textarea") return true;
+  return false;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers = {}, startStep = 0, theme = "dark", onProgress, onSubmit, footerContent, storageKey }) {
+export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, initialAnswers = {}, startStep = 0, theme = "dark", onProgress, onSubmit, footerContent, storageKey }) {
+  // Questions already answered via URL params (e.g. redirected here from an
+  // identity form that collected name/phone/email/etc.) shouldn't be asked
+  // again — mark them as always-skipped so they're filtered out of their
+  // section's field grid, while their value still counts toward submission.
+  const steps = useMemo(() => {
+    const prefilledIds = new Set(
+      Object.entries(initialAnswers)
+        .filter(([, v]) => (Array.isArray(v) ? v.length > 0 : v !== "" && v != null))
+        .map(([id]) => Number(id))
+    );
+    if (prefilledIds.size === 0) return rawSteps;
+    return rawSteps.map(s => (prefilledIds.has(s.id) ? { ...s, alwaysSkip: true } : s));
+  }, [rawSteps, initialAnswers]);
+
+  // stepIdx indexes into `sections` — each step is a whole section's page,
+  // showing every (non-skipped) question in that section together in a grid,
+  // rather than one question per page.
   const [stepIdx, setStepIdx] = useState(startStep);
   const [direction, setDirection] = useState("next");
   const [answers, setAnswers] = useState(initialAnswers);
@@ -374,33 +419,65 @@ export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers
   const [hydrated, setHydrated] = useState(false);
 
   const t = TOKENS[theme];
-  const step = steps[stepIdx];
-  const isLastStep = findVisibleStepIndex(steps, stepIdx + 1, 1, answers) >= steps.length;
-  const progress = Math.round(((stepIdx + 1) / steps.length) * 100);
+  const firstFieldRef = useRef(null);
 
-  // Sections, in first-appearance order, for the right-hand-side stepper.
-  const sections = [...new Set(steps.map(s => s.section).filter(Boolean))];
-  const currentSectionIdx = sections.indexOf(step.section);
+  // "Gate" questions (catalog-level `gate: true`) are shown on their own
+  // screen before the step-by-step wizard begins — they're never one of its
+  // sections/tabs.
+  const gateFields = steps.filter(s => s.gate && !isStepSkipped(s, answers));
+  const wizardSteps = steps.filter(s => !s.gate);
+  const [gatePassed, setGatePassed] = useState(gateFields.length === 0);
+
+  // The gate's own answer (which product(s) the prospect picked) — used to
+  // filter which of the rest of the questions apply to them.
+  const productsGateField = gateFields.find(s => s.type === "checkbox" || s.type === "radio");
+  const selectedProducts = productsGateField
+    ? (Array.isArray(answers[productsGateField.id]) ? answers[productsGateField.id] : [answers[productsGateField.id]].filter(Boolean))
+    : null;
+
+  // Sections, in first-appearance order — excluding any section that ends up
+  // with no visible fields for the selected products (so its tab never
+  // shows at all, rather than being an unreachable dead end).
+  const sections = [...new Set(wizardSteps.map(s => s.section).filter(Boolean))]
+    .filter(sec => sectionFields(wizardSteps, sec, answers, selectedProducts).length > 0);
+  const currentSection = sections[stepIdx];
+  const visibleFields = sectionFields(wizardSteps, currentSection, answers, selectedProducts);
+  const isLastStep = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts) >= sections.length;
+  const progress = Math.round(((stepIdx + 1) / sections.length) * 100);
 
   useEffect(() => {
     onProgress?.(progress);
   }, [progress]);
 
+  // Auto-focus the first plain text/number/email/tel field of each section
+  // as it appears, so lazy users can start typing immediately.
+  useEffect(() => {
+    firstFieldRef.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stepIdx]);
+
   // Resume from a previous visit: merge any saved progress under `answers`
   // (URL-derived initialAnswers still win on conflicts), jump back to the
-  // step they'd reached, then re-check skip-logic in case rules changed.
+  // section (and gate-passed state) they'd reached, then re-check in case
+  // that section is now empty.
   useEffect(() => {
     const saved = readStoredProgress(storageKey);
     const mergedAnswers = saved ? { ...saved.answers, ...initialAnswers } : initialAnswers;
     let targetStep = startStep;
     if (saved && typeof saved.stepIdx === "number") {
-      targetStep = Math.max(startStep, Math.min(saved.stepIdx, steps.length - 1));
+      targetStep = Math.max(startStep, Math.min(saved.stepIdx, sections.length - 1));
     }
-    if (isStepSkipped(steps[targetStep], mergedAnswers)) {
-      targetStep = Math.min(findVisibleStepIndex(steps, targetStep + 1, 1, mergedAnswers), steps.length - 1);
+    const mergedProducts = productsGateField
+      ? (Array.isArray(mergedAnswers[productsGateField.id]) ? mergedAnswers[productsGateField.id] : [mergedAnswers[productsGateField.id]].filter(Boolean))
+      : null;
+    if (sectionFields(wizardSteps, sections[targetStep], mergedAnswers, mergedProducts).length === 0) {
+      targetStep = Math.min(findVisibleSectionIndex(sections, wizardSteps, targetStep + 1, 1, mergedAnswers, mergedProducts), sections.length - 1);
     }
     setAnswers(mergedAnswers);
     setStepIdx(targetStep);
+    if (saved && gateFields.length > 0) {
+      setGatePassed(Boolean(saved.gatePassed));
+    }
     setHydrated(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -409,27 +486,47 @@ export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers
   // resumes where they left off instead of starting blank.
   useEffect(() => {
     if (!hydrated) return;
-    writeStoredProgress(storageKey, { answers, stepIdx });
-  }, [answers, stepIdx, storageKey, hydrated]);
+    writeStoredProgress(storageKey, { answers, stepIdx, gatePassed });
+  }, [answers, stepIdx, gatePassed, storageKey, hydrated]);
 
   function setAnswer(stepId, val) {
     setAnswers(prev => ({ ...prev, [stepId]: val }));
     setErrors(prev => { const e = { ...prev }; delete e[stepId]; return e; });
   }
 
+  function handleGateNext() {
+    const newErrors = {};
+    for (const s of gateFields) {
+      if (s.optional) continue;
+      const ans = answers[s.id];
+      const isEmpty = s.type === "checkbox" ? !Array.isArray(ans) || ans.length === 0 : (ans ?? "") === "";
+      if (isEmpty) newErrors[s.id] = "Ce champ est requis.";
+    }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+    setErrors({});
+    setGatePassed(true);
+  }
+
   function handleNext() {
-    if (!(step.optional || step.type === "checkbox")) {
-      const ans = answers[step.id] ?? "";
-      if (ans === "") {
-        setErrors({ [step.id]: "Ce champ est requis." });
-        return;
-      }
+    const newErrors = {};
+    for (const s of visibleFields) {
+      if (s.optional) continue;
+      const ans = answers[s.id];
+      const isEmpty = s.type === "checkbox" ? !Array.isArray(ans) || ans.length === 0 : (ans ?? "") === "";
+      if (isEmpty) newErrors[s.id] = "Ce champ est requis.";
+    }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
 
     setErrors({});
     setDirection("next");
-    const next = findVisibleStepIndex(steps, stepIdx + 1, 1, answers);
-    if (next >= steps.length) {
+    const next = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts);
+    if (next >= sections.length) {
       clearStoredProgress(storageKey);
       setSubmitted(true);
       onSubmit?.(answers);
@@ -439,31 +536,270 @@ export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers
   }
 
   function handleBack() {
-    const prev = findVisibleStepIndex(steps, stepIdx - 1, -1, answers);
+    const prev = findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts);
     if (prev >= 0) {
+      setErrors({});
       setDirection("prev");
       setStepIdx(prev);
+    } else if (gateFields.length > 0) {
+      setErrors({});
+      setGatePassed(false);
     }
-  }
-
-  function selectAndAdvance(stepId, val) {
-    const nextAnswers = { ...answers, [stepId]: val };
-    setAnswer(stepId, val);
-    setTimeout(() => {
-      const next = findVisibleStepIndex(steps, stepIdx + 1, 1, nextAnswers);
-      if (next >= steps.length) {
-        clearStoredProgress(storageKey);
-        setSubmitted(true);
-        onSubmit?.(nextAnswers);
-      } else {
-        setDirection("next");
-        setStepIdx(next);
-      }
-    }, 200);
   }
 
   if (submitted) {
     return <BookingPanel t={t} />;
+  }
+
+  const firstFocusableId = visibleFields.find(
+    s => s.type === "input" && !["date", "month", "year"].includes(s.inputType)
+  )?.id;
+  const firstGateFocusableId = gateFields.find(
+    s => s.type === "input" && !["date", "month", "year"].includes(s.inputType)
+  )?.id;
+
+  // One question's field control — shared between the gate screen and the
+  // section grid so both stay visually and behaviorally identical.
+  function renderFieldCard(s, { firstFocusableId: focusId } = {}) {
+    const answer = answers[s.id] ?? (s.type === "checkbox" ? [] : "");
+    const dynamicOpts = s.optionsFn ? s.optionsFn(answers) : { options: s.options, values: s.values };
+    const wide = isWideField(s);
+    const isFirstFocusable = s.id === focusId;
+
+    return (
+      <div key={s.id} className={`flex flex-col gap-2 ${wide ? "sm:col-span-2" : ""}`}>
+              {(s.type === "radio" || s.type === "checkbox") ? (
+                <p className={`text-[15px] ${t.label}`}>
+                  {s.question}
+                  {!s.optional && <span className="ml-0.5">*</span>}
+                </p>
+              ) : (
+                <label htmlFor={`field-${s.id}`} className={`text-[15px] cursor-pointer ${t.label}`}>
+                  {s.question}
+                  {!s.optional && <span className="ml-0.5">*</span>}
+                </label>
+              )}
+              {s.hint && <p className={`text-xs -mt-1 ${t.hint}`}>{s.hint}</p>}
+
+              {/* Radio — card style */}
+              {s.type === "radio" && s.card && (
+                <RadioGroup
+                  value={answer}
+                  onValueChange={val => setAnswer(s.id, val)}
+                  className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+                >
+                  {dynamicOpts.options.map((opt, i) => (
+                    <FieldLabel
+                      key={i}
+                      htmlFor={`radio-${s.id}-${i}`}
+                      className={`transition-colors ${
+                        answer === dynamicOpts.values[i]
+                          ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
+                          : errors[s.id]
+                            ? "border-[var(--color-error)]"
+                            : "hover:border-[var(--color-brand)]"
+                      }`}
+                    >
+                      <Field orientation="horizontal">
+                        <FieldContent>
+                          <FieldTitle>{opt}</FieldTitle>
+                        </FieldContent>
+                        <RadioGroupItem
+                          value={dynamicOpts.values[i]}
+                          id={`radio-${s.id}-${i}`}
+                        />
+                      </Field>
+                    </FieldLabel>
+                  ))}
+                </RadioGroup>
+              )}
+
+              {/* Radio — inline style */}
+              {s.type === "radio" && !s.card && (
+                <RadioGroup
+                  value={answer}
+                  onValueChange={val => setAnswer(s.id, val)}
+                  className="flex flex-wrap gap-x-6 gap-y-3"
+                >
+                  {dynamicOpts.options.map((opt, i) => (
+                    <Label
+                      key={i}
+                      htmlFor={`radio-${s.id}-${i}`}
+                      className="flex items-center gap-2.5 cursor-pointer"
+                      onClick={() => setAnswer(s.id, dynamicOpts.values[i])}
+                    >
+                      <RadioGroupItem value={dynamicOpts.values[i]} id={`radio-${s.id}-${i}`} />
+                      <span className={`text-base font-normal ${t.radioText}`}>{opt}</span>
+                    </Label>
+                  ))}
+                </RadioGroup>
+              )}
+
+              {/* Checkbox — card style */}
+              {s.type === "checkbox" && s.card && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {s.options.map((opt, i) => {
+                    const val = s.values[i];
+                    const isSelected = answer.includes(val);
+                    return (
+                      <FieldLabel
+                        key={i}
+                        htmlFor={`checkbox-${s.id}-${i}`}
+                        className={`transition-colors ${
+                          isSelected
+                            ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
+                            : errors[s.id]
+                              ? "border-[var(--color-error)]"
+                              : "hover:border-[var(--color-brand)]"
+                        }`}
+                      >
+                        <Field orientation="horizontal">
+                          <FieldContent>
+                            <FieldTitle>{opt}</FieldTitle>
+                          </FieldContent>
+                          <Checkbox
+                            id={`checkbox-${s.id}-${i}`}
+                            checked={isSelected}
+                            onCheckedChange={() => setAnswer(s.id, isSelected ? answer.filter(v => v !== val) : [...answer, val])}
+                          />
+                        </Field>
+                      </FieldLabel>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Checkbox — plain list */}
+              {s.type === "checkbox" && !s.card && (
+                <div className="flex flex-col gap-4">
+                  {s.options.map((opt, i) => {
+                    const val = s.values[i];
+                    const isSelected = answer.includes(val);
+                    return (
+                      <label key={i} className="flex items-center gap-2.5 cursor-pointer group"
+                        onClick={() => setAnswer(s.id, isSelected ? answer.filter(v => v !== val) : [...answer, val])}>
+                        <span className={`w-5 h-5 border-2 flex items-center justify-center shrink-0 transition-colors ${
+                          isSelected ? t.checkBoxSelected : t.checkBox
+                        }`}>
+                          {isSelected && (
+                            <svg width="11" height="9" viewBox="0 0 10 8" fill="none">
+                              <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          )}
+                        </span>
+                        <span className={`text-base ${t.checkText}`}>{opt}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Select */}
+              {s.type === "select" && (
+                <Select value={answer} onValueChange={val => setAnswer(s.id, val)}>
+                  <SelectTrigger
+                    id={`field-${s.id}`}
+                    aria-label={s.question}
+                    className={`w-full bg-white h-[50px] data-[size=default]:h-[50px] ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
+                  >
+                    <SelectValue placeholder="Sélectionnez une option" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {dynamicOpts.options.map((opt, i) => (
+                      <SelectItem key={i} value={dynamicOpts.values[i]}>{opt}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+
+              {/* Full date picker */}
+              {s.type === "input" && s.inputType === "date" && (
+                <DatePickerInput
+                  id={`field-${s.id}`}
+                  value={answer}
+                  onChange={val => setAnswer(s.id, val)}
+                  placeholder={s.placeholder || "Sélectionnez une date"}
+                  theme={theme}
+                  error={!!errors[s.id]}
+                  className="bg-white h-[50px] w-full"
+                />
+              )}
+
+              {/* Month + year dropdowns */}
+              {s.type === "input" && s.inputType === "month" && (
+                <MonthYearInput
+                  mode="month"
+                  value={answer}
+                  onChange={val => setAnswer(s.id, val)}
+                  error={!!errors[s.id]}
+                  className="w-full"
+                />
+              )}
+
+              {/* Year-only dropdown */}
+              {s.type === "input" && s.inputType === "year" && (
+                <MonthYearInput
+                  mode="year"
+                  value={answer}
+                  onChange={val => setAnswer(s.id, val)}
+                  error={!!errors[s.id]}
+                  className="w-full max-w-[160px]"
+                />
+              )}
+
+              {/* Free-text comments */}
+              {s.type === "input" && s.inputType === "textarea" && (
+                <Textarea
+                  ref={isFirstFocusable ? firstFieldRef : undefined}
+                  id={`field-${s.id}`}
+                  placeholder={s.placeholder}
+                  value={answer}
+                  onChange={e => setAnswer(s.id, e.target.value)}
+                  maxLength={1000}
+                  rows={6}
+                  className={`bg-white ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus-visible:border-[var(--color-error)] focus-visible:ring-[rgba(255,143,0,0.15)]" : ""}`}
+                />
+              )}
+
+              {/* Text / number / email / tel */}
+              {s.type === "input" && !["date", "month", "year", "textarea"].includes(s.inputType) && (
+                <Input
+                  ref={isFirstFocusable ? firstFieldRef : undefined}
+                  id={`field-${s.id}`}
+                  type={s.inputType}
+                  inputMode={s.inputType === "tel" ? "tel" : undefined}
+                  placeholder={s.placeholder}
+                  value={answer}
+                  onChange={e => {
+                    let v = s.inputType === "tel" ? e.target.value.replace(/[^\d\s+]/g, "") : e.target.value;
+                    if (s.uppercase) v = v.toUpperCase();
+                    setAnswer(s.id, v);
+                  }}
+                  className={`bg-white h-[50px] ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
+                />
+              )}
+
+              {errors[s.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[s.id]}</p>}
+      </div>
+    );
+  }
+
+  // Gate screen — shown once, before the step-by-step wizard, when the
+  // catalog defines any `gate: true` questions. Not one of the section tabs.
+  if (!gatePassed) {
+    return (
+      <div className="flex flex-col gap-10">
+        <div className="grid grid-cols-1 gap-x-6 gap-y-6 max-w-2xl">
+          {gateFields.map(s => renderFieldCard(s, { firstFocusableId: firstGateFocusableId }))}
+        </div>
+        <div className="flex items-center justify-end pt-2">
+          <Button onClick={handleGateNext} className={`gap-1 ${t.nextBtn}`}>
+            Suivant
+            <ChevronRight size={16} />
+          </Button>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -481,16 +817,16 @@ export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers
           >
             {sections.map((section, i) => {
               const Icon = SECTION_ICONS[section] || Circle;
-              const isActive = i === currentSectionIdx;
+              const isActive = i === stepIdx;
               return (
                 <div
                   key={section}
-                  className={`flex items-center justify-center gap-2 px-5 py-3.5 text-sm font-semibold uppercase tracking-wide transition-colors ${
+                  className={`flex items-center justify-center gap-1 px-1 lg:px-3 py-3.5 text-[11px] font-semibold uppercase tracking-normal transition-colors ${
                     isActive ? "bg-[var(--color-brand)] text-white" : "bg-gray-200 text-gray-500"
                   }`}
                 >
                   <Icon size={16} className="shrink-0" />
-                  <span className="truncate">{section}</span>
+                  <span className="text-center leading-snug whitespace-nowrap">{section}</span>
                 </div>
               );
             })}
@@ -503,7 +839,7 @@ export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers
             >
               {sections.map((section, i) => {
                 const Icon = SECTION_ICONS[section] || Circle;
-                const isActive = i === currentSectionIdx;
+                const isActive = i === stepIdx;
                 return (
                   <div
                     key={section}
@@ -517,214 +853,19 @@ export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers
               })}
             </div>
             <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 text-center">
-              Étape {currentSectionIdx + 1}/{sections.length} · {sections[currentSectionIdx]}
+              Étape {stepIdx + 1}/{sections.length} · {currentSection}
             </p>
           </div>
         </>
       )}
 
-      {/* Question — one at a time */}
-      {(() => {
-        const answer = answers[step.id] ?? (step.type === "checkbox" ? [] : "");
-        const dynamicOpts = step.optionsFn ? step.optionsFn(answers) : { options: step.options, values: step.values };
-
-        return (
-          <div key={step.id} className={`flex flex-col gap-5 max-w-2xl ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}>
-
-            {/* Eyebrow + big question */}
-            <div className="flex flex-col gap-2">
-              {step.eyebrow && (
-                <p className={`text-sm uppercase tracking-wide ${t.eyebrow}`}>{step.eyebrow}</p>
-              )}
-              {(step.type === "radio" || step.type === "checkbox") ? (
-                <p className={`text-2xl sm:text-[35px] font-semibold leading-snug ${t.bigQuestion}`}>
-                  {step.question}
-                  {step.optional && <span className={`ml-2 font-normal text-sm ${t.optional}`}>(optionnel)</span>}
-                </p>
-              ) : (
-                <label htmlFor={`field-${step.id}`} className={`text-2xl sm:text-[35px] font-semibold leading-snug cursor-pointer ${t.bigQuestion}`}>
-                  {step.question}
-                  {step.optional && <span className={`ml-2 font-normal text-sm ${t.optional}`}>(optionnel)</span>}
-                </label>
-              )}
-              {step.hint && <p className={`text-sm ${t.hint}`}>{step.hint}</p>}
-            </div>
-
-            {/* Radio — card style */}
-            {step.type === "radio" && step.card && (
-              <>
-                <RadioGroup
-                  value={answer}
-                  onValueChange={val => selectAndAdvance(step.id, val)}
-                  className="grid grid-cols-1 sm:grid-cols-2 gap-3"
-                >
-                  {dynamicOpts.options.map((opt, i) => (
-                    <FieldLabel
-                      key={i}
-                      htmlFor={`radio-${step.id}-${i}`}
-                      className={`transition-colors ${
-                        answer === dynamicOpts.values[i]
-                          ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
-                          : errors[step.id]
-                            ? "border-[var(--color-error)]"
-                            : "hover:border-[var(--color-brand)]"
-                      }`}
-                    >
-                      <Field orientation="horizontal">
-                        <FieldContent>
-                          <FieldTitle>{opt}</FieldTitle>
-                        </FieldContent>
-                        <RadioGroupItem
-                          value={dynamicOpts.values[i]}
-                          id={`radio-${step.id}-${i}`}
-                          className="sr-only"
-                        />
-                      </Field>
-                    </FieldLabel>
-                  ))}
-                </RadioGroup>
-                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-              </>
-            )}
-
-            {/* Radio — inline style */}
-            {step.type === "radio" && !step.card && (
-              <>
-                <RadioGroup
-                  value={answer}
-                  onValueChange={val => selectAndAdvance(step.id, val)}
-                >
-                  {dynamicOpts.options.map((opt, i) => (
-                    <Label key={i} htmlFor={`radio-${step.id}-${i}`} className="flex items-center gap-2.5">
-                      <RadioGroupItem value={dynamicOpts.values[i]} id={`radio-${step.id}-${i}`} className="sr-only" />
-                      <span className={`text-base font-normal ${t.radioText}`}>{opt}</span>
-                    </Label>
-                  ))}
-                </RadioGroup>
-                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-              </>
-            )}
-
-            {/* Checkbox */}
-            {step.type === "checkbox" && (
-              <div className="flex flex-wrap gap-x-6 gap-y-4">
-                {step.options.map((opt, i) => {
-                  const val = step.values[i];
-                  const isSelected = answer.includes(val);
-                  return (
-                    <label key={i} className="flex items-center gap-2.5 cursor-pointer group"
-                      onClick={() => setAnswer(step.id, isSelected ? answer.filter(v => v !== val) : [...answer, val])}>
-                      <span className={`w-5 h-5 border-2 flex items-center justify-center shrink-0 transition-colors ${
-                        isSelected ? t.checkBoxSelected : t.checkBox
-                      }`}>
-                        {isSelected && (
-                          <svg width="11" height="9" viewBox="0 0 10 8" fill="none">
-                            <path d="M1 4L3.5 6.5L9 1" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                          </svg>
-                        )}
-                      </span>
-                      <span className={`text-base ${t.checkText}`}>{opt}</span>
-                    </label>
-                  );
-                })}
-              </div>
-            )}
-
-            {/* Select */}
-            {step.type === "select" && (
-              <>
-                <Select value={answer} onValueChange={val => setAnswer(step.id, val)}>
-                  <SelectTrigger
-                    id={`field-${step.id}`}
-                    aria-label={step.label || "Sélectionnez une option"}
-                    className={`w-full max-w-sm bg-white h-[50px] data-[size=default]:h-[50px] ${errors[step.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
-                  >
-                    <SelectValue placeholder="Sélectionnez une option" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {dynamicOpts.options.map((opt, i) => (
-                      <SelectItem key={i} value={dynamicOpts.values[i]}>{opt}</SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-              </>
-            )}
-
-            {/* Full date picker */}
-            {step.type === "input" && step.inputType === "date" && (
-              <>
-                <div className="max-w-sm">
-                  <DatePickerInput
-                    id={`field-${step.id}`}
-                    value={answer}
-                    onChange={val => setAnswer(step.id, val)}
-                    placeholder={step.placeholder || "Sélectionnez une date"}
-                    theme={theme}
-                    error={!!errors[step.id]}
-                    className="bg-white h-[50px]"
-                  />
-                </div>
-                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-              </>
-            )}
-
-            {/* Month + year dropdowns */}
-            {step.type === "input" && step.inputType === "month" && (
-              <>
-                <MonthYearInput
-                  mode="month"
-                  value={answer}
-                  onChange={val => setAnswer(step.id, val)}
-                  error={!!errors[step.id]}
-                  className="max-w-md"
-                />
-                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-              </>
-            )}
-
-            {/* Year-only dropdown */}
-            {step.type === "input" && step.inputType === "year" && (
-              <>
-                <MonthYearInput
-                  mode="year"
-                  value={answer}
-                  onChange={val => setAnswer(step.id, val)}
-                  error={!!errors[step.id]}
-                  className="max-w-[160px]"
-                />
-                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-              </>
-            )}
-
-            {/* Text / number / email / tel */}
-            {step.type === "input" && !["date", "month", "year"].includes(step.inputType) && (
-              <>
-                <Input
-                  id={`field-${step.id}`}
-                  type={step.inputType}
-                  inputMode={step.inputType === "tel" ? "tel" : undefined}
-                  placeholder={step.placeholder}
-                  value={answer}
-                  onChange={e => {
-                    let v = step.inputType === "tel" ? e.target.value.replace(/[^\d\s+]/g, "") : e.target.value;
-                    if (step.uppercase) v = v.toUpperCase();
-                    setAnswer(step.id, v);
-                  }}
-                  onKeyDown={e => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleNext();
-                    }
-                  }}
-                  className={`max-w-sm bg-white h-[50px] ${errors[step.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
-                />
-                {errors[step.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[step.id]}</p>}
-              </>
-            )}
-          </div>
-        );
-      })()}
+      {/* All questions of the current section, together in a grid */}
+      <div
+        key={currentSection}
+        className={`grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6 max-w-2xl ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}
+      >
+        {visibleFields.map(s => renderFieldCard(s, { firstFocusableId }))}
+      </div>
 
       {/* Navigation */}
       {(() => {
@@ -733,7 +874,7 @@ export default function CarInsuranceForm({ steps = DEFAULT_STEPS, initialAnswers
             <Button
               variant="outline"
               onClick={handleBack}
-              disabled={findVisibleStepIndex(steps, stepIdx - 1, -1, answers) < 0}
+              disabled={findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts) < 0 && gateFields.length === 0}
               className="gap-1"
             >
               <ChevronLeft size={16} />

@@ -16,7 +16,11 @@ const variants = {
   visible: { opacity: 1 },
 };
 
-const NO_NAV_ROUTES = ["/assurance-transport/devis", "/assurance-transport/taxi/devis"];
+const NO_NAV_ROUTES = [
+  "/assurance-transport/devis",
+  "/assurance-transport/taxi/devis",
+  "/assurance-pro-auto/garagiste/devis",
+];
 
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter();

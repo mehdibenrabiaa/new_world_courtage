@@ -31,10 +31,7 @@ export default function DevisPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <header
-        className="sticky top-0 z-40 w-full"
-        style={{ background: "linear-gradient(90deg,rgba(232, 232, 232, 1) 0%, rgba(255, 255, 255, 1) 100%)" }}
-      >
+      <header className="sticky top-0 z-40 w-full bg-gray-200">
         <div className="flex items-center justify-between px-4 lg:px-12 h-16">
           <Image src="/logos/nwc-logo.svg" alt="New World Courtage" width={120} height={33} className="h-7 w-auto" />
           <a
