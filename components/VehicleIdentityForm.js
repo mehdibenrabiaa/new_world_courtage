@@ -216,7 +216,7 @@ export default function VehicleIdentityForm({ redirectTo = "/assurance-transport
             <DatePickerInput
               value={naissance}
               onChange={v => { setNaissance(v); clearError("naissance"); updateQuery({ naissance: v }); }}
-              placeholder="Votre date de naissance"
+              placeholder="__/__/____"
               theme="light"
               error={!!errors.naissance}
               className="h-[50px] bg-white border-gray-200 text-[var(--color-text)] hover:bg-gray-50"

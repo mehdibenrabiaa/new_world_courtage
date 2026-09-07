@@ -20,6 +20,20 @@ function formatDate(date) {
   return `${day}/${month}/${date.getFullYear()}`
 }
 
+// Auto-inserts the "/" separators as the user types digits, e.g.
+// "22101990" -> "22/10/1990", capped at 8 digits (jjmmaaaa). Each "/" lands
+// right when its segment fills (after the 2nd and 4th digit), not only once
+// the next segment has content — so the cursor lands after it immediately.
+function maskDateInput(raw) {
+  const digits = raw.replace(/\D/g, "").slice(0, 8)
+  let out = digits.slice(0, 2)
+  if (digits.length >= 2) out += "/"
+  out += digits.slice(2, 4)
+  if (digits.length >= 4) out += "/"
+  out += digits.slice(4, 8)
+  return out
+}
+
 // Parses a "jj/mm/aaaa" string typed by the user.
 function parseFrenchDate(str) {
   const match = str?.trim().match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/)
@@ -50,7 +64,7 @@ export function DatePickerInput({
   id,
   value,
   onChange,
-  placeholder = "jj/mm/aaaa",
+  placeholder = "__/__/____",
   theme = "dark",
   error = false,
   className = "",
@@ -74,8 +88,7 @@ export function DatePickerInput({
     onChange?.(selected ? toIsoDate(selected) : "")
   }
 
-  function handleTextChange(e) {
-    const next = e.target.value
+  function commitText(next) {
     setText(next)
     const parsed = parseFrenchDate(next)
     if (parsed) {
@@ -85,6 +98,26 @@ export function DatePickerInput({
     } else if (next === "") {
       setDate(undefined)
       onChange?.("")
+    }
+  }
+
+  function handleTextChange(e) {
+    commitText(maskDateInput(e.target.value))
+  }
+
+  function handleKeyDown(e) {
+    if (e.key === "ArrowDown") {
+      e.preventDefault()
+      setOpen(true)
+      return
+    }
+    // Backspacing right after an auto-inserted "/" would otherwise just
+    // remove the slash, which the mask immediately re-adds (same digit
+    // count) — so it looks stuck. Drop the digit before it too instead.
+    if (e.key === "Backspace" && text.endsWith("/")) {
+      e.preventDefault()
+      const digits = text.slice(0, -1).replace(/\D/g, "").slice(0, -1)
+      commitText(maskDateInput(digits))
     }
   }
 
@@ -107,12 +140,7 @@ export function DatePickerInput({
           value={text}
           placeholder={placeholder}
           onChange={handleTextChange}
-          onKeyDown={(e) => {
-            if (e.key === "ArrowDown") {
-              e.preventDefault()
-              setOpen(true)
-            }
-          }}
+          onKeyDown={handleKeyDown}
           className={cn(isLight || error ? "text-[var(--color-text)] placeholder:text-gray-400" : "text-white placeholder:text-white/40")}
         />
         <InputGroupAddon align="inline-end">

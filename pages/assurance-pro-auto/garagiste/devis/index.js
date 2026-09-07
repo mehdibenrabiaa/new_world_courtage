@@ -7,6 +7,28 @@ import CarInsuranceForm from "@/components/CarInsuranceForm";
 import { Spinner } from "@/components/ui/spinner";
 import { fetchQuestionnaire, createLead } from "@/lib/api";
 
+// Mirrors AssocieCapitalField/FlotteVehiculesField's own option labels in
+// CarInsuranceForm.js, so the lead's submitted answer reads the same way the
+// form did — not the raw "comptant"/"mixte" values.
+const FLOTTE_MODE_LABELS = { comptant: "Comptant", credit: "Crédit", leasing: "Leasing" };
+const FLOTTE_USAGE_LABELS = { professionnel: "Professionnel", mixte: "Mixte (pro et personnel)" };
+
+// "flotte_immatriculations" stores one object per vehicle (not a scalar or a
+// list of scalars like every other question), so it needs its own
+// stringification instead of falling into the generic values.map() below,
+// which would otherwise call .toString() on each row object. Stored as a
+// JSON array of {label, value} pairs (still just text in the LeadAnswer.value
+// column — no schema change) so the CRM can render each vehicle's fields as
+// their own labeled bullet instead of one flattened dash-joined line.
+function formatFlotteRow(row) {
+  const fields = [];
+  if (row.vehicule) fields.push({ label: "Véhicule", value: row.vehicule });
+  if (row.immatriculation) fields.push({ label: "Immatriculation", value: row.immatriculation });
+  if (row.modeAchat) fields.push({ label: "Mode d'achat", value: FLOTTE_MODE_LABELS[row.modeAchat] || row.modeAchat });
+  if (row.usage) fields.push({ label: "Usage", value: FLOTTE_USAGE_LABELS[row.usage] || row.usage });
+  return fields;
+}
+
 // Prefill map: GarageIdentityForm's query params -> catalog keys of the
 // matching questionnaire questions, so answering them again isn't required.
 const PREFILL_KEYS = {
@@ -76,10 +98,20 @@ export default function GaragisteDevisPage() {
     // siret/activite) are excluded here so they aren't duplicated as generic
     // LeadAnswer rows.
     const IDENTITY_KEYS = new Set(["representant_legal", "mobile", "email_principal", "siret", "activite_principale"]);
-    const leadAnswers = Object.entries(answers)
-      .filter(([id]) => byId[id] && !IDENTITY_KEYS.has(byId[id].key))
-      .map(([id, value]) => {
-        const step = byId[id];
+    // Iterate over `steps` (already in catalog/form order) rather than
+    // Object.entries(answers) — object keys that look like integers (the
+    // step ids) are always enumerated in ascending numeric order by the JS
+    // spec, not insertion order, which silently scrambled the saved answer
+    // order away from the order questions were actually asked in.
+    const leadAnswers = (steps || [])
+      .filter((step) => !IDENTITY_KEYS.has(step.key) && Object.prototype.hasOwnProperty.call(answers, step.id))
+      .map((step) => {
+        const value = answers[step.id];
+        if (step.key === "flotte_immatriculations") {
+          const rows = Array.isArray(value) ? value : [];
+          const vehicles = rows.map((row) => ({ fields: formatFlotteRow(row) }));
+          return { catalog_key: step.key, question: step.question, value: JSON.stringify(vehicles) };
+        }
         const values = Array.isArray(value) ? value : [value];
         const labels = values.map((v) => {
           const idx = step.values?.indexOf(v);
@@ -133,7 +165,7 @@ export default function GaragisteDevisPage() {
       </header>
 
       <main className="min-h-screen bg-white">
-        <div className="max-w-4xl mx-auto px-4 lg:px-6 py-10 lg:py-16 pb-28">
+        <div className="max-w-4xl mx-auto px-4 lg:px-6 pt-10 lg:pt-16 pb-40">
           {error && (
             <p className="text-sm text-[var(--color-error)]">
               Impossible de charger le questionnaire ({error}).
@@ -167,11 +199,11 @@ export default function GaragisteDevisPage() {
               storageKey="garagiste"
               footerContent={
                 <a
-                  href="mailto:contact@newworldcourtage.com"
+                  href="mailto:devis@newworldcourtage.com"
                   className="flex items-center gap-2 text-black hover:text-[var(--color-brand)] transition-colors"
                 >
                   <Mail size={20} className="shrink-0" />
-                  <span className="text-base font-medium hidden sm:inline">contact@newworldcourtage.com</span>
+                  <span className="text-base font-medium hidden sm:inline">devis@newworldcourtage.com</span>
                 </a>
               }
             />

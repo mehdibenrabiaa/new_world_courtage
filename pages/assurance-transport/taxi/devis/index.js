@@ -129,7 +129,7 @@ export default function TaxiDevisPage() {
       </header>
 
       <main className="min-h-screen bg-white">
-        <div className="max-w-4xl mx-auto px-4 lg:px-6 py-10 lg:py-16 pb-28">
+        <div className="max-w-4xl mx-auto px-4 lg:px-6 pt-10 lg:pt-16 pb-40">
           {error && (
             <p className="text-sm text-[var(--color-error)]">
               Impossible de charger le questionnaire ({error}).
@@ -163,11 +163,11 @@ export default function TaxiDevisPage() {
               storageKey="taxi"
               footerContent={
                 <a
-                  href="mailto:contact@newworldcourtage.com"
+                  href="mailto:devis@newworldcourtage.com"
                   className="flex items-center gap-2 text-black hover:text-[var(--color-brand)] transition-colors"
                 >
                   <Mail size={20} className="shrink-0" />
-                  <span className="text-base font-medium hidden sm:inline">contact@newworldcourtage.com</span>
+                  <span className="text-base font-medium hidden sm:inline">devis@newworldcourtage.com</span>
                 </a>
               }
             />

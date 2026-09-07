@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef, useMemo } from "react";
+import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
@@ -301,9 +302,9 @@ function BookingPanel({ t }) {
             </a>
           </Button>
           <Button variant="outline" size="sm" asChild className="gap-2 h-10 rounded-lg border-gray-200 text-gray-700 hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] hover:bg-transparent">
-            <a href="mailto:contact@newworldcourtage.com">
+            <a href="mailto:devis@newworldcourtage.com">
               <Mail size={15} />
-              contact@newworldcourtage.com
+              devis@newworldcourtage.com
             </a>
           </Button>
         </div>
@@ -338,6 +339,52 @@ function sectionFields(steps, section, answers, selectedProducts) {
   return steps.filter(s => s.section === section && !isStepSkipped(s, answers, selectedProducts));
 }
 
+// Questions in `section` that were answered via URL prefill (e.g. redirected
+// here from an identity form) rather than product/rule gating — shown as a
+// read-only recap up top so the user sees we already captured them, instead
+// of just silently omitting them from the field grid.
+function prefilledSectionFields(steps, section) {
+  return steps.filter(s => s.section === section && s.alwaysSkip);
+}
+
+// Splits a section's visible fields into the generic ones (no `products`,
+// apply to everyone) and one group per selected product, in the order the
+// prospect picked them on the gate screen. A field naming more than one
+// selected product (shared across offers) is claimed by whichever of those
+// comes first, so it's never listed twice.
+function groupFieldsByProduct(fields, selectedProducts) {
+  const generic = fields.filter(f => !f.products || f.products.length === 0);
+  const claimed = new Set();
+  const groups = [];
+  for (const product of selectedProducts || []) {
+    const productFields = fields.filter(f => f.products?.includes(product) && !claimed.has(f.id));
+    productFields.forEach(f => claimed.add(f.id));
+    if (productFields.length > 0) groups.push({ product, fields: productFields });
+  }
+  return { generic, groups };
+}
+
+function formatAnswerValue(step, value) {
+  if (value == null || value === "") return "";
+  if (step.inputType === "date" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+    const [y, m, d] = value.split("-");
+    return `${d}/${m}/${y}`;
+  }
+  if (step.inputType === "tel") {
+    // French grouping: "0619018921" -> "06-19-01-89-21"
+    const digits = String(value).replace(/\D/g, "");
+    return digits.replace(/(\d{2})(?=\d)/g, "$1-");
+  }
+  if (step.key === "siret") {
+    // SIRET grouping: 3-3-3-5 (SIREN + NIC), e.g. "123456789 00012" -> "123 456 789 00012"
+    const digits = String(value).replace(/\D/g, "");
+    const siren = digits.slice(0, 9).replace(/(\d{3})(?=\d)/g, "$1 ").trim();
+    const nic = digits.slice(9);
+    return nic ? `${siren} ${nic}` : siren;
+  }
+  return String(value);
+}
+
 // Walks in `dir` (+1/-1) from `fromIdx`, skipping any section that ends up
 // with zero visible fields (e.g. every question in it was URL-prefilled or
 // none of it applies to the selected products), and returns the first
@@ -351,6 +398,10 @@ function findVisibleSectionIndex(sections, steps, fromIdx, dir, answers, selecte
 }
 
 // ── Resume-in-progress persistence (localStorage) ────────────────────────────
+// Only the answered field values are remembered here — which step is showing
+// lives entirely in the URL's ?step= param (see the component below), so the
+// browser's own Back/Forward always match what's on screen with no separate
+// source of truth to drift out of sync.
 
 function progressStorageKey(key) {
   return `nwc_car_form_${key}`;
@@ -386,14 +437,183 @@ function clearStoredProgress(key) {
 function isWideField(step) {
   if (step.cols === 2) return true;
   if (step.cols === 1) return false;
+  if (step.key === "flotte_immatriculations") return true;
   if (step.type === "radio" || step.type === "checkbox") return true;
   if (step.type === "input" && step.inputType === "textarea") return true;
   return false;
 }
 
+// Closes the same gap grid-flow-dense would (a lone half-width field before
+// a full-width one) but respects question dependencies — a field skip_unless
+// on an earlier one is never pulled ahead of it just to fill a hole. Pulls
+// the next dependency-satisfied half-width field forward instead.
+function packFieldsAvoidingGaps(fields) {
+  const result = [];
+  const remaining = [...fields];
+  const placedIds = new Set();
+  let awaitingPartner = false;
+
+  const satisfied = f => !f.rules?.length || f.rules.every(r => placedIds.has(r.source_question_id));
+
+  while (remaining.length > 0) {
+    const field = remaining.shift();
+    const wide = isWideField(field);
+
+    if (wide && awaitingPartner) {
+      const idx = remaining.findIndex(f => !isWideField(f) && satisfied(f));
+      if (idx !== -1) {
+        const filler = remaining.splice(idx, 1)[0];
+        result.push(filler);
+        placedIds.add(filler.id);
+      }
+      awaitingPartner = false;
+    }
+
+    result.push(field);
+    placedIds.add(field.id);
+    awaitingPartner = wide ? false : !awaitingPartner;
+  }
+
+  return result;
+}
+
+// ── Multi-associate capital % field ──────────────────────────────────────────
+// "% détention du capital" needs one input per associé — a new one appears
+// automatically as long as the running total is still under 100%, and no
+// entry can push the sum over 100% or go negative.
+function AssocieCapitalField({ s, answer, setAnswer }) {
+  const committed = Array.isArray(answer) ? answer : (answer ? [answer] : []);
+
+  const slots = [];
+  let sum = 0;
+  for (const v of committed) {
+    slots.push(v);
+    sum += parseFloat(v) || 0;
+    if (sum >= 100) break;
+  }
+  if (slots.length === 0 || (slots[slots.length - 1] !== "" && sum < 100)) {
+    slots.push("");
+  }
+
+  function handleChange(i, raw) {
+    const priorSum = slots.slice(0, i).reduce((acc, v) => acc + (parseFloat(v) || 0), 0);
+    const remaining = Math.max(0, 100 - priorSum);
+
+    let v = raw.replace(/[^\d.]/g, "");
+    const firstDot = v.indexOf(".");
+    if (firstDot !== -1) v = v.slice(0, firstDot + 1) + v.slice(firstDot + 1).replace(/\./g, "");
+    if (v !== "" && v !== ".") {
+      const num = parseFloat(v);
+      if (!isNaN(num) && num > remaining) v = String(remaining);
+    }
+
+    const next = slots.slice(0, i + 1);
+    next[i] = v;
+    setAnswer(s.id, next);
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      {slots.map((v, i) => (
+        <div key={i} className="flex flex-col gap-1">
+          <span className="text-xs text-gray-400">Associé {i + 1}</span>
+          <Input
+            type="number"
+            inputMode="decimal"
+            min={0}
+            max={100}
+            value={v}
+            onChange={e => handleChange(i, e.target.value)}
+            placeholder="Ex : 50"
+            className="bg-white h-[50px]"
+          />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+// ── Per-vehicle fleet details ────────────────────────────────────────────────
+// "Immatriculations (carte grise) des véhicules" becomes one repeating group
+// of fields (véhicule, immatriculation, mode d'achat, usage) per vehicle,
+// with the number of groups driven by the "Nombre de véhicules dans la
+// flotte" question elsewhere in the same section.
+function FlotteVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
+  const countField = wizardSteps.find(f => f.key === "flotte_nombre_vehicules");
+  const rawCount = countField ? answers[countField.id] : "";
+  const count = Math.max(0, Math.min(50, parseInt(rawCount, 10) || 0));
+
+  const stored = Array.isArray(answer) ? answer : [];
+  const rows = Array.from({ length: count }, (_, i) => stored[i] || { vehicule: "", immatriculation: "", modeAchat: "", usage: "" });
+
+  function updateRow(i, field, value) {
+    const next = rows.map((r, idx) => (idx === i ? { ...r, [field]: value } : r));
+    setAnswer(s.id, next);
+  }
+
+  if (count === 0) {
+    return <p className="text-sm text-gray-400">Renseignez d'abord le nombre de véhicules dans la flotte ci-dessus.</p>;
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      {rows.map((row, i) => (
+        <div key={i} className={`flex flex-col gap-3 ${i > 0 ? "pt-6 border-t border-gray-200" : ""}`}>
+          <span className="text-xs font-semibold uppercase tracking-wide text-gray-400">Véhicule {i + 1}</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-500">Véhicule</label>
+              <Input
+                value={row.vehicule}
+                onChange={e => updateRow(i, "vehicule", e.target.value)}
+                placeholder="Ex : Renault Trafic"
+                className="bg-white h-[46px]"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-500">N° d'immatriculation</label>
+              <Input
+                value={row.immatriculation}
+                onChange={e => updateRow(i, "immatriculation", e.target.value.toUpperCase())}
+                placeholder="Ex : AB-123-CD"
+                className="bg-white h-[46px]"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-500">Mode d'achat</label>
+              <Select value={row.modeAchat} onValueChange={v => updateRow(i, "modeAchat", v)}>
+                <SelectTrigger className="w-full bg-white h-[46px]">
+                  <SelectValue placeholder="Sélectionnez une option" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="comptant">Comptant</SelectItem>
+                  <SelectItem value="credit">Crédit</SelectItem>
+                  <SelectItem value="leasing">Leasing</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-500">Usage</label>
+              <Select value={row.usage} onValueChange={v => updateRow(i, "usage", v)}>
+                <SelectTrigger className="w-full bg-white h-[46px]">
+                  <SelectValue placeholder="Sélectionnez une option" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="professionnel">Professionnel</SelectItem>
+                  <SelectItem value="mixte">Mixte (pro et personnel)</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, initialAnswers = {}, startStep = 0, theme = "dark", onProgress, onSubmit, footerContent, storageKey }) {
+export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, initialAnswers = {}, theme = "dark", onProgress, onSubmit, footerContent, storageKey }) {
   // Questions already answered via URL params (e.g. redirected here from an
   // identity form that collected name/phone/email/etc.) shouldn't be asked
   // again — mark them as always-skipped so they're filtered out of their
@@ -408,10 +628,6 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     return rawSteps.map(s => (prefilledIds.has(s.id) ? { ...s, alwaysSkip: true } : s));
   }, [rawSteps, initialAnswers]);
 
-  // stepIdx indexes into `sections` — each step is a whole section's page,
-  // showing every (non-skipped) question in that section together in a grid,
-  // rather than one question per page.
-  const [stepIdx, setStepIdx] = useState(startStep);
   const [direction, setDirection] = useState("next");
   const [answers, setAnswers] = useState(initialAnswers);
   const [submitted, setSubmitted] = useState(false);
@@ -420,13 +636,23 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
 
   const t = TOKENS[theme];
   const firstFieldRef = useRef(null);
+  const router = useRouter();
 
   // "Gate" questions (catalog-level `gate: true`) are shown on their own
   // screen before the step-by-step wizard begins — they're never one of its
   // sections/tabs.
   const gateFields = steps.filter(s => s.gate && !isStepSkipped(s, answers));
   const wizardSteps = steps.filter(s => !s.gate);
-  const [gatePassed, setGatePassed] = useState(gateFields.length === 0);
+
+  // Which step is showing is derived entirely from the URL (?step=gate | a
+  // section index) — never from local state or localStorage — so the
+  // browser's Back/Forward buttons and the in-app ones both just change the
+  // URL and let this same derivation decide what renders. No query param at
+  // all means "the very start" (gate if this questionnaire has one).
+  const stepParam = router.query.step;
+  const hasGate = gateFields.length > 0;
+  const gatePassed = !hasGate || (stepParam !== undefined && stepParam !== "gate");
+  const stepIdx = gatePassed ? Math.max(0, parseInt(stepParam, 10) || 0) : 0;
 
   // The gate's own answer (which product(s) the prospect picked) — used to
   // filter which of the rest of the questions apply to them.
@@ -442,6 +668,12 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     .filter(sec => sectionFields(wizardSteps, sec, answers, selectedProducts).length > 0);
   const currentSection = sections[stepIdx];
   const visibleFields = sectionFields(wizardSteps, currentSection, answers, selectedProducts);
+  const prefilledFields = prefilledSectionFields(wizardSteps, currentSection);
+  const { generic: genericFields, groups: productGroups } = groupFieldsByProduct(visibleFields, selectedProducts);
+  const productLabel = (value) => {
+    const idx = productsGateField?.values?.indexOf(value) ?? -1;
+    return idx >= 0 ? productsGateField.options[idx] : value;
+  };
   const isLastStep = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts) >= sections.length;
   const progress = Math.round(((stepIdx + 1) / sections.length) * 100);
 
@@ -449,49 +681,94 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     onProgress?.(progress);
   }, [progress]);
 
-  // Auto-focus the first plain text/number/email/tel field of each section
-  // as it appears, so lazy users can start typing immediately.
+  // Land at the top of the new step instead of wherever the previous one
+  // happened to be scrolled to, then auto-focus the first plain text/number/
+  // email/tel field — preventScroll so the focus itself can't drag the page
+  // back down and fight the scrollTo above.
   useEffect(() => {
-    firstFieldRef.current?.focus();
+    window.scrollTo(0, 0);
+    firstFieldRef.current?.focus({ preventScroll: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stepIdx]);
+  }, [stepIdx, gatePassed]);
 
-  // Resume from a previous visit: merge any saved progress under `answers`
-  // (URL-derived initialAnswers still win on conflicts), jump back to the
-  // section (and gate-passed state) they'd reached, then re-check in case
-  // that section is now empty.
+  // Resume from a previous visit: merge any saved field values under
+  // `answers` (URL-derived initialAnswers still win on conflicts) so nothing
+  // already filled in has to be retyped. Which step is showing is not
+  // restored from here — that's the URL's job, per the derivation above.
   useEffect(() => {
     const saved = readStoredProgress(storageKey);
     const mergedAnswers = saved ? { ...saved.answers, ...initialAnswers } : initialAnswers;
-    let targetStep = startStep;
-    if (saved && typeof saved.stepIdx === "number") {
-      targetStep = Math.max(startStep, Math.min(saved.stepIdx, sections.length - 1));
-    }
-    const mergedProducts = productsGateField
-      ? (Array.isArray(mergedAnswers[productsGateField.id]) ? mergedAnswers[productsGateField.id] : [mergedAnswers[productsGateField.id]].filter(Boolean))
-      : null;
-    if (sectionFields(wizardSteps, sections[targetStep], mergedAnswers, mergedProducts).length === 0) {
-      targetStep = Math.min(findVisibleSectionIndex(sections, wizardSteps, targetStep + 1, 1, mergedAnswers, mergedProducts), sections.length - 1);
-    }
     setAnswers(mergedAnswers);
-    setStepIdx(targetStep);
-    if (saved && gateFields.length > 0) {
-      setGatePassed(Boolean(saved.gatePassed));
-    }
     setHydrated(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Persist progress as the user fills the form, so a reload or a later visit
-  // resumes where they left off instead of starting blank.
+  // Slide-in direction for the step transition — derived by comparing this
+  // render's step against the last one, so it's correct whether the change
+  // came from a click or from the browser's own Back/Forward.
+  const stepRankRef = useRef(null);
+  useEffect(() => {
+    const rank = gatePassed ? stepIdx : -1;
+    if (stepRankRef.current !== null && stepRankRef.current !== rank) {
+      setDirection(rank >= stepRankRef.current ? "next" : "prev");
+    }
+    stepRankRef.current = rank;
+  }, [stepIdx, gatePassed]);
+
+  // Persist just the answers as the user fills the form, so a reload or a
+  // later visit doesn't force retyping — see the resume effect above.
   useEffect(() => {
     if (!hydrated) return;
-    writeStoredProgress(storageKey, { answers, stepIdx, gatePassed });
-  }, [answers, stepIdx, gatePassed, storageKey, hydrated]);
+    writeStoredProgress(storageKey, { answers });
+  }, [answers, storageKey, hydrated]);
 
   function setAnswer(stepId, val) {
     setAnswers(prev => ({ ...prev, [stepId]: val }));
     setErrors(prev => { const e = { ...prev }; delete e[stepId]; return e; });
+  }
+
+  // Pushes a new URL (same page, ?step=<n>) — a real history entry, so the
+  // browser's own Back button naturally lands on whatever step preceded it.
+  function pushStep(nextStepIdx) {
+    router.push({ pathname: router.pathname, query: { ...router.query, step: String(nextStepIdx) } }, undefined, { shallow: true, scroll: false });
+  }
+
+  // Hand-rolled instead of el.scrollIntoView({behavior:"smooth"}) — browsers
+  // silently downgrade that to an instant jump under prefers-reduced-motion,
+  // and even without it the native duration can be so short it barely reads
+  // as animated. This guarantees a visible, consistent glide every time.
+  function animateScrollTo(targetY, duration = 500) {
+    const startY = window.scrollY;
+    const diff = targetY - startY;
+    if (Math.abs(diff) < 1) return;
+    const startTime = performance.now();
+    function step(now) {
+      const t = Math.min((now - startTime) / duration, 1);
+      const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2; // easeInOutQuad
+      window.scrollTo(0, startY + diff * eased);
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  // A required field can be off-screen (above or below the fold) when
+  // validation blocks "Suivant" — without this, clicking it just silently
+  // does nothing as far as the user can tell. `fields` is the section's own
+  // field order, so this lands on whichever invalid one appears first.
+  function scrollToFirstError(fields, newErrors) {
+    const first = fields.find(s => newErrors[s.id]);
+    if (!first) return;
+    requestAnimationFrame(() => {
+      const el = document.getElementById(`field-card-${first.id}`);
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const targetY = Math.max(0, Math.min(
+        window.scrollY + rect.top - (window.innerHeight - rect.height) / 2,
+        maxScroll
+      ));
+      animateScrollTo(targetY);
+    });
   }
 
   function handleGateNext() {
@@ -504,46 +781,52 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      scrollToFirstError(gateFields, newErrors);
       return;
     }
     setErrors({});
-    setGatePassed(true);
+    pushStep(0);
   }
 
   function handleNext() {
     const newErrors = {};
     for (const s of visibleFields) {
       if (s.optional) continue;
+      if (s.key === "pct_detention_capital") {
+        const vals = Array.isArray(answers[s.id]) ? answers[s.id] : [];
+        const sum = vals.reduce((acc, v) => acc + (parseFloat(v) || 0), 0);
+        if (sum !== 100) newErrors[s.id] = "La répartition doit atteindre 100 % au total.";
+        continue;
+      }
       const ans = answers[s.id];
       const isEmpty = s.type === "checkbox" ? !Array.isArray(ans) || ans.length === 0 : (ans ?? "") === "";
       if (isEmpty) newErrors[s.id] = "Ce champ est requis.";
     }
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      scrollToFirstError(visibleFields, newErrors);
       return;
     }
 
     setErrors({});
-    setDirection("next");
     const next = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts);
     if (next >= sections.length) {
       clearStoredProgress(storageKey);
       setSubmitted(true);
       onSubmit?.(answers);
     } else {
-      setStepIdx(next);
+      pushStep(next);
     }
   }
 
+  // Real backward navigation (router.back(), not a new push) — so a
+  // follow-up press of the actual browser Back button continues stepping
+  // back instead of bouncing forward again through an entry we just added.
   function handleBack() {
     const prev = findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts);
-    if (prev >= 0) {
+    if (prev >= 0 || gateFields.length > 0) {
       setErrors({});
-      setDirection("prev");
-      setStepIdx(prev);
-    } else if (gateFields.length > 0) {
-      setErrors({});
-      setGatePassed(false);
+      router.back();
     }
   }
 
@@ -560,22 +843,23 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
 
   // One question's field control — shared between the gate screen and the
   // section grid so both stay visually and behaviorally identical.
-  function renderFieldCard(s, { firstFocusableId: focusId } = {}) {
+  function renderFieldCard(s, { firstFocusableId: focusId, index = 0 } = {}) {
     const answer = answers[s.id] ?? (s.type === "checkbox" ? [] : "");
     const dynamicOpts = s.optionsFn ? s.optionsFn(answers) : { options: s.options, values: s.values };
     const wide = isWideField(s);
     const isFirstFocusable = s.id === focusId;
 
     return (
-      <div key={s.id} className={`flex flex-col gap-2 ${wide ? "sm:col-span-2" : ""}`}>
+      <div key={s.id} id={`field-card-${s.id}`} className={`flex flex-col gap-2 h-full ${wide ? "sm:col-span-2" : ""}`}>
               {(s.type === "radio" || s.type === "checkbox") ? (
-                <p className={`text-[15px] ${t.label}`}>
+                <p className={`text-[15px] ${t.label} ${!wide ? "min-h-11" : ""}`}>
                   {s.question}
                   {!s.optional && <span className="ml-0.5">*</span>}
                 </p>
               ) : (
-                <label htmlFor={`field-${s.id}`} className={`text-[15px] cursor-pointer ${t.label}`}>
+                <label htmlFor={`field-${s.id}`} className={`text-[15px] cursor-pointer block ${t.label} ${!wide ? "min-h-11" : ""}`}>
                   {s.question}
+                  {s.key === "pct_detention_capital" && <span className="font-normal text-gray-400"> (pour chaque associé)</span>}
                   {!s.optional && <span className="ml-0.5">*</span>}
                 </label>
               )}
@@ -649,8 +933,8 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                           isSelected
                             ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
                             : errors[s.id]
-                              ? "border-[var(--color-error)]"
-                              : "hover:border-[var(--color-brand)]"
+                              ? "border-[var(--color-error)] bg-white"
+                              : "hover:border-[var(--color-brand)] bg-white"
                         }`}
                       >
                         <Field orientation="horizontal">
@@ -718,7 +1002,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                   id={`field-${s.id}`}
                   value={answer}
                   onChange={val => setAnswer(s.id, val)}
-                  placeholder={s.placeholder || "Sélectionnez une date"}
+                  placeholder={s.placeholder || "__/__/____"}
                   theme={theme}
                   error={!!errors[s.id]}
                   className="bg-white h-[50px] w-full"
@@ -761,23 +1045,48 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                 />
               )}
 
-              {/* Text / number / email / tel */}
-              {s.type === "input" && !["date", "month", "year", "textarea"].includes(s.inputType) && (
-                <Input
-                  ref={isFirstFocusable ? firstFieldRef : undefined}
-                  id={`field-${s.id}`}
-                  type={s.inputType}
-                  inputMode={s.inputType === "tel" ? "tel" : undefined}
-                  placeholder={s.placeholder}
-                  value={answer}
-                  onChange={e => {
-                    let v = s.inputType === "tel" ? e.target.value.replace(/[^\d\s+]/g, "") : e.target.value;
-                    if (s.uppercase) v = v.toUpperCase();
-                    setAnswer(s.id, v);
-                  }}
-                  className={`bg-white h-[50px] ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
-                />
+              {/* Multi-associate % détention du capital */}
+              {s.key === "pct_detention_capital" && (
+                <AssocieCapitalField s={s} answer={answer} setAnswer={setAnswer} />
               )}
+
+              {/* One repeating field group per vehicle in the fleet */}
+              {s.key === "flotte_immatriculations" && (
+                <FlotteVehiculesField s={s} answer={answer} setAnswer={setAnswer} wizardSteps={wizardSteps} answers={answers} />
+              )}
+
+              {/* Text / number / email / tel */}
+              {s.type === "input" && s.key !== "pct_detention_capital" && s.key !== "flotte_immatriculations" && !["date", "month", "year", "textarea"].includes(s.inputType) && (() => {
+                const inputEl = (
+                  <Input
+                    ref={isFirstFocusable ? firstFieldRef : undefined}
+                    id={`field-${s.id}`}
+                    type={s.inputType}
+                    inputMode={s.inputType === "tel" ? "tel" : s.inputType === "number" ? "decimal" : undefined}
+                    min={s.inputType === "number" ? 0 : undefined}
+                    placeholder={s.placeholder}
+                    value={answer}
+                    onChange={e => {
+                      let v = e.target.value;
+                      if (s.inputType === "tel") v = v.replace(/[^\d\s+]/g, "");
+                      if (s.inputType === "number" && v !== "" && parseFloat(v) < 0) v = "0";
+                      if (s.uppercase) v = v.toUpperCase();
+                      setAnswer(s.id, v);
+                    }}
+                    className={`bg-white h-[50px] ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
+                  />
+                );
+                // Mirrors AssocieCapitalField's own "Associé 1" line + gap-1
+                // nesting exactly, invisibly, so this field's input lines up
+                // with % détention du capital's input in the same grid row.
+                if (s.key !== "adresse_siege_social") return inputEl;
+                return (
+                  <div className="flex flex-col gap-1">
+                    <span className="text-xs text-gray-400 invisible" aria-hidden="true">Associé 1</span>
+                    {inputEl}
+                  </div>
+                );
+              })()}
 
               {errors[s.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[s.id]}</p>}
       </div>
@@ -789,8 +1098,8 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   if (!gatePassed) {
     return (
       <div className="flex flex-col gap-10">
-        <div className="grid grid-cols-1 gap-x-6 gap-y-6 max-w-2xl">
-          {gateFields.map(s => renderFieldCard(s, { firstFocusableId: firstGateFocusableId }))}
+        <div className="grid grid-cols-1 gap-x-6 gap-y-10 bg-gray-100 p-6">
+          {gateFields.map((s, i) => renderFieldCard(s, { firstFocusableId: firstGateFocusableId, index: i }))}
         </div>
         <div className="flex items-center justify-end pt-2">
           <Button onClick={handleGateNext} className={`gap-1 ${t.nextBtn}`}>
@@ -812,7 +1121,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
       {sections.length > 1 && (
         <>
           <div
-            className="hidden sm:grid gap-0.5"
+            className="hidden sm:grid gap-0.5 sticky top-16 z-30 bg-white pt-3 pb-3"
             style={{ gridTemplateColumns: `repeat(${sections.length}, minmax(0, 1fr))` }}
           >
             {sections.map((section, i) => {
@@ -832,7 +1141,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
             })}
           </div>
 
-          <div className="sm:hidden flex flex-col gap-2">
+          <div className="sm:hidden flex flex-col gap-2 sticky top-16 z-30 bg-white pt-3 pb-3">
             <div
               className="grid gap-0.5"
               style={{ gridTemplateColumns: `repeat(${sections.length}, minmax(0, 1fr))` }}
@@ -859,12 +1168,47 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
         </>
       )}
 
-      {/* All questions of the current section, together in a grid */}
-      <div
-        key={currentSection}
-        className={`grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-6 max-w-2xl ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}
-      >
-        {visibleFields.map(s => renderFieldCard(s, { firstFocusableId }))}
+      {/* Already-captured answers (e.g. from an identity form redirect) —
+          plain text recap, not editable fields, just so the user sees we
+          kept what they already gave us. */}
+      {prefilledFields.length > 0 && (
+        <table key={`${currentSection}-prefilled`} className="border-separate border-spacing-y-1.5 pb-1 text-sm">
+          <tbody>
+            {prefilledFields.map(s => (
+              <tr key={s.id}>
+                <td className="pr-6 text-gray-400 align-top whitespace-nowrap">{s.question}</td>
+                <td className="font-medium text-[var(--color-text)] align-top">{formatAnswerValue(s, answers[s.id])}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      {/* All questions of the current section — generic ones in their own
+          grid, then one grid per selected product under its own header.
+          Each block gets its own grid, and fields are pre-packed in JS
+          (packFieldsAvoidingGaps) rather than via CSS grid-flow-dense, so a
+          gap-filling field never gets pulled ahead of a question it depends
+          on (e.g. "Statut immobilier" needing "...dispose-t-il d'un local").
+          Each block also stays scoped to its own group either way. */}
+      <div key={currentSection} className={`flex flex-col gap-16 ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}>
+        {genericFields.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10 bg-gray-100 p-6">
+            {packFieldsAvoidingGaps(genericFields).map((s, i) => renderFieldCard(s, { firstFocusableId, index: i }))}
+          </div>
+        )}
+        {productGroups.map(({ product, fields }) => (
+          <div key={product} className="flex flex-col gap-4">
+            <div className="flex items-center gap-3">
+              <span className="w-1.5 h-5 bg-[var(--color-brand)] shrink-0" />
+              <span className="text-base font-bold text-[var(--color-text)] whitespace-nowrap">{productLabel(product)}</span>
+              <span className="flex-1 h-px bg-gray-200" />
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10 bg-gray-100 p-6">
+              {packFieldsAvoidingGaps(fields).map((s, i) => renderFieldCard(s, { firstFocusableId, index: i }))}
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Navigation */}
@@ -885,7 +1229,11 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
               onClick={handleNext}
               className={`gap-1 ${t.nextBtn}`}
             >
-              {isLastStep ? "Envoyer ma demande" : "Suivant"}
+              {isLastStep
+                ? (selectedProducts?.length
+                    ? `Envoyer la demande projet ${selectedProducts.map(productLabel).join(", ")}`
+                    : "Envoyer la demande projet")
+                : "Suivant"}
               {!isLastStep && <ChevronRight size={16} />}
             </Button>
           </ButtonGroup>
@@ -896,7 +1244,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
         }
 
         return (
-          <div className="fixed inset-x-0 bottom-0 z-40 bg-white border-t border-gray-100 px-4 lg:px-12 py-4 flex items-center justify-between">
+          <div className="fixed inset-x-0 bottom-0 z-40 bg-white border-t border-gray-100 pl-24 pr-4 lg:pl-24 lg:pr-12 py-4 flex items-center justify-between">
             {footerContent}
             {navButtons}
           </div>

@@ -196,7 +196,7 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
             <DatePickerInput
               value={dateNaissance}
               onChange={(v) => { setDateNaissance(v); clearError("dateNaissance"); updateQuery({ dateNaissance: v }); }}
-              placeholder="Votre date de naissance"
+              placeholder="__/__/____"
               theme="light"
               error={!!errors.dateNaissance}
               className="h-[50px] bg-white border-gray-200 text-[var(--color-text)] hover:bg-gray-50"

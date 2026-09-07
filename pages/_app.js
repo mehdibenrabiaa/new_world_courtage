@@ -1,13 +1,14 @@
 import "../global.css";
 import Head from "next/head";
-import { Geist } from "next/font/google";
+import { Google_Sans_Flex } from "next/font/google";
 import { useRouter } from "next/router";
 import { AnimatePresence, motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import CookieBanner from "../components/CookieBanner";
-const geistSans = Geist({
+const bodyFont = Google_Sans_Flex({
   subsets: ["latin"],
+  weight: "variable",
   display: "optional",
 });
 
@@ -28,7 +29,7 @@ export default function MyApp({ Component, pageProps }) {
 
   return (
     <div
-      className={geistSans.className}
+      className={bodyFont.className}
       style={{ minHeight: "100vh", overflowX: "clip" }}
     >
       <Head>
