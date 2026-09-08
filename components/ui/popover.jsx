@@ -48,8 +48,14 @@ const PopoverContent = React.forwardRef(function PopoverContent(
   const { open, setOpen } = React.useContext(PopoverContext)
   const innerRef = React.useRef(null)
   const [openAbove, setOpenAbove] = React.useState(false)
+  const [shiftX, setShiftX] = React.useState(0)
 
-  // Detect whether to flip above (collision detection)
+  // Detect whether to flip above (collision detection) and whether to shift
+  // horizontally back into the viewport. This popover isn't portaled to
+  // document.body like a real Radix/shadcn one would be — it's a plain
+  // absolutely-positioned DOM child — so a page-wide `overflow-x: clip`
+  // ancestor (see pages/_app.js) would otherwise silently crop it instead
+  // of letting it scroll into view whenever it runs past a viewport edge.
   React.useLayoutEffect(() => {
     if (!open || !innerRef.current) return
     const trigger = innerRef.current.parentElement
@@ -58,6 +64,13 @@ const PopoverContent = React.forwardRef(function PopoverContent(
     const contentH    = innerRef.current.offsetHeight
     const spaceBelow  = window.innerHeight - triggerRect.bottom
     setOpenAbove(spaceBelow < contentH + sideOffset + 8)
+
+    const rect = innerRef.current.getBoundingClientRect()
+    const margin = 8
+    let shift = 0
+    if (rect.right > window.innerWidth - margin) shift -= rect.right - (window.innerWidth - margin)
+    if (rect.left + shift < margin) shift += margin - (rect.left + shift)
+    setShiftX(shift)
   }, [open, sideOffset])
 
   React.useEffect(() => {
@@ -76,11 +89,17 @@ const PopoverContent = React.forwardRef(function PopoverContent(
   const alignStyle =
     align === "end"   ? { right: alignOffset } :
     align === "start" ? { left: alignOffset }  :
-    { left: "50%", transform: "translateX(-50%)" }
+    { left: "50%" }
 
-  const positionStyle = openAbove
-    ? { bottom: `calc(100% + ${sideOffset}px)`, ...alignStyle }
-    : { top:    `calc(100% + ${sideOffset}px)`, ...alignStyle }
+  const transforms = []
+  if (align === "center") transforms.push("translateX(-50%)")
+  if (shiftX) transforms.push(`translateX(${shiftX}px)`)
+
+  const positionStyle = {
+    ...(openAbove ? { bottom: `calc(100% + ${sideOffset}px)` } : { top: `calc(100% + ${sideOffset}px)` }),
+    ...alignStyle,
+    ...(transforms.length ? { transform: transforms.join(" ") } : {}),
+  }
 
   return (
     <div
