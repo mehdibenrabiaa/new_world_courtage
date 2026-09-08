@@ -1067,12 +1067,12 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     return (
       <div key={s.id} id={`field-card-${s.id}`} className={`flex flex-col gap-2 h-full ${wide ? "sm:col-span-2" : ""}`}>
               {(s.type === "radio" || s.type === "checkbox") ? (
-                <p className={`text-[15px] ${t.label} ${!wide ? "min-h-11" : ""}`}>
+                <p className={`text-[16px] ${t.label} ${!wide ? "min-h-11" : ""}`}>
                   {s.question}
                   {!s.optional && <span className="ml-0.5">*</span>}
                 </p>
               ) : (
-                <label htmlFor={`field-${s.id}`} className={`text-[15px] cursor-pointer block ${t.label} ${!wide ? "min-h-11" : ""}`}>
+                <label htmlFor={`field-${s.id}`} className={`text-[16px] cursor-pointer block ${t.label} ${!wide ? "min-h-11" : ""}`}>
                   {s.question}
                   {s.key === "pct_detention_capital" && <span className="font-normal text-gray-400"> (pour chaque associé)</span>}
                   {!s.optional && <span className="ml-0.5">*</span>}
