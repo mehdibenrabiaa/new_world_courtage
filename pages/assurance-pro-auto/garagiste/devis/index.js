@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Phone, ChevronRight, Mail } from "lucide-react";
+import { Phone, ChevronRight, Mail, FileText, Camera, ClipboardCheck } from "lucide-react";
 import CarInsuranceForm from "@/components/CarInsuranceForm";
 import { Spinner } from "@/components/ui/spinner";
 import { fetchQuestionnaire, createLead } from "@/lib/api";
@@ -29,6 +29,41 @@ function formatFlotteRow(row) {
   return fields;
 }
 
+// Mirrors WGarageVehiculesField's own option labels in CarInsuranceForm.js.
+const W_GARAGE_MODE_ACHAT_LABELS = { comptant: "Comptant", loa: "LOA", lld: "LLD", credit_bancaire: "Crédit bancaire" };
+const W_GARAGE_USAGE_LABELS = { courtoisie: "Courtoisie", vehicule_societe: "Véhicule de société", location: "Location", gerant: "Gérant" };
+
+// Same shape/reasoning as formatFlotteRow above — one object per W Garage
+// vehicle instead of the raw "comptant"/"courtoisie" values.
+function formatWGarageRow(row) {
+  const fields = [];
+  if (row.modeAchat) fields.push({ label: "Mode d'achat", value: W_GARAGE_MODE_ACHAT_LABELS[row.modeAchat] || row.modeAchat });
+  if (row.usage) fields.push({ label: "Usage", value: W_GARAGE_USAGE_LABELS[row.usage] || row.usage });
+  return fields;
+}
+
+// Mirrors AssocieCapitalField's own option labels in CarInsuranceForm.js.
+const ASSOCIE_CIVILITE_LABELS = { m: "Monsieur", mme: "Madame" };
+
+// The nested {label, value} fields below render as-is in the CRM (no
+// per-field date awareness like the top-level answer list has), so dates
+// need converting to French display format here at submission time instead.
+function toFrenchDate(iso) {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || "");
+  return m ? `${m[3]}/${m[2]}/${m[1]}` : iso;
+}
+
+// Same shape/reasoning as formatFlotteRow above — one object per associé
+// instead of just the raw percentage.
+function formatAssocieRow(row) {
+  const fields = [];
+  if (row.pct) fields.push({ label: "% détention du capital", value: `${row.pct}%` });
+  if (row.civilite) fields.push({ label: "Civilité", value: ASSOCIE_CIVILITE_LABELS[row.civilite] || row.civilite });
+  if (row.naissance) fields.push({ label: "Date de naissance", value: toFrenchDate(row.naissance) });
+  if (row.commune) fields.push({ label: "Commune de naissance", value: row.commune });
+  return fields;
+}
+
 // Prefill map: GarageIdentityForm's query params -> catalog keys of the
 // matching questionnaire questions, so answering them again isn't required.
 const PREFILL_KEYS = {
@@ -49,6 +84,20 @@ function buildInitialAnswers(steps, query) {
     }
   }
   return answers;
+}
+
+// Docs to prepare before the callback, shown on the confirmation screen —
+// "Relevé d'information" only makes sense if the questionnaire actually
+// asked about prior insurance history (its Antécédents section).
+function buildBookingDocs(steps) {
+  const docs = [
+    { icon: FileText, label: "Extrait KBIS", desc: "De moins de 3 mois" },
+    { icon: Camera, label: "Photos du garage", desc: "Vue intérieure et extérieure des locaux" },
+  ];
+  if ((steps || []).some((s) => s.section === "Antécédents")) {
+    docs.push({ icon: ClipboardCheck, label: "Relevé d'information", desc: "Édité par votre assureur actuel" });
+  }
+  return docs;
 }
 
 export default function GaragisteDevisPage() {
@@ -112,6 +161,16 @@ export default function GaragisteDevisPage() {
           const vehicles = rows.map((row) => ({ fields: formatFlotteRow(row) }));
           return { catalog_key: step.key, question: step.question, value: JSON.stringify(vehicles) };
         }
+        if (step.key === "w_garage_vehicules") {
+          const rows = Array.isArray(value) ? value : [];
+          const vehicles = rows.map((row) => ({ fields: formatWGarageRow(row) }));
+          return { catalog_key: step.key, question: step.question, value: JSON.stringify(vehicles) };
+        }
+        if (step.key === "pct_detention_capital") {
+          const rows = Array.isArray(value) ? value : [];
+          const associes = rows.map((row) => ({ fields: formatAssocieRow(row) }));
+          return { catalog_key: step.key, question: step.question, value: JSON.stringify(associes) };
+        }
         const values = Array.isArray(value) ? value : [value];
         const labels = values.map((v) => {
           const idx = step.values?.indexOf(v);
@@ -132,14 +191,19 @@ export default function GaragisteDevisPage() {
     };
     console.info("[garagiste devis] Submitting lead:", payload);
 
-    createLead(payload)
+    // Returned (not just chained) so CarInsuranceForm can capture the
+    // created lead's id and attach it to whichever booking the prospect
+    // makes on the confirmation screen.
+    return createLead(payload)
       .then((lead) => {
         console.info("[garagiste devis] Lead created:", lead);
         setSubmitStatus("sent");
+        return lead;
       })
       .catch((err) => {
         console.error("[garagiste devis] Failed to submit lead:", err);
         setSubmitStatus("error");
+        return null;
       });
   }
 
@@ -197,6 +261,7 @@ export default function GaragisteDevisPage() {
               onSubmit={handleSubmit}
               theme="light"
               storageKey="garagiste"
+              bookingDocs={buildBookingDocs(steps)}
               footerContent={
                 <a
                   href="mailto:devis@newworldcourtage.com"

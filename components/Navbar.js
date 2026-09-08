@@ -39,7 +39,7 @@ function MegaMenuContent({ item }) {
                   link.separator ? (
                     <li key={`sep-${i}`} className="my-1.5 border-t border-gray-100" />
                   ) : (
-                    <li key={link.href}>
+                    <li key={link.label}>
                       <NavMenu.Link asChild>
                         <Button variant="link" asChild className="h-auto py-1 px-2 text-[13.5px] text-gray-800 font-normal justify-start">
                           <Link href={link.href}>{link.label}</Link>
@@ -86,7 +86,7 @@ function MobilePanel({ item, onBack, onClose }) {
                 <div key={`sep-${i}`} className="my-1 border-t border-gray-100" />
               ) : (
                 <Link
-                  key={link.href}
+                  key={link.label}
                   href={link.href}
                   onClick={onClose}
                   className="block py-2.5 text-sm text-[var(--color-text)] border-b border-gray-100 last:border-0 hover:text-[var(--color-brand)]"

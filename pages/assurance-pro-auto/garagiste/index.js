@@ -2,7 +2,9 @@ import Head from "next/head";
 import PageHero from "@/components/PageHero";
 import CarCalculatorSection from "@/components/CarCalculatorSection";
 import GarageIdentityForm from "@/components/GarageIdentityForm";
+import PartnerLogos from "@/components/PartnerLogos";
 import Testimonials from "@/components/Testimonials";
+import { PARTNERS } from "@/lib/partners";
 import InfoCardsSection from "@/components/InfoCardsSection";
 import FinishedScrolling from "@/components/FinishedScrolling";
 import { fetchGuideCardsByCategory } from "@/lib/api";
@@ -15,6 +17,22 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText } from "lucide-react";
+
+// Garagiste-specific: the site-wide PARTNERS list (minus Swiss Life) plus two
+// insurers used specifically for the garage product line. Kept local to this
+// page rather than added to the shared list, so it doesn't also show up on
+// the homepage or /a-propos/nos-partenaires.
+const PARTNERS_BY_ID = Object.fromEntries(PARTNERS.map((p) => [p.id, p]));
+const GARAGISTE_PARTNERS = [
+  PARTNERS_BY_ID.axa,
+  PARTNERS_BY_ID.allianz,
+  { id: "axeria", name: "Axeria", src: "/partners/axeria.svg" },
+  PARTNERS_BY_ID.gmf,
+  PARTNERS_BY_ID.areas,
+  PARTNERS_BY_ID.gan,
+  PARTNERS_BY_ID.groupama,
+  { id: "wakam", name: "Wakam", src: "/partners/wakam.svg" },
+];
 
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 const GUIDE_ICONS = [ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText];
@@ -106,6 +124,10 @@ export default function GaragistePage({ guideData }) {
           titlePosition="bottom"
           titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[55px]"
         />
+
+        <div className="px-4 lg:px-12 2xl:px-24 my-8">
+          <PartnerLogos partners={GARAGISTE_PARTNERS} />
+        </div>
 
         <CarCalculatorSection
           title={<>Recevez votre devis d&apos;assurance garage <em className="italic">gratuitement.</em></>}

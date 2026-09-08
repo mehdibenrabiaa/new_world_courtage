@@ -128,7 +128,7 @@ export function DatePickerInput({
       <InputGroup
         className={cn(
           error
-            ? "border-[var(--color-error)] has-focus-within:border-[var(--color-error)] has-focus-within:ring-[rgba(255,143,0,0.15)]"
+            ? "border-[var(--color-error)] has-focus-within:border-[var(--color-error)] has-focus-within:ring-[rgba(242,105,61,0.15)]"
             : isLight
               ? "border-gray-200 bg-white"
               : "border-white/30 bg-white/10",

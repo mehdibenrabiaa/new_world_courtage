@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { MonthYearInput } from "@/components/MonthYearInput";
-import { ChevronLeft, ChevronRight, CheckCircle2, Phone, Mail, CalendarDays, Car, User, ListChecks, Shield, FileText, Circle, AlertTriangle, Wallet } from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckCircle2, Phone, Mail, CalendarDays, Car, User, ListChecks, Shield, FileText, Circle, AlertTriangle, Wallet, Paperclip, Loader2 } from "lucide-react";
+import { fetchAvailability, bookConsultation } from "@/lib/api";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -163,19 +164,25 @@ const SLOTS = [
 const DAYS_LONG   = ["dimanche","lundi","mardi","mercredi","jeudi","vendredi","samedi"];
 const MONTHS_LONG = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
 
-function getUnavailable(date) {
-  const seed = date.getDate() * 3 + date.getMonth() * 7;
-  return [seed % SLOTS.length, (seed + 3) % SLOTS.length].map(i => SLOTS[i]);
-}
-
 function fmtDate(d) {
   return `${DAYS_LONG[d.getDay()]} ${d.getDate()} ${MONTHS_LONG[d.getMonth()]} ${d.getFullYear()}`;
 }
 
-function BookingPanel({ t }) {
-  const [bookDate, setBookDate]   = useState(null);
-  const [bookSlot, setBookSlot]   = useState(null);
-  const [confirmed, setConfirmed] = useState(false);
+function toISODate(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
+function BookingPanel({ t, leadId, bookingDocs = [] }) {
+  const [bookDate, setBookDate] = useState(null);
+  const [bookSlot, setBookSlot] = useState(null);
+  const [slots, setSlots] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [booking, setBooking] = useState(false);
+  const [bookError, setBookError] = useState(null);
+  const [confirmedBooking, setConfirmedBooking] = useState(null);
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -185,12 +192,43 @@ function BookingPanel({ t }) {
     return date <= today || d === 0 || d === 6;
   }
 
-  function handleDate(date) { setBookDate(date); setBookSlot(null); }
+  function handleDate(date) {
+    setBookDate(date);
+    setBookSlot(null);
+    setBookError(null);
+  }
 
-  const unavail   = bookDate ? getUnavailable(bookDate) : [];
-  const slotItems = SLOTS.map(s => ({ time: s, free: !unavail.includes(s) }));
+  // Real availability from the consultants table (see backend
+  // routers/consultants.py) instead of a placeholder pattern — a slot only
+  // shows as free if at least one active consultant has no booking there yet.
+  useEffect(() => {
+    if (!bookDate) return;
+    let cancelled = false;
+    setLoadingSlots(true);
+    fetchAvailability(toISODate(bookDate))
+      .then((data) => { if (!cancelled) setSlots(data.slots); })
+      .catch(() => { if (!cancelled) setSlots(SLOTS.map((s) => ({ time: s, available: false }))); })
+      .finally(() => { if (!cancelled) setLoadingSlots(false); });
+    return () => { cancelled = true; };
+  }, [bookDate]);
 
-  if (confirmed) {
+  function handleConfirm() {
+    if (!bookDate || !bookSlot) return;
+    setBooking(true);
+    setBookError(null);
+    bookConsultation({ date: toISODate(bookDate), time: bookSlot, leadId })
+      .then((res) => setConfirmedBooking(res))
+      .catch((err) => {
+        setBookError(err.message || "Ce créneau n'est plus disponible, merci d'en choisir un autre.");
+        setBookSlot(null);
+        fetchAvailability(toISODate(bookDate)).then((data) => setSlots(data.slots)).catch(() => {});
+      })
+      .finally(() => setBooking(false));
+  }
+
+  if (confirmedBooking) {
+    const [y, m, d] = confirmedBooking.date.split("-").map(Number);
+    const confirmedDate = new Date(y, m - 1, d);
     return (
       <div className="flex flex-col items-center gap-5 py-10 text-center">
         <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center">
@@ -200,8 +238,8 @@ function BookingPanel({ t }) {
           <h3 className={`text-xl font-semibold mb-2 ${t.successHeading}`}>Rendez-vous confirmé !</h3>
           <p className={`text-base ${t.successBody}`}>
             Nous vous appellerons le{" "}
-            <span className={`font-semibold ${t.successHeading}`}>{fmtDate(bookDate)}</span>
-            {" "}à <span className={`font-semibold ${t.successHeading}`}>{bookSlot}</span>.
+            <span className={`font-semibold ${t.successHeading}`}>{fmtDate(confirmedDate)}</span>
+            {" "}à <span className={`font-semibold ${t.successHeading}`}>{confirmedBooking.time}</span>.
           </p>
           <p className={`text-sm mt-1 ${t.successBody}`}>Un e-mail de confirmation vous sera envoyé.</p>
         </div>
@@ -217,9 +255,35 @@ function BookingPanel({ t }) {
         <CheckCircle2 size={40} className="text-green-500" />
         <h3 className={`text-xl font-semibold ${t.successHeading}`}>Demande envoyée !</h3>
         <p className={`text-base max-w-sm ${t.successBody}`}>
-          Choisissez un créneau pour votre rappel gratuit avec un conseiller agréé.
+          Un de nos experts va vous contacter dans les plus brefs délais. Pour être sûr de vous
+          joindre au bon moment, proposez-nous un créneau ci-dessous.
         </p>
       </div>
+
+      {/* Required documents */}
+      {bookingDocs.length > 0 && (
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-2">
+            <Paperclip size={15} className={t.successIcon} />
+            <p className={`text-xs font-semibold uppercase tracking-wide ${t.hint}`}>
+              Documents à préparer avant l&apos;appel
+            </p>
+          </div>
+          <div className={`grid grid-cols-1 ${bookingDocs.length > 2 ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-3`}>
+            {bookingDocs.map(({ icon: Icon, label, desc }, i) => (
+              <div key={i} className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50 p-4">
+                <span className="shrink-0 w-10 h-10 rounded-full bg-[var(--color-brand)]/10 text-[var(--color-brand)] flex items-center justify-center">
+                  <Icon size={18} />
+                </span>
+                <div>
+                  <p className="text-sm font-semibold text-[var(--color-text)] leading-snug">{label}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Calendar + slots */}
       <Card className="rounded-xl border border-gray-100 shadow-none">
@@ -240,41 +304,51 @@ function BookingPanel({ t }) {
           {/* Slots */}
           <div className="flex flex-col">
             {bookDate ? (
-              <>
-                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 capitalize">
-                  {fmtDate(bookDate)}
-                </p>
-                <div className="grid grid-cols-2 gap-2">
-                  {slotItems.map(({ time, free }) => (
-                    <Button
-                      key={time}
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      disabled={!free}
-                      onClick={() => setBookSlot(time)}
-                      className={`h-10 rounded-lg text-sm transition-colors ${
-                        !free
-                          ? "border-gray-100 text-gray-300 bg-gray-50"
-                          : bookSlot === time
-                            ? "border-[var(--color-brand)] bg-[var(--color-brand)] text-white hover:bg-[var(--color-brand)] hover:text-white"
-                            : "border-gray-200 text-gray-700 hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] hover:bg-transparent"
-                      }`}
-                    >
-                      {free ? time : <s>{time}</s>}
-                    </Button>
-                  ))}
+              loadingSlots ? (
+                <div className="flex-1 flex items-center justify-center gap-2 text-gray-400">
+                  <Loader2 size={16} className="animate-spin" />
+                  <span className="text-sm">Chargement des créneaux…</span>
                 </div>
-                {bookSlot && (
-                  <Button
-                    type="button"
-                    onClick={() => setConfirmed(true)}
-                    className="mt-4 w-full cta-btn text-white font-semibold"
-                  >
-                    Confirmer {bookSlot}
-                  </Button>
-                )}
-              </>
+              ) : (
+                <>
+                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3 capitalize">
+                    {fmtDate(bookDate)}
+                  </p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {slots.map(({ time, available }) => (
+                      <Button
+                        key={time}
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        disabled={!available}
+                        onClick={() => setBookSlot(time)}
+                        className={`h-10 rounded-lg text-sm transition-colors ${
+                          !available
+                            ? "border-gray-100 text-gray-300 bg-gray-50"
+                            : bookSlot === time
+                              ? "border-[var(--color-brand)] bg-[var(--color-brand)] text-white hover:bg-[var(--color-brand)] hover:text-white"
+                              : "border-gray-200 text-gray-700 hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] hover:bg-transparent"
+                        }`}
+                      >
+                        {available ? time : <s>{time}</s>}
+                      </Button>
+                    ))}
+                  </div>
+                  {bookError && <p className="text-xs text-[var(--color-error)] mt-2">{bookError}</p>}
+                  {bookSlot && (
+                    <Button
+                      type="button"
+                      onClick={handleConfirm}
+                      disabled={booking}
+                      className="mt-4 w-full cta-btn text-white font-semibold gap-2"
+                    >
+                      {booking && <Loader2 size={16} className="animate-spin" />}
+                      Confirmer {bookSlot}
+                    </Button>
+                  )}
+                </>
+              )
             ) : (
               <div className="flex-1 flex items-center justify-center">
                 <p className="text-sm text-gray-400 text-center leading-relaxed">
@@ -364,6 +438,22 @@ function groupFieldsByProduct(fields, selectedProducts) {
   return { generic, groups };
 }
 
+// Splits an already-ordered list of fields into contiguous runs sharing the
+// same `eyebrow` value, so a product's fields can render as several
+// banner-headed sub-blocks (e.g. Convoyeur's "Analyse des risques —
+// Sinistralité" / "Local et risques associés") instead of one flat grid.
+// Fields with no eyebrow get their own headerless run.
+function groupFieldsByEyebrow(fields) {
+  const runs = [];
+  for (const f of fields) {
+    const key = f.eyebrow || null;
+    const last = runs[runs.length - 1];
+    if (last && last.eyebrow === key) last.fields.push(f);
+    else runs.push({ eyebrow: key, fields: [f] });
+  }
+  return runs;
+}
+
 function formatAnswerValue(step, value) {
   if (value == null || value === "") return "";
   if (step.inputType === "date" && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
@@ -437,7 +527,7 @@ function clearStoredProgress(key) {
 function isWideField(step) {
   if (step.cols === 2) return true;
   if (step.cols === 1) return false;
-  if (step.key === "flotte_immatriculations") return true;
+  if (step.key === "flotte_immatriculations" || step.key === "w_garage_vehicules" || step.key === "pct_detention_capital") return true;
   if (step.type === "radio" || step.type === "checkbox") return true;
   if (step.type === "input" && step.inputType === "textarea") return true;
   return false;
@@ -481,52 +571,97 @@ function packFieldsAvoidingGaps(fields) {
 // "% détention du capital" needs one input per associé — a new one appears
 // automatically as long as the running total is still under 100%, and no
 // entry can push the sum over 100% or go negative.
-function AssocieCapitalField({ s, answer, setAnswer }) {
-  const committed = Array.isArray(answer) ? answer : (answer ? [answer] : []);
+const EMPTY_ASSOCIE = { pct: "", civilite: "", naissance: "", commune: "" };
+
+function AssocieCapitalField({ s, answer, setAnswer, theme }) {
+  const committed = Array.isArray(answer) ? answer : [];
 
   const slots = [];
   let sum = 0;
   for (const v of committed) {
     slots.push(v);
-    sum += parseFloat(v) || 0;
+    sum += parseFloat(v?.pct) || 0;
     if (sum >= 100) break;
   }
-  if (slots.length === 0 || (slots[slots.length - 1] !== "" && sum < 100)) {
-    slots.push("");
+  if (slots.length === 0 || (slots[slots.length - 1]?.pct !== "" && sum < 100)) {
+    slots.push({ ...EMPTY_ASSOCIE });
   }
 
-  function handleChange(i, raw) {
-    const priorSum = slots.slice(0, i).reduce((acc, v) => acc + (parseFloat(v) || 0), 0);
-    const remaining = Math.max(0, 100 - priorSum);
+  function handleChange(i, field, raw) {
+    const next = slots.slice(0, i + 1).map((v) => ({ ...EMPTY_ASSOCIE, ...v }));
 
-    let v = raw.replace(/[^\d.]/g, "");
-    const firstDot = v.indexOf(".");
-    if (firstDot !== -1) v = v.slice(0, firstDot + 1) + v.slice(firstDot + 1).replace(/\./g, "");
-    if (v !== "" && v !== ".") {
-      const num = parseFloat(v);
-      if (!isNaN(num) && num > remaining) v = String(remaining);
+    if (field === "pct") {
+      const priorSum = next.slice(0, i).reduce((acc, v) => acc + (parseFloat(v.pct) || 0), 0);
+      const remaining = Math.max(0, 100 - priorSum);
+
+      let v = raw.replace(/[^\d.]/g, "");
+      const firstDot = v.indexOf(".");
+      if (firstDot !== -1) v = v.slice(0, firstDot + 1) + v.slice(firstDot + 1).replace(/\./g, "");
+      if (v !== "" && v !== ".") {
+        const num = parseFloat(v);
+        if (!isNaN(num) && num > remaining) v = String(remaining);
+      }
+      next[i] = { ...next[i], pct: v };
+    } else {
+      next[i] = { ...next[i], [field]: raw };
     }
 
-    const next = slots.slice(0, i + 1);
-    next[i] = v;
     setAnswer(s.id, next);
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-6">
       {slots.map((v, i) => (
-        <div key={i} className="flex flex-col gap-1">
-          <span className="text-xs text-gray-400">Associé {i + 1}</span>
-          <Input
-            type="number"
-            inputMode="decimal"
-            min={0}
-            max={100}
-            value={v}
-            onChange={e => handleChange(i, e.target.value)}
-            placeholder="Ex : 50"
-            className="bg-white h-[50px]"
-          />
+        <div key={i} className={`flex flex-col gap-3 ${i > 0 ? "pt-6 border-t border-gray-200" : ""}`}>
+          <span className="inline-flex w-fit items-center gap-2 rounded-md bg-[var(--color-brand)]/10 px-3 py-1 text-xs font-bold tracking-wide text-[var(--color-brand)] uppercase">
+            Associé {i + 1}
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pl-8">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-500">% détention du capital</label>
+              <Input
+                type="number"
+                inputMode="decimal"
+                min={0}
+                max={100}
+                value={v.pct}
+                onChange={e => handleChange(i, "pct", e.target.value)}
+                placeholder="Ex : 50"
+                className="bg-white h-[50px]"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-500">Civilité</label>
+              <Select value={v.civilite} onValueChange={val => handleChange(i, "civilite", val)}>
+                <SelectTrigger className="w-full bg-white !h-[50px]">
+                  <SelectValue placeholder="Sélectionnez une option" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="m">Monsieur</SelectItem>
+                  <SelectItem value="mme">Madame</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-500">Date de naissance</label>
+              <DatePickerInput
+                value={v.naissance}
+                onChange={val => handleChange(i, "naissance", val)}
+                placeholder="__/__/____"
+                theme={theme}
+                className="bg-white h-[50px] w-full"
+              />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-500">Commune de naissance</label>
+              <Input
+                value={v.commune}
+                onChange={e => handleChange(i, "commune", e.target.value)}
+                placeholder="Ex : Paris"
+                className="bg-white h-[50px]"
+              />
+            </div>
+          </div>
         </div>
       ))}
     </div>
@@ -558,8 +693,10 @@ function FlotteVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
   return (
     <div className="flex flex-col gap-6">
       {rows.map((row, i) => (
-        <div key={i} className={`flex flex-col gap-3 ${i > 0 ? "pt-6 border-t border-gray-200" : ""}`}>
-          <span className="text-xs font-semibold uppercase tracking-wide text-gray-400">Véhicule {i + 1}</span>
+        <div key={i} className={`flex flex-col gap-3 pl-8 ${i > 0 ? "pt-6 border-t border-gray-200" : ""}`}>
+          <span className="inline-flex w-fit items-center gap-2 rounded-md bg-[var(--color-brand)]/10 px-3 py-1 text-xs font-bold tracking-wide text-[var(--color-brand)] uppercase">
+            Véhicule {i + 1}
+          </span>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Véhicule</label>
@@ -611,9 +748,84 @@ function FlotteVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
   );
 }
 
+const W_GARAGE_MODE_ACHAT_OPTIONS = [
+  { label: "Comptant", value: "comptant" },
+  { label: "LOA", value: "loa" },
+  { label: "LLD", value: "lld" },
+  { label: "Crédit bancaire", value: "credit_bancaire" },
+];
+
+const W_GARAGE_USAGE_OPTIONS = [
+  { label: "Courtoisie", value: "courtoisie" },
+  { label: "Véhicule de société", value: "vehicule_societe" },
+  { label: "Location", value: "location" },
+  { label: "Gérant", value: "gerant" },
+];
+
+// Same repeat-per-count pattern as FlotteVehiculesField above, driven by
+// "w_garage_nombre_vehicules" instead of "flotte_nombre_vehicules" — one
+// Mode d'achat + Usage pair per W Garage vehicle.
+function WGarageVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
+  const countField = wizardSteps.find(f => f.key === "w_garage_nombre_vehicules");
+  const rawCount = countField ? answers[countField.id] : "";
+  const count = Math.max(0, Math.min(50, parseInt(rawCount, 10) || 0));
+
+  const stored = Array.isArray(answer) ? answer : [];
+  const rows = Array.from({ length: count }, (_, i) => stored[i] || { modeAchat: "", usage: "" });
+
+  function updateRow(i, field, value) {
+    const next = rows.map((r, idx) => (idx === i ? { ...r, [field]: value } : r));
+    setAnswer(s.id, next);
+  }
+
+  if (count === 0) {
+    return <p className="text-sm text-gray-400">Renseignez d'abord le nombre de véhicules W Garage ci-dessus.</p>;
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      {rows.map((row, i) => (
+        <div key={i} className={`flex flex-col gap-3 pl-8 ${i > 0 ? "pt-6 border-t border-gray-200" : ""}`}>
+          <span className="inline-flex w-fit items-center gap-2 rounded-md bg-[var(--color-brand)]/10 px-3 py-1 text-xs font-bold tracking-wide text-[var(--color-brand)] uppercase">
+            Véhicule {i + 1}
+          </span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-500">Mode d'achat</label>
+              <Select value={row.modeAchat} onValueChange={v => updateRow(i, "modeAchat", v)}>
+                <SelectTrigger className="w-full bg-white h-[46px]">
+                  <SelectValue placeholder="Sélectionnez une option" />
+                </SelectTrigger>
+                <SelectContent>
+                  {W_GARAGE_MODE_ACHAT_OPTIONS.map(o => (
+                    <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="text-xs text-gray-500">Usage</label>
+              <Select value={row.usage} onValueChange={v => updateRow(i, "usage", v)}>
+                <SelectTrigger className="w-full bg-white h-[46px]">
+                  <SelectValue placeholder="Sélectionnez une option" />
+                </SelectTrigger>
+                <SelectContent>
+                  {W_GARAGE_USAGE_OPTIONS.map(o => (
+                    <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, initialAnswers = {}, theme = "dark", onProgress, onSubmit, footerContent, storageKey }) {
+export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, initialAnswers = {}, theme = "dark", onProgress, onSubmit, footerContent, storageKey, bookingDocs }) {
   // Questions already answered via URL params (e.g. redirected here from an
   // identity form that collected name/phone/email/etc.) shouldn't be asked
   // again — mark them as always-skipped so they're filtered out of their
@@ -631,6 +843,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   const [direction, setDirection] = useState("next");
   const [answers, setAnswers] = useState(initialAnswers);
   const [submitted, setSubmitted] = useState(false);
+  const [createdLeadId, setCreatedLeadId] = useState(null);
   const [errors, setErrors] = useState({});
   const [hydrated, setHydrated] = useState(false);
 
@@ -794,7 +1007,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
       if (s.optional) continue;
       if (s.key === "pct_detention_capital") {
         const vals = Array.isArray(answers[s.id]) ? answers[s.id] : [];
-        const sum = vals.reduce((acc, v) => acc + (parseFloat(v) || 0), 0);
+        const sum = vals.reduce((acc, v) => acc + (parseFloat(v?.pct) || 0), 0);
         if (sum !== 100) newErrors[s.id] = "La répartition doit atteindre 100 % au total.";
         continue;
       }
@@ -813,7 +1026,13 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     if (next >= sections.length) {
       clearStoredProgress(storageKey);
       setSubmitted(true);
-      onSubmit?.(answers);
+      // onSubmit may return the created lead (a promise) — captured so the
+      // booking panel can attach the meeting to the right lead once it
+      // resolves, without blocking the confirmation screen on it.
+      const result = onSubmit?.(answers);
+      if (result && typeof result.then === "function") {
+        result.then((lead) => lead?.id != null && setCreatedLeadId(lead.id)).catch(() => {});
+      }
     } else {
       pushStep(next);
     }
@@ -828,10 +1047,6 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
       setErrors({});
       router.back();
     }
-  }
-
-  if (submitted) {
-    return <BookingPanel t={t} />;
   }
 
   const firstFocusableId = visibleFields.find(
@@ -984,7 +1199,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                   <SelectTrigger
                     id={`field-${s.id}`}
                     aria-label={s.question}
-                    className={`w-full bg-white h-[50px] data-[size=default]:h-[50px] ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
+                    className={`w-full bg-white h-[50px] data-[size=default]:h-[50px] ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(242,105,61,0.15)]" : ""}`}
                   >
                     <SelectValue placeholder="Sélectionnez une option" />
                   </SelectTrigger>
@@ -1041,13 +1256,13 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                   onChange={e => setAnswer(s.id, e.target.value)}
                   maxLength={1000}
                   rows={6}
-                  className={`bg-white ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus-visible:border-[var(--color-error)] focus-visible:ring-[rgba(255,143,0,0.15)]" : ""}`}
+                  className={`bg-white ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus-visible:border-[var(--color-error)] focus-visible:ring-[rgba(242,105,61,0.15)]" : ""}`}
                 />
               )}
 
               {/* Multi-associate % détention du capital */}
               {s.key === "pct_detention_capital" && (
-                <AssocieCapitalField s={s} answer={answer} setAnswer={setAnswer} />
+                <AssocieCapitalField s={s} answer={answer} setAnswer={setAnswer} theme={theme} />
               )}
 
               {/* One repeating field group per vehicle in the fleet */}
@@ -1055,8 +1270,13 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                 <FlotteVehiculesField s={s} answer={answer} setAnswer={setAnswer} wizardSteps={wizardSteps} answers={answers} />
               )}
 
+              {/* One repeating Mode d'achat / Usage pair per W Garage vehicle */}
+              {s.key === "w_garage_vehicules" && (
+                <WGarageVehiculesField s={s} answer={answer} setAnswer={setAnswer} wizardSteps={wizardSteps} answers={answers} />
+              )}
+
               {/* Text / number / email / tel */}
-              {s.type === "input" && s.key !== "pct_detention_capital" && s.key !== "flotte_immatriculations" && !["date", "month", "year", "textarea"].includes(s.inputType) && (() => {
+              {s.type === "input" && s.key !== "pct_detention_capital" && s.key !== "flotte_immatriculations" && s.key !== "w_garage_vehicules" && !["date", "month", "year", "textarea"].includes(s.inputType) && (() => {
                 const inputEl = (
                   <Input
                     ref={isFirstFocusable ? firstFieldRef : undefined}
@@ -1073,19 +1293,10 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                       if (s.uppercase) v = v.toUpperCase();
                       setAnswer(s.id, v);
                     }}
-                    className={`bg-white h-[50px] ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(255,143,0,0.15)]" : ""}`}
+                    className={`bg-white h-[50px] ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(242,105,61,0.15)]" : ""}`}
                   />
                 );
-                // Mirrors AssocieCapitalField's own "Associé 1" line + gap-1
-                // nesting exactly, invisibly, so this field's input lines up
-                // with % détention du capital's input in the same grid row.
-                if (s.key !== "adresse_siege_social") return inputEl;
-                return (
-                  <div className="flex flex-col gap-1">
-                    <span className="text-xs text-gray-400 invisible" aria-hidden="true">Associé 1</span>
-                    {inputEl}
-                  </div>
-                );
+                return inputEl;
               })()}
 
               {errors[s.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[s.id]}</p>}
@@ -1109,6 +1320,13 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
         </div>
       </div>
     );
+  }
+
+  // The booking panel replaces the whole wizard (tabs included) once
+  // submitted — it isn't one more tab in the section bar, just its own
+  // dedicated screen.
+  if (submitted) {
+    return <BookingPanel t={t} leadId={createdLeadId} bookingDocs={bookingDocs} />;
   }
 
   return (
@@ -1204,8 +1422,19 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
               <span className="text-base font-bold text-[var(--color-text)] whitespace-nowrap">{productLabel(product)}</span>
               <span className="flex-1 h-px bg-gray-200" />
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10 bg-gray-100 p-6">
-              {packFieldsAvoidingGaps(fields).map((s, i) => renderFieldCard(s, { firstFocusableId, index: i }))}
+            <div className="flex flex-col gap-6 bg-gray-100 p-6">
+              {groupFieldsByEyebrow(fields).map((run, ri) => (
+                <div key={ri} className="flex flex-col gap-6">
+                  {run.eyebrow && (
+                    <div className={`-mx-6 bg-[var(--color-brand)]/10 px-4 py-2.5 text-sm font-bold tracking-wide text-[var(--color-brand)] uppercase ${ri === 0 ? "-mt-6" : ""}`}>
+                      {run.eyebrow}
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10">
+                    {packFieldsAvoidingGaps(run.fields).map((s, i) => renderFieldCard(s, { firstFocusableId, index: i }))}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         ))}
