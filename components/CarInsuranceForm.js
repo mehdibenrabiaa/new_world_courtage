@@ -644,13 +644,21 @@ function AssocieCapitalField({ s, answer, setAnswer, theme }) {
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Date de naissance</label>
-              <DatePickerInput
+              <Input
+                type="date"
                 value={v.naissance}
-                onChange={val => handleChange(i, "naissance", val)}
-                placeholder="__/__/____"
-                theme={theme}
-                className="bg-white h-[50px] w-full"
+                onChange={e => handleChange(i, "naissance", e.target.value)}
+                className="md:hidden bg-white h-[50px]"
               />
+              <div className="hidden md:block w-full">
+                <DatePickerInput
+                  value={v.naissance}
+                  onChange={val => handleChange(i, "naissance", val)}
+                  placeholder="__/__/____"
+                  theme={theme}
+                  className="bg-white h-[50px] w-full"
+                />
+              </div>
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Commune de naissance</label>
@@ -1211,17 +1219,30 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                 </Select>
               )}
 
-              {/* Full date picker */}
+              {/* Full date picker — native OS date input on mobile (e.g.
+                  iOS's wheel picker, matching GarageIdentityForm's own
+                  "Date de naissance" field), custom popover calendar on
+                  desktop where there's no native picker UI to fall back on. */}
               {s.type === "input" && s.inputType === "date" && (
-                <DatePickerInput
-                  id={`field-${s.id}`}
-                  value={answer}
-                  onChange={val => setAnswer(s.id, val)}
-                  placeholder={s.placeholder || "__/__/____"}
-                  theme={theme}
-                  error={!!errors[s.id]}
-                  className="bg-white h-[50px] w-full"
-                />
+                <>
+                  <Input
+                    id={`field-${s.id}`}
+                    type="date"
+                    value={answer}
+                    onChange={e => setAnswer(s.id, e.target.value)}
+                    className={`md:hidden bg-white h-[50px] ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(242,105,61,0.15)]" : ""}`}
+                  />
+                  <div className="hidden md:block w-full">
+                    <DatePickerInput
+                      value={answer}
+                      onChange={val => setAnswer(s.id, val)}
+                      placeholder={s.placeholder || "__/__/____"}
+                      theme={theme}
+                      error={!!errors[s.id]}
+                      className="bg-white h-[50px] w-full"
+                    />
+                  </div>
+                </>
               )}
 
               {/* Month + year dropdowns */}
