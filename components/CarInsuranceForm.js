@@ -856,7 +856,6 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   const [hydrated, setHydrated] = useState(false);
 
   const t = TOKENS[theme];
-  const firstFieldRef = useRef(null);
   const router = useRouter();
 
   // "Gate" questions (catalog-level `gate: true`) are shown on their own
@@ -903,12 +902,9 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   }, [progress]);
 
   // Land at the top of the new step instead of wherever the previous one
-  // happened to be scrolled to, then auto-focus the first plain text/number/
-  // email/tel field — preventScroll so the focus itself can't drag the page
-  // back down and fight the scrollTo above.
+  // happened to be scrolled to.
   useEffect(() => {
     window.scrollTo(0, 0);
-    firstFieldRef.current?.focus({ preventScroll: true });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stepIdx, gatePassed]);
 
@@ -1057,20 +1053,12 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     }
   }
 
-  const firstFocusableId = visibleFields.find(
-    s => s.type === "input" && !["date", "month", "year"].includes(s.inputType)
-  )?.id;
-  const firstGateFocusableId = gateFields.find(
-    s => s.type === "input" && !["date", "month", "year"].includes(s.inputType)
-  )?.id;
-
   // One question's field control — shared between the gate screen and the
   // section grid so both stay visually and behaviorally identical.
-  function renderFieldCard(s, { firstFocusableId: focusId, index = 0 } = {}) {
+  function renderFieldCard(s, { index = 0 } = {}) {
     const answer = answers[s.id] ?? (s.type === "checkbox" ? [] : "");
     const dynamicOpts = s.optionsFn ? s.optionsFn(answers) : { options: s.options, values: s.values };
     const wide = isWideField(s);
-    const isFirstFocusable = s.id === focusId;
 
     return (
       <div key={s.id} id={`field-card-${s.id}`} className={`flex flex-col gap-2 h-full ${wide ? "sm:col-span-2" : ""}`}>
@@ -1270,7 +1258,6 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
               {/* Free-text comments */}
               {s.type === "input" && s.inputType === "textarea" && (
                 <Textarea
-                  ref={isFirstFocusable ? firstFieldRef : undefined}
                   id={`field-${s.id}`}
                   placeholder={s.placeholder}
                   value={answer}
@@ -1300,7 +1287,6 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
               {s.type === "input" && s.key !== "pct_detention_capital" && s.key !== "flotte_immatriculations" && s.key !== "w_garage_vehicules" && !["date", "month", "year", "textarea"].includes(s.inputType) && (() => {
                 const inputEl = (
                   <Input
-                    ref={isFirstFocusable ? firstFieldRef : undefined}
                     id={`field-${s.id}`}
                     type={s.inputType}
                     inputMode={s.inputType === "tel" ? "tel" : s.inputType === "number" ? "decimal" : undefined}
@@ -1331,7 +1317,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     return (
       <div className="flex flex-col gap-10">
         <div className="grid grid-cols-1 gap-x-6 gap-y-10 bg-gray-100 p-6">
-          {gateFields.map((s, i) => renderFieldCard(s, { firstFocusableId: firstGateFocusableId, index: i }))}
+          {gateFields.map((s, i) => renderFieldCard(s, { index: i }))}
         </div>
         <div className="flex items-center justify-end pt-2">
           <Button onClick={handleGateNext} className={`h-12 px-5 gap-1 ${t.nextBtn}`}>
@@ -1433,7 +1419,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
       <div key={currentSection} className={`flex flex-col gap-16 ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}>
         {genericFields.length > 0 && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10 bg-gray-100 p-6">
-            {packFieldsAvoidingGaps(genericFields).map((s, i) => renderFieldCard(s, { firstFocusableId, index: i }))}
+            {packFieldsAvoidingGaps(genericFields).map((s, i) => renderFieldCard(s, { index: i }))}
           </div>
         )}
         {productGroups.map(({ product, fields }) => (
@@ -1452,7 +1438,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                     </div>
                   )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10">
-                    {packFieldsAvoidingGaps(run.fields).map((s, i) => renderFieldCard(s, { firstFocusableId, index: i }))}
+                    {packFieldsAvoidingGaps(run.fields).map((s, i) => renderFieldCard(s, { index: i }))}
                   </div>
                 </div>
               ))}
