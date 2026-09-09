@@ -1411,7 +1411,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
           plain text recap, not editable fields, just so the user sees we
           kept what they already gave us. */}
       {prefilledFields.length > 0 && (
-        <table key={`${currentSection}-prefilled`} className="border-separate border-spacing-y-1.5 pb-1 text-sm">
+        <table key={`${currentSection}-prefilled`} className="border-separate border-spacing-y-1.5 pb-1 text-[16px]">
           <tbody>
             {prefilledFields.map(s => (
               <tr key={s.id}>
