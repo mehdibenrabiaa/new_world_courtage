@@ -79,6 +79,7 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
     if (!name) newErrors.name = "Ce champ est requis.";
     if (!phone) newErrors.phone = "Ce champ est requis.";
     if (!email) newErrors.email = "Ce champ est requis.";
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = "Adresse e-mail invalide.";
     if (!siret) newErrors.siret = "Ce champ est requis.";
     if (!communeNaissance) newErrors.communeNaissance = "Ce champ est requis.";
     if (!dateNaissance) newErrors.dateNaissance = "Ce champ est requis.";
@@ -157,8 +158,14 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
           <Input
             id="field-siret"
             type="text"
+            inputMode="numeric"
             value={siret}
-            onChange={(e) => { setSiret(e.target.value); clearError("siret"); updateQuery({ siret: e.target.value }); }}
+            onChange={(e) => {
+              const v = e.target.value.replace(/[^\d\s]/g, "");
+              setSiret(v);
+              clearError("siret");
+              updateQuery({ siret: v });
+            }}
             placeholder="Ex : 123 456 789 00012"
             className={inputCls("siret")}
           />
@@ -184,14 +191,25 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
           <FieldLabel htmlFor="field-date-naissance" className="flex w-auto! text-white text-[15px] font-semibold">
             Date de naissance <span className="ml-0.5">*</span>
           </FieldLabel>
-          <Input
-            id="field-date-naissance"
-            type="date"
-            value={dateNaissance}
-            max={`${CURRENT_YEAR - 16}-12-31`}
-            onChange={(e) => { setDateNaissance(e.target.value); clearError("dateNaissance"); updateQuery({ dateNaissance: e.target.value }); }}
-            className={`md:hidden ${inputCls("dateNaissance")}`}
-          />
+          <div className="md:hidden relative">
+            <Input
+              id="field-date-naissance"
+              type="date"
+              value={dateNaissance}
+              max={`${CURRENT_YEAR - 16}-12-31`}
+              onChange={(e) => { setDateNaissance(e.target.value); clearError("dateNaissance"); updateQuery({ dateNaissance: e.target.value }); }}
+              className={`${inputCls("dateNaissance")} ${dateNaissance ? "" : "text-transparent"}`}
+            />
+            {/* Native date inputs don't reliably support `placeholder` (iOS
+                Safari shows nothing when empty) — hide the native rendering
+                via text-transparent above and overlay our own hint instead,
+                so it looks the same as every other empty field. */}
+            {!dateNaissance && (
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base pointer-events-none">
+                jj/mm/aaaa
+              </span>
+            )}
+          </div>
           <div className="hidden md:block w-full">
             <DatePickerInput
               value={dateNaissance}
