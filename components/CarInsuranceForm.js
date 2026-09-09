@@ -1334,7 +1334,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
           {gateFields.map((s, i) => renderFieldCard(s, { firstFocusableId: firstGateFocusableId, index: i }))}
         </div>
         <div className="flex items-center justify-end pt-2">
-          <Button onClick={handleGateNext} className={`gap-1 ${t.nextBtn}`}>
+          <Button onClick={handleGateNext} className={`h-12 px-5 gap-1 ${t.nextBtn}`}>
             Suivant
             <ChevronRight size={16} />
           </Button>
@@ -1469,7 +1469,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
               variant="outline"
               onClick={handleBack}
               disabled={findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts) < 0 && gateFields.length === 0}
-              className="gap-1"
+              className="h-12 px-5 gap-1"
             >
               <ChevronLeft size={16} />
               Retour
@@ -1477,7 +1477,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
 
             <Button
               onClick={handleNext}
-              className={`gap-1 ${t.nextBtn}`}
+              className={`h-12 px-5 gap-1 ${t.nextBtn}`}
             >
               {isLastStep
                 ? (selectedProducts?.length
