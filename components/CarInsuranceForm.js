@@ -9,8 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { MonthYearInput } from "@/components/MonthYearInput";
-import { ChevronLeft, ChevronRight, CheckCircle2, Phone, Mail, CalendarDays, Car, User, ListChecks, Shield, FileText, Circle, AlertTriangle, Wallet, Paperclip, Loader2 } from "lucide-react";
-import { fetchAvailability, bookConsultation } from "@/lib/api";
+import { ChevronLeft, ChevronRight, CheckCircle2, Phone, Mail, CalendarDays, Car, User, ListChecks, Shield, FileText, Circle, AlertTriangle, Wallet, Paperclip, Loader2, Upload, FileCheck2, FileCodeIcon } from "lucide-react";
+import { fetchAvailability, bookConsultation, uploadLeadDocument } from "@/lib/api";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
@@ -18,6 +18,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Field, FieldContent, FieldLabel, FieldTitle } from "@/components/ui/field";
+import { Attachment, AttachmentContent, AttachmentDescription, AttachmentGroup, AttachmentMedia, AttachmentTitle } from "@/components/ui/attachment";
 
 const CAR_BRANDS = [
   "Audi", "BMW", "Citroën", "Dacia", "DS Automobiles", "Fiat", "Ford", "Honda",
@@ -175,7 +176,7 @@ function toISODate(d) {
   return `${y}-${m}-${day}`;
 }
 
-function BookingPanel({ t, leadId, bookingDocs = [] }) {
+function BookingPanel({ t, leadId, leadUploadToken, bookingDocs = [] }) {
   const [bookDate, setBookDate] = useState(null);
   const [bookSlot, setBookSlot] = useState(null);
   const [slots, setSlots] = useState([]);
@@ -183,6 +184,7 @@ function BookingPanel({ t, leadId, bookingDocs = [] }) {
   const [booking, setBooking] = useState(false);
   const [bookError, setBookError] = useState(null);
   const [confirmedBooking, setConfirmedBooking] = useState(null);
+  const [documentUploads, setDocumentUploads] = useState({});
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -224,6 +226,25 @@ function BookingPanel({ t, leadId, bookingDocs = [] }) {
         fetchAvailability(toISODate(bookDate)).then((data) => setSlots(data.slots)).catch(() => {});
       })
       .finally(() => setBooking(false));
+  }
+
+  function handleDocumentUpload(files) {
+    if (!files.length || !leadId || !leadUploadToken) return;
+    setDocumentUploads({ status: "uploading", names: [] });
+    Promise.all(
+      files.map((file) => uploadLeadDocument({
+        leadId,
+        uploadToken: leadUploadToken,
+        documentLabel: "Documents demandés",
+        file,
+      }))
+    )
+      .then((documents) => setDocumentUploads({ status: "uploaded", documents }))
+      .catch((error) => setDocumentUploads({
+        status: "error",
+        message: error.message || "L'envoi a échoué.",
+        documents: [],
+      }));
   }
 
   if (confirmedBooking) {
@@ -269,18 +290,50 @@ function BookingPanel({ t, leadId, bookingDocs = [] }) {
               Documents à préparer avant l&apos;appel
             </p>
           </div>
-          <div className={`grid grid-cols-1 ${bookingDocs.length > 2 ? "sm:grid-cols-3" : "sm:grid-cols-2"} gap-3`}>
-            {bookingDocs.map(({ icon: Icon, label, desc }, i) => (
-              <div key={i} className="flex items-start gap-3 rounded-xl border border-gray-100 bg-gray-50 p-4">
-                <span className="shrink-0 w-10 h-10 rounded-full bg-[var(--color-brand)]/10 text-[var(--color-brand)] flex items-center justify-center">
-                  <Icon size={18} />
-                </span>
-                <div>
-                  <p className="text-sm font-semibold text-[var(--color-text)] leading-snug">{label}</p>
-                  <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
-                </div>
-              </div>
-            ))}
+          <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+            <ul className="space-y-3">
+              {bookingDocs.map(({ icon: Icon, label, desc }, i) => (
+                <li key={i} className="flex items-center gap-3">
+                  <span className="shrink-0 text-[var(--color-brand)]"><Icon size={18} /></span>
+                  <div>
+                    <p className="text-sm font-semibold text-[var(--color-text)] leading-snug">{label}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
+                  </div>
+                </li>
+              ))}
+            </ul>
+            <label className={`mt-4 flex h-11 items-center justify-center gap-2 rounded-md border border-[var(--color-brand)] text-sm font-semibold text-[var(--color-brand)] transition-colors ${leadId && leadUploadToken && documentUploads.status !== "uploading" ? "cursor-pointer hover:bg-[var(--color-brand)]/5" : "cursor-not-allowed opacity-50"}`}>
+              {documentUploads.status === "uploading" ? <Loader2 size={16} className="animate-spin" /> : documentUploads.status === "uploaded" ? <FileCheck2 size={16} /> : <Upload size={16} />}
+              {documentUploads.status === "uploading" ? "Envoi..." : documentUploads.status === "uploaded" ? "Documents envoyés" : "Ajouter des documents"}
+              <input
+                type="file"
+                className="sr-only"
+                accept="application/pdf,image/jpeg,image/png"
+                multiple
+                disabled={!leadId || !leadUploadToken || documentUploads.status === "uploading"}
+                onChange={(event) => {
+                  const files = Array.from(event.target.files || []);
+                  if (files.length) handleDocumentUpload(files);
+                  event.target.value = "";
+                }}
+              />
+            </label>
+            {documentUploads.status === "uploaded" && (
+              <AttachmentGroup className="mt-3">
+                {documentUploads.documents.map((document) => (
+                  <Attachment key={document.id} className="w-full">
+                    <AttachmentMedia><FileCodeIcon /></AttachmentMedia>
+                    <AttachmentContent>
+                      <AttachmentTitle>{document.original_filename}</AttachmentTitle>
+                      <AttachmentDescription>
+                        {(document.content_type || "Fichier").replace("application/", "").toUpperCase()} · {Math.ceil(document.size_bytes / 1024)} KB
+                      </AttachmentDescription>
+                    </AttachmentContent>
+                  </Attachment>
+                ))}
+              </AttachmentGroup>
+            )}
+            {documentUploads.status === "error" && <p className="mt-3 text-xs text-[var(--color-error)]">{documentUploads.message}</p>}
           </div>
         </div>
       )}
@@ -905,6 +958,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   const [answers, setAnswers] = useState(initialAnswers);
   const [submitted, setSubmitted] = useState(false);
   const [createdLeadId, setCreatedLeadId] = useState(null);
+  const [createdLeadUploadToken, setCreatedLeadUploadToken] = useState(null);
   const [errors, setErrors] = useState({});
   const [hydrated, setHydrated] = useState(false);
 
@@ -1099,7 +1153,11 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
       // resolves, without blocking the confirmation screen on it.
       const result = onSubmit?.(answers);
       if (result && typeof result.then === "function") {
-        result.then((lead) => lead?.id != null && setCreatedLeadId(lead.id)).catch(() => {});
+        result.then((lead) => {
+          if (lead?.id == null) return;
+          setCreatedLeadId(lead.id);
+          setCreatedLeadUploadToken(lead.document_upload_token || null);
+        }).catch(() => {});
       }
     } else {
       pushStep(next);
@@ -1389,7 +1447,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   // submitted — it isn't one more tab in the section bar, just its own
   // dedicated screen.
   if (submitted) {
-    return <BookingPanel t={t} leadId={createdLeadId} bookingDocs={bookingDocs} />;
+    return <BookingPanel t={t} leadId={createdLeadId} leadUploadToken={createdLeadUploadToken} bookingDocs={bookingDocs} />;
   }
 
   return (
@@ -1522,9 +1580,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
               className={`min-h-12 h-auto max-w-full whitespace-normal px-5 py-3 leading-5 ${t.nextBtn}`}
             >
               {isLastStep
-                ? (selectedProducts?.length
-                    ? `Envoyer la demande projet ${selectedProducts.map(productLabel).join(", ")}`
-                    : "Envoyer la demande projet")
+                ? "Envoyer la demande projet"
                 : "Suivant"}
               {!isLastStep && <ChevronRight size={16} />}
             </Button>
