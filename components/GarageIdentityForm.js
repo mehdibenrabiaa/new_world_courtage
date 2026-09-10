@@ -1,12 +1,38 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { Wrench, Truck, Handshake } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Field, FieldLabel, FieldError } from "@/components/ui/field";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Field, FieldContent, FieldLabel, FieldTitle, FieldDescription, FieldError } from "@/components/ui/field";
 import CtaButton from "@/components/CtaButton";
-import { DatePickerInput } from "@/components/DatePickerInput";
 
 const STORAGE_KEY = "nwc_garage_form";
-const CURRENT_YEAR = new Date().getFullYear();
+
+// Mirrors the "produits_interesses" gate question in the backend's "garage"
+// catalog (app/question_catalog.py) — asked here instead of on its own gate
+// screen in CarInsuranceForm, so picking a product doesn't cost the prospect
+// an extra step. `step=0` in the redirect (see handleSubmit) then tells that
+// form its gate is already answered.
+const PRODUCT_OPTIONS = [
+  {
+    label: "Protect Garage",
+    value: "protect_garage",
+    description: "Mécanicien, carrossier, centre d'entretien automobile.",
+    Icon: Wrench,
+  },
+  {
+    label: "Les Convoyeurs",
+    value: "convoyeurs",
+    description: "Convoyage de véhicules pour le compte de tiers.",
+    Icon: Truck,
+  },
+  {
+    label: "Les Négociants",
+    value: "negociants",
+    description: "Achat-revente de véhicules d'occasion.",
+    Icon: Handshake,
+  },
+];
 
 function readStorage() {
   try {
@@ -39,32 +65,25 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [siret, setSiret] = useState("");
-  const [communeNaissance, setCommuneNaissance] = useState("");
-  const [dateNaissance, setDateNaissance] = useState("");
+  const [produits, setProduits] = useState([]);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (!router.isReady) return;
     const saved = readStorage();
-    const {
-      name: qName, phone: qPhone, email: qEmail, siret: qSiret,
-      communeNaissance: qCommuneNaissance, dateNaissance: qDateNaissance,
-    } = router.query;
+    const { name: qName, phone: qPhone, email: qEmail, produits: qProduits } = router.query;
     setName(qName || saved.name || "");
     setPhone(qPhone || saved.phone || "");
     setEmail(qEmail || saved.email || "");
-    setSiret(qSiret || saved.siret || "");
-    setCommuneNaissance(qCommuneNaissance || saved.communeNaissance || "");
-    setDateNaissance(qDateNaissance || saved.dateNaissance || "");
+    setProduits(qProduits ? qProduits.split(",") : saved.produits || []);
   }, [router.isReady]);
 
   useEffect(() => {
-    writeStorage({ name, phone, email, siret, communeNaissance, dateNaissance });
-  }, [name, phone, email, siret, communeNaissance, dateNaissance]);
+    writeStorage({ name, phone, email, produits });
+  }, [name, phone, email, produits]);
 
   function updateQuery(patch) {
-    const merged = { name, phone, email, siret, communeNaissance, dateNaissance, ...patch };
+    const merged = { name, phone, email, produits: produits.join(","), ...patch };
     const nextQuery = Object.fromEntries(Object.entries(merged).filter(([, v]) => v !== ""));
     router.replace({ pathname: router.pathname, query: nextQuery }, undefined, { shallow: true, scroll: false });
   }
@@ -80,14 +99,15 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
     if (!phone) newErrors.phone = "Ce champ est requis.";
     if (!email) newErrors.email = "Ce champ est requis.";
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) newErrors.email = "Adresse e-mail invalide.";
-    if (!siret) newErrors.siret = "Ce champ est requis.";
-    if (!communeNaissance) newErrors.communeNaissance = "Ce champ est requis.";
-    if (!dateNaissance) newErrors.dateNaissance = "Ce champ est requis.";
+    if (produits.length === 0) newErrors.produits = "Ce champ est requis.";
     if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
 
     clearStorage();
     const q = new URLSearchParams({
-      name, phone, email, siret, communeNaissance, dateNaissance,
+      name, phone, email, produits: produits.join(","),
+      // Tells the devis questionnaire its product gate is already answered
+      // (see PRODUCT_OPTIONS comment above), so it opens straight on step 0.
+      step: "0",
     });
     router.push(`${redirectTo}?${q.toString()}`);
   }
@@ -150,76 +170,48 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
           {errors.email && <FieldError errors={[{ message: errors.email }]} className="text-[#F2693D]" />}
         </Field>
 
-        <Field className="border-0 p-0" data-invalid={!!errors.siret}>
-          <FieldLabel htmlFor="field-siret" className="flex w-auto! text-white text-[15px] font-semibold">
-            SIRET <span className="ml-0.5">*</span>
+        <Field className="border-0 p-0 sm:col-span-2" data-invalid={!!errors.produits}>
+          <FieldLabel className="flex w-auto! text-white text-[15px] font-semibold">
+            Quelles assurances vous intéressent ? <span className="ml-0.5">*</span>
           </FieldLabel>
-          <Input
-            id="field-siret"
-            type="text"
-            inputMode="numeric"
-            value={siret}
-            onChange={(e) => {
-              const v = e.target.value.replace(/[^\d\s]/g, "");
-              setSiret(v);
-              clearError("siret");
-              updateQuery({ siret: v });
-            }}
-            placeholder="Ex : 123 456 789 00012"
-            className={inputCls("siret")}
-          />
-          {errors.siret && <FieldError errors={[{ message: errors.siret }]} className="text-[#F2693D]" />}
-        </Field>
-
-        <Field className="border-0 p-0" data-invalid={!!errors.communeNaissance}>
-          <FieldLabel htmlFor="field-commune-naissance" className="flex w-auto! text-white text-[15px] font-semibold">
-            Commune de naissance <span className="ml-0.5">*</span>
-          </FieldLabel>
-          <Input
-            id="field-commune-naissance"
-            type="text"
-            value={communeNaissance}
-            onChange={(e) => { setCommuneNaissance(e.target.value); clearError("communeNaissance"); updateQuery({ communeNaissance: e.target.value }); }}
-            placeholder="Ex : Lyon"
-            className={inputCls("communeNaissance")}
-          />
-          {errors.communeNaissance && <FieldError errors={[{ message: errors.communeNaissance }]} className="text-[#F2693D]" />}
-        </Field>
-
-        <Field className="border-0 p-0" data-invalid={!!errors.dateNaissance}>
-          <FieldLabel htmlFor="field-date-naissance" className="flex w-auto! text-white text-[15px] font-semibold">
-            Date de naissance <span className="ml-0.5">*</span>
-          </FieldLabel>
-          <div className="md:hidden relative">
-            <Input
-              id="field-date-naissance"
-              type="date"
-              value={dateNaissance}
-              max={`${CURRENT_YEAR - 16}-12-31`}
-              onChange={(e) => { setDateNaissance(e.target.value); clearError("dateNaissance"); updateQuery({ dateNaissance: e.target.value }); }}
-              className={`${inputCls("dateNaissance")} ${dateNaissance ? "" : "text-transparent"}`}
-            />
-            {/* Native date inputs don't reliably support `placeholder` (iOS
-                Safari shows nothing when empty) — hide the native rendering
-                via text-transparent above and overlay our own hint instead,
-                so it looks the same as every other empty field. */}
-            {!dateNaissance && (
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-base pointer-events-none">
-                jj/mm/aaaa
-              </span>
-            )}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            {PRODUCT_OPTIONS.map((opt) => {
+              const isSelected = produits.includes(opt.value);
+              return (
+                <FieldLabel
+                  key={opt.value}
+                  htmlFor={`checkbox-produits-${opt.value}`}
+                  className={`transition-colors ${
+                    // Selected styling comes for free from FieldLabel's own
+                    // has-data-[state=checked] rule once the Checkbox below is
+                    // checked — only the unselected/error look needs to be said here.
+                    errors.produits && !isSelected ? "border-[var(--color-error)] bg-white" : "hover:border-[var(--color-brand)] bg-white"
+                  }`}
+                >
+                  <Field orientation="horizontal">
+                    <FieldContent>
+                      <FieldTitle>
+                        <opt.Icon className="size-4 shrink-0 text-[var(--color-brand)]" aria-hidden="true" />
+                        {opt.label}
+                      </FieldTitle>
+                      <FieldDescription>{opt.description}</FieldDescription>
+                    </FieldContent>
+                    <Checkbox
+                      id={`checkbox-produits-${opt.value}`}
+                      checked={isSelected}
+                      onCheckedChange={() => {
+                        const next = isSelected ? produits.filter((v) => v !== opt.value) : [...produits, opt.value];
+                        setProduits(next);
+                        clearError("produits");
+                        updateQuery({ produits: next.join(",") });
+                      }}
+                    />
+                  </Field>
+                </FieldLabel>
+              );
+            })}
           </div>
-          <div className="hidden md:block w-full">
-            <DatePickerInput
-              value={dateNaissance}
-              onChange={(v) => { setDateNaissance(v); clearError("dateNaissance"); updateQuery({ dateNaissance: v }); }}
-              placeholder="__/__/____"
-              theme="light"
-              error={!!errors.dateNaissance}
-              className="h-[50px] bg-white border-gray-200 text-[var(--color-text)] hover:bg-gray-50"
-            />
-          </div>
-          {errors.dateNaissance && <FieldError errors={[{ message: errors.dateNaissance }]} className="text-[#F2693D]" />}
+          {errors.produits && <FieldError errors={[{ message: errors.produits }]} className="text-[#F2693D]" />}
         </Field>
 
       </div>

@@ -100,7 +100,11 @@ function FieldLabel({ className, ...props }) {
       className={cn(
         "group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50",
         "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border [&>*]:data-[slot=field]:p-4",
-        "has-data-[state=checked]:border-primary has-data-[state=checked]:bg-primary/5",
+        // An opaque near-white tint, not a translucent one — a translucent
+        // bg reads fine over a white page but disappears wherever a card
+        // like this sits on a solid colored section (e.g. GarageIdentityForm's
+        // brand-blue background).
+        "has-data-[state=checked]:border-[var(--color-brand)] has-data-[state=checked]:bg-[color-mix(in_srgb,var(--color-brand)_8%,white)]",
         className
       )}
       {...props}

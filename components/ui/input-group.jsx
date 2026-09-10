@@ -29,7 +29,7 @@ const inputGroupAddonVariants = cva(
     variants: {
       align: {
         "inline-start": "order-first pl-3 has-[>button]:ml-[-0.45rem]",
-        "inline-end": "order-last pr-3 has-[>button]:mr-[-0.45rem]",
+        "inline-end": "order-last ml-auto pr-3 has-[>button]:mr-[-0.45rem]",
       },
     },
     defaultVariants: { align: "inline-start" },

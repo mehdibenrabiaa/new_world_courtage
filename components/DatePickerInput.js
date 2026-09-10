@@ -141,9 +141,12 @@ export function DatePickerInput({
           placeholder={placeholder}
           onChange={handleTextChange}
           onKeyDown={handleKeyDown}
-          className={cn(isLight || error ? "text-[var(--color-text)] placeholder:text-gray-400" : "text-white placeholder:text-white/40")}
+          className={cn(
+            "w-full flex-none pr-11",
+            isLight || error ? "text-[var(--color-text)] placeholder:text-gray-400" : "text-white placeholder:text-white/40"
+          )}
         />
-        <InputGroupAddon align="inline-end">
+        <InputGroupAddon align="inline-end" className="absolute inset-y-0 right-0 h-full">
           <PopoverTrigger asChild>
             <InputGroupButton
               id={id ? `${id}-trigger` : undefined}

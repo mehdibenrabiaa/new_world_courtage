@@ -70,9 +70,6 @@ const PREFILL_KEYS = {
   name: "representant_legal",
   phone: "mobile",
   email: "email_principal",
-  siret: "siret",
-  communeNaissance: "commune_naissance",
-  dateNaissance: "date_naissance",
 };
 
 function buildInitialAnswers(steps, query) {
@@ -82,6 +79,13 @@ function buildInitialAnswers(steps, query) {
     if (query[queryParam] && byKey[catalogKey]) {
       answers[byKey[catalogKey].id] = query[queryParam];
     }
+  }
+  // "produits_interesses" is the gate's own checkbox question (see
+  // GarageIdentityForm's PRODUCT_OPTIONS) — answered there instead of on its
+  // own gate screen, so it needs an array value rather than the scalar
+  // strings above, and it arrives as a comma-joined list in the query.
+  if (query.produits && byKey.produits_interesses) {
+    answers[byKey.produits_interesses.id] = query.produits.split(",");
   }
   return answers;
 }

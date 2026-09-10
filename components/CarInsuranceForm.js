@@ -430,7 +430,12 @@ function groupFieldsByProduct(fields, selectedProducts) {
   const generic = fields.filter(f => !f.products || f.products.length === 0);
   const claimed = new Set();
   const groups = [];
-  for (const product of selectedProducts || []) {
+  // No real gate answer to order by (see the selectedProducts fallback to
+  // null above) — fall back to every product actually referenced by these
+  // fields, in first-appearance order, so a product-tagged field still
+  // renders somewhere instead of being silently dropped.
+  const products = selectedProducts || [...new Set(fields.flatMap(f => f.products || []))];
+  for (const product of products) {
     const productFields = fields.filter(f => f.products?.includes(product) && !claimed.has(f.id));
     productFields.forEach(f => claimed.add(f.id));
     if (productFields.length > 0) groups.push({ product, fields: productFields });
@@ -448,7 +453,8 @@ function groupFieldsByEyebrow(fields) {
   for (const f of fields) {
     const key = f.eyebrow || null;
     const last = runs[runs.length - 1];
-    if (last && last.eyebrow === key) last.fields.push(f);
+    const belongsToLastRun = f.parentKey && last?.fields.some(field => field.key === f.parentKey);
+    if (belongsToLastRun || (last && last.eyebrow === key)) last.fields.push(f);
     else runs.push({ eyebrow: key, fields: [f] });
   }
   return runs;
@@ -527,7 +533,8 @@ function clearStoredProgress(key) {
 function isWideField(step) {
   if (step.cols === 2) return true;
   if (step.cols === 1) return false;
-  if (step.key === "flotte_immatriculations" || step.key === "w_garage_vehicules" || step.key === "pct_detention_capital") return true;
+  if (step.key === "negociant_type_bien") return false;
+  if (step.key === "w_garage_vehicules" || step.key === "flotte_immatriculations" || step.key === "pct_detention_capital") return true;
   if (step.type === "radio" || step.type === "checkbox") return true;
   if (step.type === "input" && step.inputType === "textarea") return true;
   return false;
@@ -549,7 +556,7 @@ function packFieldsAvoidingGaps(fields) {
     const field = remaining.shift();
     const wide = isWideField(field);
 
-    if (wide && awaitingPartner) {
+    if (wide && awaitingPartner && field.type !== "checkbox") {
       const idx = remaining.findIndex(f => !isWideField(f) && satisfied(f));
       if (idx !== -1) {
         const filler = remaining.splice(idx, 1)[0];
@@ -565,6 +572,10 @@ function packFieldsAvoidingGaps(fields) {
   }
 
   return result;
+}
+
+function isEmbeddedParentField(step) {
+  return step.key === "w_garage_nombre_vehicules" || step.key === "flotte_nombre_vehicules";
 }
 
 // ── Multi-associate capital % field ──────────────────────────────────────────
@@ -644,21 +655,13 @@ function AssocieCapitalField({ s, answer, setAnswer, theme }) {
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Date de naissance</label>
-              <Input
-                type="date"
+              <DatePickerInput
                 value={v.naissance}
-                onChange={e => handleChange(i, "naissance", e.target.value)}
-                className="md:hidden bg-white h-[50px]"
+                onChange={val => handleChange(i, "naissance", val)}
+                placeholder="__/__/____"
+                theme={theme}
+                className="bg-white h-[50px] w-full"
               />
-              <div className="hidden md:block w-full">
-                <DatePickerInput
-                  value={v.naissance}
-                  onChange={val => handleChange(i, "naissance", val)}
-                  placeholder="__/__/____"
-                  theme={theme}
-                  className="bg-white h-[50px] w-full"
-                />
-              </div>
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Commune de naissance</label>
@@ -681,7 +684,7 @@ function AssocieCapitalField({ s, answer, setAnswer, theme }) {
 // of fields (véhicule, immatriculation, mode d'achat, usage) per vehicle,
 // with the number of groups driven by the "Nombre de véhicules dans la
 // flotte" question elsewhere in the same section.
-function FlotteVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
+function FlotteVehiculesField({ s, answer, setAnswer, wizardSteps, answers, errors = {} }) {
   const countField = wizardSteps.find(f => f.key === "flotte_nombre_vehicules");
   const rawCount = countField ? answers[countField.id] : "";
   const count = Math.max(0, Math.min(50, parseInt(rawCount, 10) || 0));
@@ -694,12 +697,34 @@ function FlotteVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
     setAnswer(s.id, next);
   }
 
+  const countEditor = countField && (
+    <div id={`field-card-${countField.id}`} className="flex w-full flex-col gap-2 sm:w-[calc(50%-0.75rem)]">
+      <label htmlFor={`field-${countField.id}`} className="text-[16px] cursor-pointer block text-[var(--color-text)] min-h-11">
+        {countField.question}
+        {!countField.optional && <span className="ml-0.5">*</span>}
+      </label>
+      <Input id={`field-${countField.id}`} type="number" min={0} inputMode="decimal" value={rawCount}
+        onChange={e => setAnswer(countField.id, e.target.value)}
+        className={`bg-white h-[50px] ${errors[countField.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(242,105,61,0.15)]" : ""}`} />
+      {errors[countField.id] && <p className="text-xs text-[var(--color-error)]">{errors[countField.id]}</p>}
+    </div>
+  );
+  const detailsHeading = <p className="text-[16px] text-[var(--color-text)]">{s.question}</p>;
+
   if (count === 0) {
-    return <p className="text-sm text-gray-400">Renseignez d'abord le nombre de véhicules dans la flotte ci-dessus.</p>;
+    return (
+      <div className="flex flex-col gap-4">
+        {countEditor}
+        {detailsHeading}
+        <p className="text-sm text-gray-400">Renseignez le nombre de véhicules pour ajouter les détails.</p>
+      </div>
+    );
   }
 
   return (
     <div className="flex flex-col gap-6">
+      {countEditor}
+      {detailsHeading}
       {rows.map((row, i) => (
         <div key={i} className={`flex flex-col gap-3 pl-8 ${i > 0 ? "pt-6 border-t border-gray-200" : ""}`}>
           <span className="inline-flex w-fit items-center gap-2 rounded-md bg-[var(--color-brand)]/10 px-3 py-1 text-xs font-bold tracking-wide text-[var(--color-brand)] uppercase">
@@ -712,7 +737,7 @@ function FlotteVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
                 value={row.vehicule}
                 onChange={e => updateRow(i, "vehicule", e.target.value)}
                 placeholder="Ex : Renault Trafic"
-                className="bg-white h-[46px]"
+                className="bg-white h-[50px]"
               />
             </div>
             <div className="flex flex-col gap-1">
@@ -721,13 +746,13 @@ function FlotteVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
                 value={row.immatriculation}
                 onChange={e => updateRow(i, "immatriculation", e.target.value.toUpperCase())}
                 placeholder="Ex : AB-123-CD"
-                className="bg-white h-[46px]"
+                className="bg-white h-[50px]"
               />
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Mode d'achat</label>
               <Select value={row.modeAchat} onValueChange={v => updateRow(i, "modeAchat", v)}>
-                <SelectTrigger className="w-full bg-white h-[46px]">
+                <SelectTrigger className="w-full bg-white !h-[50px] data-[size=default]:!h-[50px]">
                   <SelectValue placeholder="Sélectionnez une option" />
                 </SelectTrigger>
                 <SelectContent>
@@ -740,7 +765,7 @@ function FlotteVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Usage</label>
               <Select value={row.usage} onValueChange={v => updateRow(i, "usage", v)}>
-                <SelectTrigger className="w-full bg-white h-[46px]">
+                <SelectTrigger className="w-full bg-white !h-[50px] data-[size=default]:!h-[50px]">
                   <SelectValue placeholder="Sélectionnez une option" />
                 </SelectTrigger>
                 <SelectContent>
@@ -773,7 +798,7 @@ const W_GARAGE_USAGE_OPTIONS = [
 // Same repeat-per-count pattern as FlotteVehiculesField above, driven by
 // "w_garage_nombre_vehicules" instead of "flotte_nombre_vehicules" — one
 // Mode d'achat + Usage pair per W Garage vehicle.
-function WGarageVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
+function WGarageVehiculesField({ s, answer, setAnswer, wizardSteps, answers, errors = {}, labelClass }) {
   const countField = wizardSteps.find(f => f.key === "w_garage_nombre_vehicules");
   const rawCount = countField ? answers[countField.id] : "";
   const count = Math.max(0, Math.min(50, parseInt(rawCount, 10) || 0));
@@ -786,12 +811,34 @@ function WGarageVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
     setAnswer(s.id, next);
   }
 
+  const countEditor = countField && (
+    <div id={`field-card-${countField.id}`} className="flex w-full flex-col gap-2 sm:w-[calc(50%-0.75rem)]">
+      <label htmlFor={`field-${countField.id}`} className={`text-[16px] cursor-pointer block min-h-11 ${labelClass}`}>
+        {countField.question}
+        {!countField.optional && <span className="ml-0.5">*</span>}
+      </label>
+      <Input id={`field-${countField.id}`} type="number" min={0} inputMode="decimal" value={rawCount}
+        onChange={e => setAnswer(countField.id, e.target.value)}
+        className={`bg-white h-[50px] ${errors[countField.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(242,105,61,0.15)]" : ""}`} />
+      {errors[countField.id] && <p className="text-xs text-[var(--color-error)]">{errors[countField.id]}</p>}
+    </div>
+  );
+  const detailsHeading = <p className="text-[16px] text-[var(--color-text)]">{s.question}</p>;
+
   if (count === 0) {
-    return <p className="text-sm text-gray-400">Renseignez d'abord le nombre de véhicules W Garage ci-dessus.</p>;
+    return (
+      <div className="flex flex-col gap-4">
+        {countEditor}
+        {detailsHeading}
+        <p className="text-sm text-gray-400">Renseignez le nombre de véhicules pour ajouter les détails.</p>
+      </div>
+    );
   }
 
   return (
     <div className="flex flex-col gap-6">
+      {countEditor}
+      {detailsHeading}
       {rows.map((row, i) => (
         <div key={i} className={`flex flex-col gap-3 pl-8 ${i > 0 ? "pt-6 border-t border-gray-200" : ""}`}>
           <span className="inline-flex w-fit items-center gap-2 rounded-md bg-[var(--color-brand)]/10 px-3 py-1 text-xs font-bold tracking-wide text-[var(--color-brand)] uppercase">
@@ -801,7 +848,7 @@ function WGarageVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Mode d'achat</label>
               <Select value={row.modeAchat} onValueChange={v => updateRow(i, "modeAchat", v)}>
-                <SelectTrigger className="w-full bg-white h-[46px]">
+                <SelectTrigger className="w-full bg-white !h-[50px] data-[size=default]:!h-[50px]">
                   <SelectValue placeholder="Sélectionnez une option" />
                 </SelectTrigger>
                 <SelectContent>
@@ -814,7 +861,7 @@ function WGarageVehiculesField({ s, answer, setAnswer, wizardSteps, answers }) {
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Usage</label>
               <Select value={row.usage} onValueChange={v => updateRow(i, "usage", v)}>
-                <SelectTrigger className="w-full bg-white h-[46px]">
+                <SelectTrigger className="w-full bg-white !h-[50px] data-[size=default]:!h-[50px]">
                   <SelectValue placeholder="Sélectionnez une option" />
                 </SelectTrigger>
                 <SelectContent>
@@ -838,6 +885,12 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   // identity form that collected name/phone/email/etc.) shouldn't be asked
   // again — mark them as always-skipped so they're filtered out of their
   // section's field grid, while their value still counts toward submission.
+  // Gate fields (e.g. GarageIdentityForm's product picker) are excluded from
+  // this: they never render in a section grid anyway (wizardSteps already
+  // drops every `gate` field below), but `alwaysSkip` is also what
+  // isStepSkipped uses to compute gateFields — tagging the gate field itself
+  // would wipe out productsGateField/selectedProducts and un-gate every
+  // product-specific question instead of narrowing them down.
   const steps = useMemo(() => {
     const prefilledIds = new Set(
       Object.entries(initialAnswers)
@@ -845,7 +898,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
         .map(([id]) => Number(id))
     );
     if (prefilledIds.size === 0) return rawSteps;
-    return rawSteps.map(s => (prefilledIds.has(s.id) ? { ...s, alwaysSkip: true } : s));
+    return rawSteps.map(s => (prefilledIds.has(s.id) && !s.gate ? { ...s, alwaysSkip: true } : s));
   }, [rawSteps, initialAnswers]);
 
   const [direction, setDirection] = useState("next");
@@ -877,9 +930,15 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   // The gate's own answer (which product(s) the prospect picked) — used to
   // filter which of the rest of the questions apply to them.
   const productsGateField = gateFields.find(s => s.type === "checkbox" || s.type === "radio");
-  const selectedProducts = productsGateField
-    ? (Array.isArray(answers[productsGateField.id]) ? answers[productsGateField.id] : [answers[productsGateField.id]].filter(Boolean))
-    : null;
+  const rawSelectedProducts = productsGateField ? answers[productsGateField.id] : undefined;
+  const selectedProductsList = Array.isArray(rawSelectedProducts) ? rawSelectedProducts : [rawSelectedProducts].filter(Boolean);
+  // An empty list here only happens if the gate was bypassed without ever
+  // being answered (e.g. GarageIdentityForm's redirect landing on a step
+  // without its "produits" param) — treat that the same as "no gate at all"
+  // (null) so every product-gated question stays visible instead of every
+  // one of them silently disappearing, which is what `[].includes(p)` being
+  // always false would otherwise do to isStepSkipped.
+  const selectedProducts = selectedProductsList.length > 0 ? selectedProductsList : null;
 
   // Sections, in first-appearance order — excluding any section that ends up
   // with no visible fields for the selected products (so its tab never
@@ -1059,10 +1118,12 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     const answer = answers[s.id] ?? (s.type === "checkbox" ? [] : "");
     const dynamicOpts = s.optionsFn ? s.optionsFn(answers) : { options: s.options, values: s.values };
     const wide = isWideField(s);
+    const shouldAnimateReveal = s.parentKey && s.rules?.length;
+    const conditionalStyle = shouldAnimateReveal ? { animationDelay: `${Math.min(index, 4) * 55}ms` } : undefined;
 
     return (
-      <div key={s.id} id={`field-card-${s.id}`} className={`flex flex-col gap-2 h-full ${wide ? "sm:col-span-2" : ""}`}>
-              {(s.type === "radio" || s.type === "checkbox") ? (
+      <div key={s.id} id={`field-card-${s.id}`} className={`flex flex-col gap-2 h-full ${wide ? "sm:col-span-2" : ""} ${shouldAnimateReveal ? "conditional-field-reveal" : ""}`} style={conditionalStyle}>
+              {!['w_garage_vehicules', 'flotte_immatriculations'].includes(s.key) && ((s.type === "radio" || s.type === "checkbox") ? (
                 <p className={`text-[16px] ${t.label} ${!wide ? "min-h-11" : ""}`}>
                   {s.question}
                   {!s.optional && <span className="ml-0.5">*</span>}
@@ -1073,7 +1134,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                   {s.key === "pct_detention_capital" && <span className="font-normal text-gray-400"> (pour chaque associé)</span>}
                   {!s.optional && <span className="ml-0.5">*</span>}
                 </label>
-              )}
+              ))}
               {s.hint && <p className={`text-xs -mt-1 ${t.hint}`}>{s.hint}</p>}
 
               {/* Radio — card style */}
@@ -1212,25 +1273,15 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                   "Date de naissance" field), custom popover calendar on
                   desktop where there's no native picker UI to fall back on. */}
               {s.type === "input" && s.inputType === "date" && (
-                <>
-                  <Input
-                    id={`field-${s.id}`}
-                    type="date"
-                    value={answer}
-                    onChange={e => setAnswer(s.id, e.target.value)}
-                    className={`md:hidden bg-white h-[50px] ${errors[s.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(242,105,61,0.15)]" : ""}`}
-                  />
-                  <div className="hidden md:block w-full">
-                    <DatePickerInput
-                      value={answer}
-                      onChange={val => setAnswer(s.id, val)}
-                      placeholder={s.placeholder || "__/__/____"}
-                      theme={theme}
-                      error={!!errors[s.id]}
-                      className="bg-white h-[50px] w-full"
-                    />
-                  </div>
-                </>
+                <DatePickerInput
+                  id={`field-${s.id}`}
+                  value={answer}
+                  onChange={val => setAnswer(s.id, val)}
+                  placeholder={s.placeholder || "__/__/____"}
+                  theme={theme}
+                  error={!!errors[s.id]}
+                  className="bg-white h-[50px] w-full"
+                />
               )}
 
               {/* Month + year dropdowns */}
@@ -1275,12 +1326,12 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
 
               {/* One repeating field group per vehicle in the fleet */}
               {s.key === "flotte_immatriculations" && (
-                <FlotteVehiculesField s={s} answer={answer} setAnswer={setAnswer} wizardSteps={wizardSteps} answers={answers} />
+                <FlotteVehiculesField s={s} answer={answer} setAnswer={setAnswer} wizardSteps={wizardSteps} answers={answers} errors={errors} />
               )}
 
               {/* One repeating Mode d'achat / Usage pair per W Garage vehicle */}
               {s.key === "w_garage_vehicules" && (
-                <WGarageVehiculesField s={s} answer={answer} setAnswer={setAnswer} wizardSteps={wizardSteps} answers={answers} />
+                <WGarageVehiculesField s={s} answer={answer} setAnswer={setAnswer} wizardSteps={wizardSteps} answers={answers} errors={errors} labelClass={t.label} />
               )}
 
               {/* Text / number / email / tel */}
@@ -1438,7 +1489,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                     </div>
                   )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10">
-                    {packFieldsAvoidingGaps(run.fields).map((s, i) => renderFieldCard(s, { index: i }))}
+                    {packFieldsAvoidingGaps(run.fields.filter(s => !isEmbeddedParentField(s))).map((s, i) => renderFieldCard(s, { index: i }))}
                   </div>
                 </div>
               ))}
