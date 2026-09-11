@@ -232,6 +232,19 @@
 .slide-in-left  { animation: slide-in-from-left  0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) both; }
 
 @media (max-width: 767px) {
+  [data-date-picker] {
+    height: 3.5rem !important;
+  }
+
+  [data-date-picker] [data-slot="input-group-control"] {
+    font-size: 1rem;
+  }
+
+  [data-date-picker] [data-slot="input-group-addon"] button {
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
   input[type="date"] {
     box-sizing: border-box;
     width: 100%;

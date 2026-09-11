@@ -126,6 +126,7 @@ export function DatePickerInput({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <InputGroup
+        data-date-picker
         className={cn(
           error
             ? "border-[var(--color-error)] has-focus-within:border-[var(--color-error)] has-focus-within:ring-[rgba(242,105,61,0.15)]"
