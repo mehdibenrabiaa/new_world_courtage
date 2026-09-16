@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { MonthYearInput } from "@/components/MonthYearInput";
-import { ChevronLeft, ChevronRight, CheckCircle2, Phone, Mail, CalendarDays, Car, User, ListChecks, Shield, FileText, Circle, AlertTriangle, Wallet, Paperclip, Loader2, Upload, FileCheck2, FileCodeIcon, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Phone, Mail, CalendarDays, Car, User, ListChecks, Shield, FileText, Circle, AlertTriangle, Wallet, Paperclip, Loader2, Upload, FileCheck2, FileCodeIcon, Plus, Trash2 } from "lucide-react";
 import { fetchAvailability, bookConsultation, uploadLeadDocument } from "@/lib/api";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -95,6 +95,7 @@ const SECTION_ICONS = {
   "Antécédents": ListChecks,
   "Flotte auto propre": Car,
   "Tarification": Wallet,
+  "Finalisation": CalendarDays,
 };
 
 const TOKENS = {
@@ -186,6 +187,8 @@ function BookingPanel({ t, leadId, leadUploadToken, bookingDocs = [] }) {
   const [bookError, setBookError] = useState(null);
   const [confirmedBooking, setConfirmedBooking] = useState(null);
   const [documentUploads, setDocumentUploads] = useState({});
+  const [uploadingFiles, setUploadingFiles] = useState([]);
+  const hasUploadedDocs = (documentUploads.documents?.length ?? 0) > 0;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -231,21 +234,43 @@ function BookingPanel({ t, leadId, leadUploadToken, bookingDocs = [] }) {
 
   function handleDocumentUpload(files) {
     if (!files.length || !leadId || !leadUploadToken) return;
-    setDocumentUploads({ status: "uploading", names: [] });
+    const batch = files.map((file, i) => ({
+      key: `${file.name}-${file.size}-${Date.now()}-${i}`,
+      name: file.name,
+      progress: 0,
+    }));
+    setUploadingFiles((prev) => [...prev, ...batch]);
+    setDocumentUploads((prev) => ({ ...prev, status: "uploading" }));
+
+    // Each file gets its own progress bar (see `uploadingFiles` below), and
+    // one file failing doesn't drop the others — each upload catches its
+    // own error so Promise.all always resolves with a per-file result.
     Promise.all(
-      files.map((file) => uploadLeadDocument({
-        leadId,
-        uploadToken: leadUploadToken,
-        documentLabel: "Documents demandés",
-        file,
-      }))
-    )
-      .then((documents) => setDocumentUploads({ status: "uploaded", documents }))
-      .catch((error) => setDocumentUploads({
-        status: "error",
-        message: error.message || "L'envoi a échoué.",
-        documents: [],
+      files.map((file, i) =>
+        uploadLeadDocument({
+          leadId,
+          uploadToken: leadUploadToken,
+          documentLabel: "Documents demandés",
+          file,
+          onProgress: (fraction) => {
+            setUploadingFiles((prev) => prev.map((f) => (f.key === batch[i].key ? { ...f, progress: fraction } : f)));
+          },
+        })
+          .then((document) => ({ ok: true, document }))
+          .catch((error) => ({ ok: false, error }))
+      )
+    ).then((results) => {
+      const succeeded = results.filter((r) => r.ok).map((r) => r.document);
+      const failed = results.filter((r) => !r.ok);
+      setUploadingFiles((prev) => prev.filter((f) => !batch.some((b) => b.key === f.key)));
+      // Appended to whatever was already uploaded — each click adds a new
+      // batch on top of the previous one instead of replacing it.
+      setDocumentUploads((prev) => ({
+        status: failed.length > 0 ? "error" : "uploaded",
+        message: failed[0]?.error?.message || "L'envoi a échoué.",
+        documents: [...(prev.documents || []), ...succeeded],
       }));
+    });
   }
 
   if (confirmedBooking) {
@@ -272,10 +297,12 @@ function BookingPanel({ t, leadId, leadUploadToken, bookingDocs = [] }) {
   return (
     <div className="flex flex-col gap-8">
 
-      {/* Header */}
+      {/* Header — no "success" framing here on purpose: the one-and-only
+          confirmation is "Rendez-vous confirmé !" below, once they've
+          actually picked a slot, so it isn't shown twice. */}
       <div className="flex flex-col items-center gap-2 text-center">
-        <CheckCircle2 size={40} className="text-green-500" />
-        <h3 className={`text-xl font-semibold ${t.successHeading}`}>Demande envoyée !</h3>
+        <CalendarDays size={40} className="text-[var(--color-brand)]" />
+        <h3 className={`text-xl font-semibold ${t.successHeading}`}>Choisissez un créneau</h3>
         <p className={`text-base max-w-sm ${t.successBody}`}>
           Un de nos experts va vous contacter dans les plus brefs délais. Pour être sûr de vous
           joindre au bon moment, proposez-nous un créneau ci-dessous.
@@ -304,8 +331,10 @@ function BookingPanel({ t, leadId, leadUploadToken, bookingDocs = [] }) {
               ))}
             </ul>
             <label className={`mt-4 flex h-11 items-center justify-center gap-2 rounded-md border border-[var(--color-brand)] text-sm font-semibold text-[var(--color-brand)] transition-colors ${leadId && leadUploadToken && documentUploads.status !== "uploading" ? "cursor-pointer hover:bg-[var(--color-brand)]/5" : "cursor-not-allowed opacity-50"}`}>
-              {documentUploads.status === "uploading" ? <Loader2 size={16} className="animate-spin" /> : documentUploads.status === "uploaded" ? <FileCheck2 size={16} /> : <Upload size={16} />}
-              {documentUploads.status === "uploading" ? "Envoi..." : documentUploads.status === "uploaded" ? "Documents envoyés" : "Ajouter des documents"}
+              {documentUploads.status === "uploading" ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
+              {documentUploads.status === "uploading"
+                ? "Envoi..."
+                : hasUploadedDocs ? "Ajouter d'autres documents" : "Ajouter des documents"}
               <input
                 type="file"
                 className="sr-only"
@@ -319,20 +348,44 @@ function BookingPanel({ t, leadId, leadUploadToken, bookingDocs = [] }) {
                 }}
               />
             </label>
-            {documentUploads.status === "uploaded" && (
-              <AttachmentGroup className="mt-3">
-                {documentUploads.documents.map((document) => (
-                  <Attachment key={document.id} className="w-full">
-                    <AttachmentMedia><FileCodeIcon /></AttachmentMedia>
-                    <AttachmentContent>
-                      <AttachmentTitle>{document.original_filename}</AttachmentTitle>
-                      <AttachmentDescription>
-                        {(document.content_type || "Fichier").replace("application/", "").toUpperCase()} · {Math.ceil(document.size_bytes / 1024)} KB
-                      </AttachmentDescription>
-                    </AttachmentContent>
-                  </Attachment>
+            {uploadingFiles.length > 0 && (
+              <div className="mt-3 flex flex-col gap-2">
+                {uploadingFiles.map((f) => (
+                  <div key={f.key} className="flex flex-col gap-1">
+                    <div className="flex items-center justify-between text-xs text-gray-500">
+                      <span className="truncate pr-2">{f.name}</span>
+                      <span className="shrink-0">{Math.round(f.progress * 100)}%</span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-gray-100">
+                      <div
+                        className="h-full rounded-full bg-[var(--color-brand)] transition-[width]"
+                        style={{ width: `${Math.round(f.progress * 100)}%` }}
+                      />
+                    </div>
+                  </div>
                 ))}
-              </AttachmentGroup>
+              </div>
+            )}
+            {hasUploadedDocs && (
+              <>
+                <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-green-600">
+                  <FileCheck2 size={14} />
+                  {documentUploads.documents.length} document{documentUploads.documents.length > 1 ? "s" : ""} envoyé{documentUploads.documents.length > 1 ? "s" : ""}
+                </p>
+                <AttachmentGroup className="mt-3">
+                  {documentUploads.documents.map((document) => (
+                    <Attachment key={document.id} className="w-full">
+                      <AttachmentMedia><FileCodeIcon /></AttachmentMedia>
+                      <AttachmentContent>
+                        <AttachmentTitle>{document.original_filename}</AttachmentTitle>
+                        <AttachmentDescription>
+                          {(document.content_type || "Fichier").replace("application/", "").toUpperCase()} · {Math.ceil(document.size_bytes / 1024)} KB
+                        </AttachmentDescription>
+                      </AttachmentContent>
+                    </Attachment>
+                  ))}
+                </AttachmentGroup>
+              </>
             )}
             {documentUploads.status === "error" && <p className="mt-3 text-xs text-[var(--color-error)]">{documentUploads.message}</p>}
           </div>
@@ -539,9 +592,13 @@ function formatAnswerValue(step, value) {
 // with zero visible fields (e.g. every question in it was URL-prefilled or
 // none of it applies to the selected products), and returns the first
 // visible section index (or an out-of-bounds index).
-function findVisibleSectionIndex(sections, steps, fromIdx, dir, answers, selectedProducts) {
+function findVisibleSectionIndex(sections, steps, fromIdx, dir, answers, selectedProducts, pinnedSection) {
   let i = fromIdx;
-  while (i >= 0 && i < sections.length && sectionFields(steps, sections[i], answers, selectedProducts).length === 0) {
+  while (
+    i >= 0 && i < sections.length &&
+    sections[i] !== pinnedSection &&
+    sectionFields(steps, sections[i], answers, selectedProducts).length === 0
+  ) {
     i += dir;
   }
   return i;
@@ -969,7 +1026,7 @@ function RepeatingTableField({ s, answer, setAnswer, theme, config, rowErrors })
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, initialAnswers = {}, theme = "dark", onProgress, onSubmit, footerContent, floatingButtons = false, storageKey, bookingDocs }) {
+export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, initialAnswers = {}, theme = "dark", onProgress, onSubmit, footerContent, floatingButtons = false, storageKey, bookingDocs, finalStepLabel }) {
   // Questions already answered via URL params (e.g. redirected here from an
   // identity form that collected name/phone/email/etc.) shouldn't be asked
   // again — mark them as always-skipped so they're filtered out of their
@@ -1040,6 +1097,11 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   // shows at all, rather than being an unreachable dead end).
   const sections = [...new Set(wizardSteps.map(s => s.section).filter(Boolean))]
     .filter(sec => sectionFields(wizardSteps, sec, answers, selectedProducts).length > 0);
+  // "Finalisation" (submit + booking/upload) is a pseudo-section: it has no
+  // catalog questions of its own, so it's appended unconditionally rather
+  // than going through the sectionFields()>0 filter above, and
+  // findVisibleSectionIndex is told never to auto-skip past it.
+  if (finalStepLabel) sections.push(finalStepLabel);
   const currentSection = sections[stepIdx];
   const visibleFields = sectionFields(wizardSteps, currentSection, answers, selectedProducts);
   const prefilledFields = prefilledSectionFields(wizardSteps, currentSection);
@@ -1048,8 +1110,26 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     const idx = productsGateField?.values?.indexOf(value) ?? -1;
     return idx >= 0 ? productsGateField.options[idx] : value;
   };
-  const isLastStep = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts) >= sections.length;
+  const isLastStep = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts, finalStepLabel) >= sections.length;
   const progress = Math.round(((stepIdx + 1) / sections.length) * 100);
+
+  // Reaching the Finalisation tab *is* the submit action — the lead is
+  // created silently right away so the booking calendar and document
+  // upload below are usable on this same page, with no separate "send"
+  // click and no second screen.
+  useEffect(() => {
+    if (!finalStepLabel || currentSection !== finalStepLabel || submitted) return;
+    clearStoredProgress(storageKey);
+    setSubmitted(true);
+    const result = onSubmit?.(answers);
+    if (result && typeof result.then === "function") {
+      result.then((lead) => {
+        if (lead?.id == null) return;
+        setCreatedLeadId(lead.id);
+        setCreatedLeadUploadToken(lead.document_upload_token || null);
+      }).catch(() => {});
+    }
+  }, [currentSection, finalStepLabel, submitted]);
 
   useEffect(() => {
     onProgress?.(progress);
@@ -1202,7 +1282,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     }
 
     setErrors({});
-    const next = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts);
+    const next = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts, finalStepLabel);
     if (next >= sections.length) {
       clearStoredProgress(storageKey);
       setSubmitted(true);
@@ -1226,7 +1306,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   // follow-up press of the actual browser Back button continues stepping
   // back instead of bouncing forward again through an entry we just added.
   function handleBack() {
-    const prev = findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts);
+    const prev = findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts, finalStepLabel);
     if (prev >= 0 || gateFields.length > 0) {
       setErrors({});
       router.back();
@@ -1497,69 +1577,66 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     );
   }
 
-  // The booking panel replaces the whole wizard (tabs included) once
-  // submitted — it isn't one more tab in the section bar, just its own
-  // dedicated screen.
-  if (submitted) {
-    return <BookingPanel t={t} leadId={createdLeadId} leadUploadToken={createdLeadUploadToken} bookingDocs={bookingDocs} />;
-  }
+  // Section tabs — full icon+label tabs on tablet/desktop; on mobile,
+  // icon-only tabs (so all sections always fit in one row with no
+  // side-scrolling) plus a caption naming the current section. The last
+  // section (e.g. Finalisation) stays visibly active as the current step
+  // throughout booking instead of the tabs just disappearing.
+  const sectionTabsBar = sections.length > 1 && (
+    <>
+      <div
+        className="hidden sm:grid gap-0.5 sticky top-16 z-30 bg-white pt-3 pb-3"
+        style={{ gridTemplateColumns: `repeat(${sections.length}, minmax(0, 1fr))` }}
+      >
+        {sections.map((section, i) => {
+          const Icon = SECTION_ICONS[section] || Circle;
+          const isActive = i === stepIdx;
+          return (
+            <div
+              key={section}
+              className={`flex items-center justify-center gap-1 px-1 lg:px-3 py-3.5 text-[11px] font-semibold uppercase tracking-normal transition-colors ${
+                isActive ? "bg-[var(--color-brand)] text-white" : "bg-gray-200 text-gray-500"
+              }`}
+            >
+              <Icon size={16} className="shrink-0" />
+              <span className="text-center leading-snug whitespace-nowrap">{section}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="sm:hidden flex flex-col gap-2 sticky top-16 z-30 bg-white pt-3 pb-3">
+        <div
+          className="grid gap-0.5"
+          style={{ gridTemplateColumns: `repeat(${sections.length}, minmax(0, 1fr))` }}
+        >
+          {sections.map((section, i) => {
+            const Icon = SECTION_ICONS[section] || Circle;
+            const isActive = i === stepIdx;
+            return (
+              <div
+                key={section}
+                className={`flex items-center justify-center py-3 transition-colors ${
+                  isActive ? "bg-[var(--color-brand)] text-white" : "bg-gray-200 text-gray-500"
+                }`}
+              >
+                <Icon size={18} />
+              </div>
+            );
+          })}
+        </div>
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 text-center">
+          Étape {stepIdx + 1}/{sections.length} · {currentSection}
+        </p>
+      </div>
+    </>
+  );
 
   return (
     <>
     <div className="flex flex-col gap-10">
 
-      {/* Section tabs — full icon+label tabs on tablet/desktop; on mobile,
-          icon-only tabs (so all sections always fit in one row with no
-          side-scrolling) plus a caption naming the current section. */}
-      {sections.length > 1 && (
-        <>
-          <div
-            className="hidden sm:grid gap-0.5 sticky top-16 z-30 bg-white pt-3 pb-3"
-            style={{ gridTemplateColumns: `repeat(${sections.length}, minmax(0, 1fr))` }}
-          >
-            {sections.map((section, i) => {
-              const Icon = SECTION_ICONS[section] || Circle;
-              const isActive = i === stepIdx;
-              return (
-                <div
-                  key={section}
-                  className={`flex items-center justify-center gap-1 px-1 lg:px-3 py-3.5 text-[11px] font-semibold uppercase tracking-normal transition-colors ${
-                    isActive ? "bg-[var(--color-brand)] text-white" : "bg-gray-200 text-gray-500"
-                  }`}
-                >
-                  <Icon size={16} className="shrink-0" />
-                  <span className="text-center leading-snug whitespace-nowrap">{section}</span>
-                </div>
-              );
-            })}
-          </div>
-
-          <div className="sm:hidden flex flex-col gap-2 sticky top-16 z-30 bg-white pt-3 pb-3">
-            <div
-              className="grid gap-0.5"
-              style={{ gridTemplateColumns: `repeat(${sections.length}, minmax(0, 1fr))` }}
-            >
-              {sections.map((section, i) => {
-                const Icon = SECTION_ICONS[section] || Circle;
-                const isActive = i === stepIdx;
-                return (
-                  <div
-                    key={section}
-                    className={`flex items-center justify-center py-3 transition-colors ${
-                      isActive ? "bg-[var(--color-brand)] text-white" : "bg-gray-200 text-gray-500"
-                    }`}
-                  >
-                    <Icon size={18} />
-                  </div>
-                );
-              })}
-            </div>
-            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 text-center">
-              Étape {stepIdx + 1}/{sections.length} · {currentSection}
-            </p>
-          </div>
-        </>
-      )}
+      {sectionTabsBar}
 
       {/* Already-captured answers (e.g. from an identity form redirect) —
           plain text recap, not editable fields, just so the user sees we
@@ -1585,44 +1662,52 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
           on (e.g. "Statut immobilier" needing "...dispose-t-il d'un local").
           Each block also stays scoped to its own group either way. */}
       <div key={currentSection} className={`flex flex-col gap-16 ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}>
-        {genericFields.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10 bg-gray-100 p-6">
-            {packFieldsAvoidingGaps(genericFields).map((s, i) => renderFieldCard(s, { index: i }))}
-          </div>
-        )}
-        {productGroups.map(({ product, fields }) => (
-          <div key={product} className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <span className="w-1.5 h-5 bg-[var(--color-brand)] shrink-0" />
-              <span className="text-base font-bold text-[var(--color-text)] whitespace-nowrap">{productLabel(product)}</span>
-              <span className="flex-1 h-px bg-gray-200" />
-            </div>
-            <div className="flex flex-col gap-6 bg-gray-100 p-6">
-              {groupFieldsByEyebrow(fields).map((run, ri) => (
-                <div key={ri} className="flex flex-col gap-6">
-                  {run.eyebrow && (
-                    <div className={`-mx-6 bg-[var(--color-brand)]/10 px-4 py-2.5 text-sm font-bold tracking-wide text-[var(--color-brand)] uppercase ${ri === 0 ? "-mt-6" : ""}`}>
-                      {run.eyebrow}
-                    </div>
-                  )}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10">
-                    {packFieldsAvoidingGaps(run.fields).map((s, i) => renderFieldCard(s, { index: i }))}
-                  </div>
+        {currentSection === finalStepLabel ? (
+          <BookingPanel t={t} leadId={createdLeadId} leadUploadToken={createdLeadUploadToken} bookingDocs={bookingDocs} />
+        ) : (
+          <>
+            {genericFields.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10 bg-gray-100 p-6">
+                {packFieldsAvoidingGaps(genericFields).map((s, i) => renderFieldCard(s, { index: i }))}
+              </div>
+            )}
+            {productGroups.map(({ product, fields }) => (
+              <div key={product} className="flex flex-col gap-4">
+                <div className="flex items-center gap-3">
+                  <span className="w-1.5 h-5 bg-[var(--color-brand)] shrink-0" />
+                  <span className="text-base font-bold text-[var(--color-text)] whitespace-nowrap">{productLabel(product)}</span>
+                  <span className="flex-1 h-px bg-gray-200" />
                 </div>
-              ))}
-            </div>
-          </div>
-        ))}
+                <div className="flex flex-col gap-6 bg-gray-100 p-6">
+                  {groupFieldsByEyebrow(fields).map((run, ri) => (
+                    <div key={ri} className="flex flex-col gap-6">
+                      {run.eyebrow && (
+                        <div className={`-mx-6 bg-[var(--color-brand)]/10 px-4 py-2.5 text-sm font-bold tracking-wide text-[var(--color-brand)] uppercase ${ri === 0 ? "-mt-6" : ""}`}>
+                          {run.eyebrow}
+                        </div>
+                      )}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10">
+                        {packFieldsAvoidingGaps(run.fields).map((s, i) => renderFieldCard(s, { index: i }))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </>
+        )}
       </div>
 
-      {/* Navigation */}
-      {(() => {
+      {/* Navigation — none on the Finalisation tab: landing there already
+          submits (see the effect above), so there's nothing left to
+          validate/advance and no "back" once the lead exists. */}
+      {currentSection !== finalStepLabel && (() => {
         const navButtons = (
           <ButtonGroup className="max-w-full">
             <Button
               variant="outline"
               onClick={handleBack}
-              disabled={findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts) < 0 && gateFields.length === 0}
+              disabled={findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts, finalStepLabel) < 0 && gateFields.length === 0}
               className="h-12 px-5 gap-1"
             >
               <ChevronLeft size={16} />

@@ -348,6 +348,7 @@ export default function GaragisteDevisPage() {
               storageKey="garagiste"
               bookingDocs={buildBookingDocs(steps)}
               floatingButtons
+              finalStepLabel="Finalisation"
             />
           )}
         </div>
