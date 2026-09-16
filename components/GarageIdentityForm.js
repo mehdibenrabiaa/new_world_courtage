@@ -29,7 +29,7 @@ const PRODUCT_OPTIONS = [
   {
     label: "Les Négociants",
     value: "negociants",
-    description: "Achat-revente de véhicules d'occasion.",
+    description: "Achat-revente de véhicules d'occasion et de leurs locaux professionnels.",
     Icon: Handshake,
   },
 ];
@@ -174,7 +174,7 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
           <FieldLabel className="flex w-auto! text-white text-[15px] font-semibold">
             Quelles assurances vous intéressent ? <span className="ml-0.5">*</span>
           </FieldLabel>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {PRODUCT_OPTIONS.map((opt) => {
               const isSelected = produits.includes(opt.value);
               return (
@@ -198,6 +198,7 @@ export default function GarageIdentityForm({ redirectTo = "/assurance-pro-auto/g
                     </FieldContent>
                     <Checkbox
                       id={`checkbox-produits-${opt.value}`}
+                      className="size-5"
                       checked={isSelected}
                       onCheckedChange={() => {
                         const next = isSelected ? produits.filter((v) => v !== opt.value) : [...produits, opt.value];

@@ -2,43 +2,62 @@ import { useEffect, useState } from "react";
 import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { Phone, ChevronRight, Mail, FileText, Camera, ClipboardCheck } from "lucide-react";
+import { Phone, ChevronRight, FileText, Camera, ClipboardCheck } from "lucide-react";
 import CarInsuranceForm from "@/components/CarInsuranceForm";
 import { Spinner } from "@/components/ui/spinner";
 import { fetchQuestionnaire, createLead } from "@/lib/api";
 
-// Mirrors AssocieCapitalField/FlotteVehiculesField's own option labels in
+// Mirrors AssocieCapitalField/RepeatingTableField's own option labels in
 // CarInsuranceForm.js, so the lead's submitted answer reads the same way the
-// form did — not the raw "comptant"/"mixte" values.
-const FLOTTE_MODE_LABELS = { comptant: "Comptant", credit: "Crédit", leasing: "Leasing" };
-const FLOTTE_USAGE_LABELS = { professionnel: "Professionnel", mixte: "Mixte (pro et personnel)" };
+// form did — not the raw "comptant"/"gerant" values.
 
-// "flotte_immatriculations" stores one object per vehicle (not a scalar or a
-// list of scalars like every other question), so it needs its own
+// Mirrors REPEATING_TABLE_FIELDS.garage_flotte_vehicules_table's select options.
+const FLOTTE_USAGE_LABELS = { courtoisie: "Courtoisie", location: "Location", societe: "Société", gerant: "Gérant" };
+const FLOTTE_MODE_ACHAT_LABELS = { comptant: "Comptant", credit_loa: "Crédit-LOA", lld: "LLD", autre: "Autre" };
+
+// "garage_flotte_vehicules_table" stores one object per vehicle (not a scalar
+// or a list of scalars like every other question), so it needs its own
 // stringification instead of falling into the generic values.map() below,
 // which would otherwise call .toString() on each row object. Stored as a
 // JSON array of {label, value} pairs (still just text in the LeadAnswer.value
 // column — no schema change) so the CRM can render each vehicle's fields as
 // their own labeled bullet instead of one flattened dash-joined line.
-function formatFlotteRow(row) {
+function formatFlotteVehiculeRow(row) {
   const fields = [];
-  if (row.vehicule) fields.push({ label: "Véhicule", value: row.vehicule });
   if (row.immatriculation) fields.push({ label: "Immatriculation", value: row.immatriculation });
-  if (row.modeAchat) fields.push({ label: "Mode d'achat", value: FLOTTE_MODE_LABELS[row.modeAchat] || row.modeAchat });
   if (row.usage) fields.push({ label: "Usage", value: FLOTTE_USAGE_LABELS[row.usage] || row.usage });
+  if (row.modeAchat) fields.push({ label: "Mode d'achat", value: FLOTTE_MODE_ACHAT_LABELS[row.modeAchat] || row.modeAchat });
   return fields;
 }
 
-// Mirrors WGarageVehiculesField's own option labels in CarInsuranceForm.js.
-const W_GARAGE_MODE_ACHAT_LABELS = { comptant: "Comptant", loa: "LOA", lld: "LLD", credit_bancaire: "Crédit bancaire" };
-const W_GARAGE_USAGE_LABELS = { courtoisie: "Courtoisie", vehicule_societe: "Véhicule de société", location: "Location", gerant: "Gérant" };
-
-// Same shape/reasoning as formatFlotteRow above — one object per W Garage
-// vehicle instead of the raw "comptant"/"courtoisie" values.
-function formatWGarageRow(row) {
+// Same shape/reasoning as formatFlotteVehiculeRow above — one object per W
+// garage plate row in the garage_plaques_w_table field.
+function formatPlaqueWRow(row) {
   const fields = [];
-  if (row.modeAchat) fields.push({ label: "Mode d'achat", value: W_GARAGE_MODE_ACHAT_LABELS[row.modeAchat] || row.modeAchat });
-  if (row.usage) fields.push({ label: "Usage", value: W_GARAGE_USAGE_LABELS[row.usage] || row.usage });
+  if (row.numero) fields.push({ label: "N° de plaque W", value: row.numero });
+  if (row.dateDelivrance) fields.push({ label: "Date de délivrance", value: toFrenchDate(row.dateDelivrance) });
+  if (row.dateSortie) fields.push({ label: "Date de sortie", value: toFrenchDate(row.dateSortie) });
+  return fields;
+}
+
+// Same shape/reasoning as formatFlotteVehiculeRow above — one object per
+// previous contract row. Shared by convoyeur_historique_contrats_table and
+// negociant_historique_contrats_table (identical column set).
+function formatConvoyeurHistoriqueRow(row) {
+  const fields = [];
+  if (row.compagnie) fields.push({ label: "Compagnie", value: row.compagnie });
+  if (row.dateDebut) fields.push({ label: "Date début", value: toFrenchDate(row.dateDebut) });
+  if (row.dateEcheance) fields.push({ label: "Date d'échéance", value: toFrenchDate(row.dateEcheance) });
+  return fields;
+}
+
+// Same shape/reasoning as formatFlotteVehiculeRow above — one object per
+// driver row in the convoyeur_conducteurs_table field.
+function formatConvoyeurConducteurRow(row) {
+  const fields = [];
+  if (row.nom) fields.push({ label: "Nom", value: row.nom });
+  if (row.prenom) fields.push({ label: "Prénom", value: row.prenom });
+  if (row.dateNaissance) fields.push({ label: "Date de naissance", value: toFrenchDate(row.dateNaissance) });
   return fields;
 }
 
@@ -53,14 +72,51 @@ function toFrenchDate(iso) {
   return m ? `${m[3]}/${m[2]}/${m[1]}` : iso;
 }
 
-// Same shape/reasoning as formatFlotteRow above — one object per associé
+// Same shape/reasoning as formatFlotteVehiculeRow above — one object per associé
 // instead of just the raw percentage.
 function formatAssocieRow(row) {
   const fields = [];
+  if (row.nom) fields.push({ label: "Nom complet", value: row.nom });
   if (row.pct) fields.push({ label: "% détention du capital", value: `${row.pct}%` });
   if (row.civilite) fields.push({ label: "Civilité", value: ASSOCIE_CIVILITE_LABELS[row.civilite] || row.civilite });
   if (row.naissance) fields.push({ label: "Date de naissance", value: toFrenchDate(row.naissance) });
   if (row.commune) fields.push({ label: "Commune de naissance", value: row.commune });
+  return fields;
+}
+
+// Same shape/reasoning as formatFlotteVehiculeRow above — one object per previous
+// contract row in HistoriqueContratsField.
+function formatHistoriqueContratRow(row) {
+  const fields = [];
+  if (row.compagnie) fields.push({ label: "Compagnie d'assurance", value: row.compagnie });
+  if (row.dateDebut) fields.push({ label: "Date début", value: toFrenchDate(row.dateDebut) });
+  if (row.dateEcheance) fields.push({ label: "Date d'échéance", value: toFrenchDate(row.dateEcheance) });
+  return fields;
+}
+
+// Mirrors RepeatingTableField's "Sinistre clos ?" select options.
+const SINISTRE_CLOS_LABELS = { oui: "Oui", non: "Non" };
+
+// Same shape/reasoning as formatFlotteVehiculeRow above — one object per sinistre
+// row in the garage_sinistres_hors_auto_table field.
+function formatSinistreHorsAutoRow(row) {
+  const fields = [];
+  if (row.date) fields.push({ label: "Date de survenance", value: toFrenchDate(row.date) });
+  if (row.type) fields.push({ label: "Type", value: row.type });
+  if (row.montant) fields.push({ label: "Montant (€)", value: row.montant });
+  if (row.clos) fields.push({ label: "Sinistre clos ?", value: SINISTRE_CLOS_LABELS[row.clos] || row.clos });
+  return fields;
+}
+
+// Same shape/reasoning as formatFlotteVehiculeRow above — one object per sinistre
+// row in the garage_sinistres_auto_table field.
+function formatSinistreAutoRow(row) {
+  const fields = [];
+  if (row.date) fields.push({ label: "Date de survenance", value: toFrenchDate(row.date) });
+  if (row.type) fields.push({ label: "Type", value: row.type });
+  if (row.nature) fields.push({ label: "Nature", value: row.nature });
+  if (row.resp) fields.push({ label: "Resp. (%)", value: `${row.resp}%` });
+  if (row.montant) fields.push({ label: "Montant (€)", value: row.montant });
   return fields;
 }
 
@@ -160,20 +216,45 @@ export default function GaragisteDevisPage() {
       .filter((step) => !IDENTITY_KEYS.has(step.key) && Object.prototype.hasOwnProperty.call(answers, step.id))
       .map((step) => {
         const value = answers[step.id];
-        if (step.key === "flotte_immatriculations") {
+        if (step.key === "garage_flotte_vehicules_table") {
           const rows = Array.isArray(value) ? value : [];
-          const vehicles = rows.map((row) => ({ fields: formatFlotteRow(row) }));
+          const vehicles = rows.map((row) => ({ fields: formatFlotteVehiculeRow(row) }));
           return { catalog_key: step.key, question: step.question, value: JSON.stringify(vehicles) };
         }
-        if (step.key === "w_garage_vehicules") {
+        if (step.key === "garage_plaques_w_table") {
           const rows = Array.isArray(value) ? value : [];
-          const vehicles = rows.map((row) => ({ fields: formatWGarageRow(row) }));
-          return { catalog_key: step.key, question: step.question, value: JSON.stringify(vehicles) };
+          const plaques = rows.map((row) => ({ fields: formatPlaqueWRow(row) }));
+          return { catalog_key: step.key, question: step.question, value: JSON.stringify(plaques) };
+        }
+        if (step.key === "convoyeur_historique_contrats_table" || step.key === "negociant_historique_contrats_table") {
+          const rows = Array.isArray(value) ? value : [];
+          const contrats = rows.map((row) => ({ fields: formatConvoyeurHistoriqueRow(row) }));
+          return { catalog_key: step.key, question: step.question, value: JSON.stringify(contrats) };
+        }
+        if (step.key === "convoyeur_conducteurs_table") {
+          const rows = Array.isArray(value) ? value : [];
+          const conducteurs = rows.map((row) => ({ fields: formatConvoyeurConducteurRow(row) }));
+          return { catalog_key: step.key, question: step.question, value: JSON.stringify(conducteurs) };
         }
         if (step.key === "pct_detention_capital") {
           const rows = Array.isArray(value) ? value : [];
           const associes = rows.map((row) => ({ fields: formatAssocieRow(row) }));
           return { catalog_key: step.key, question: step.question, value: JSON.stringify(associes) };
+        }
+        if (step.key === "garage_historique_contrats") {
+          const rows = Array.isArray(value) ? value : [];
+          const contrats = rows.map((row) => ({ fields: formatHistoriqueContratRow(row) }));
+          return { catalog_key: step.key, question: step.question, value: JSON.stringify(contrats) };
+        }
+        if (step.key === "garage_sinistres_hors_auto_table") {
+          const rows = Array.isArray(value) ? value : [];
+          const sinistres = rows.map((row) => ({ fields: formatSinistreHorsAutoRow(row) }));
+          return { catalog_key: step.key, question: step.question, value: JSON.stringify(sinistres) };
+        }
+        if (step.key === "garage_sinistres_auto_table") {
+          const rows = Array.isArray(value) ? value : [];
+          const sinistres = rows.map((row) => ({ fields: formatSinistreAutoRow(row) }));
+          return { catalog_key: step.key, question: step.question, value: JSON.stringify(sinistres) };
         }
         const values = Array.isArray(value) ? value : [value];
         const labels = values.map((v) => {
@@ -266,15 +347,7 @@ export default function GaragisteDevisPage() {
               theme="light"
               storageKey="garagiste"
               bookingDocs={buildBookingDocs(steps)}
-              footerContent={
-                <a
-                  href="mailto:devis@newworldcourtage.com"
-                  className="flex items-center gap-2 text-black hover:text-[var(--color-brand)] transition-colors"
-                >
-                  <Mail size={20} className="shrink-0" />
-                  <span className="text-base font-medium hidden sm:inline">devis@newworldcourtage.com</span>
-                </a>
-              }
+              floatingButtons
             />
           )}
         </div>

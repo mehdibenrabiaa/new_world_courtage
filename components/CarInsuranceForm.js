@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { DatePickerInput } from "@/components/DatePickerInput";
 import { MonthYearInput } from "@/components/MonthYearInput";
-import { ChevronLeft, ChevronRight, CheckCircle2, Phone, Mail, CalendarDays, Car, User, ListChecks, Shield, FileText, Circle, AlertTriangle, Wallet, Paperclip, Loader2, Upload, FileCheck2, FileCodeIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckCircle2, Phone, Mail, CalendarDays, Car, User, ListChecks, Shield, FileText, Circle, AlertTriangle, Wallet, Paperclip, Loader2, Upload, FileCheck2, FileCodeIcon, Plus, Trash2 } from "lucide-react";
 import { fetchAvailability, bookConsultation, uploadLeadDocument } from "@/lib/api";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent } from "@/components/ui/card";
@@ -19,6 +19,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Field, FieldContent, FieldLabel, FieldTitle } from "@/components/ui/field";
 import { Attachment, AttachmentContent, AttachmentDescription, AttachmentGroup, AttachmentMedia, AttachmentTitle } from "@/components/ui/attachment";
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 
 const CAR_BRANDS = [
   "Audi", "BMW", "Citroën", "Dacia", "DS Automobiles", "Fiat", "Ford", "Honda",
@@ -587,7 +588,7 @@ function isWideField(step) {
   if (step.cols === 2) return true;
   if (step.cols === 1) return false;
   if (step.key === "negociant_type_bien") return false;
-  if (step.key === "w_garage_vehicules" || step.key === "flotte_immatriculations" || step.key === "pct_detention_capital") return true;
+  if (step.key === "pct_detention_capital" || step.key in REPEATING_TABLE_FIELDS) return true;
   if (step.type === "radio" || step.type === "checkbox") return true;
   if (step.type === "input" && step.inputType === "textarea") return true;
   return false;
@@ -627,17 +628,13 @@ function packFieldsAvoidingGaps(fields) {
   return result;
 }
 
-function isEmbeddedParentField(step) {
-  return step.key === "w_garage_nombre_vehicules" || step.key === "flotte_nombre_vehicules";
-}
-
 // ── Multi-associate capital % field ──────────────────────────────────────────
 // "% détention du capital" needs one input per associé — a new one appears
 // automatically as long as the running total is still under 100%, and no
 // entry can push the sum over 100% or go negative.
-const EMPTY_ASSOCIE = { pct: "", civilite: "", naissance: "", commune: "" };
+const EMPTY_ASSOCIE = { nom: "", pct: "", civilite: "", naissance: "", commune: "" };
 
-function AssocieCapitalField({ s, answer, setAnswer, theme }) {
+function AssocieCapitalField({ s, answer, setAnswer, theme, rowErrors }) {
   const committed = Array.isArray(answer) ? answer : [];
 
   const slots = [];
@@ -673,6 +670,10 @@ function AssocieCapitalField({ s, answer, setAnswer, theme }) {
     setAnswer(s.id, next);
   }
 
+  const fieldErr = (i, field) => !!rowErrors?.[i]?.[field];
+  const errBorder = "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(242,105,61,0.15)]";
+  const ErrMsg = () => <p className="text-xs text-[var(--color-error)] mt-0.5">Ce champ est requis.</p>;
+
   return (
     <div className="flex flex-col gap-6">
       {slots.map((v, i) => (
@@ -681,6 +682,16 @@ function AssocieCapitalField({ s, answer, setAnswer, theme }) {
             Associé {i + 1}
           </span>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pl-8">
+            <div className="flex flex-col gap-1 sm:col-span-2">
+              <label className="text-xs text-gray-500">Nom complet</label>
+              <Input
+                value={v.nom}
+                onChange={e => handleChange(i, "nom", e.target.value)}
+                placeholder="Ex : Jean Dupont"
+                className={`bg-white h-[50px] ${fieldErr(i, "nom") ? errBorder : ""}`}
+              />
+              {fieldErr(i, "nom") && <ErrMsg />}
+            </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">% détention du capital</label>
               <Input
@@ -691,13 +702,14 @@ function AssocieCapitalField({ s, answer, setAnswer, theme }) {
                 value={v.pct}
                 onChange={e => handleChange(i, "pct", e.target.value)}
                 placeholder="Ex : 50"
-                className="bg-white h-[50px]"
+                className={`bg-white h-[50px] ${fieldErr(i, "pct") ? errBorder : ""}`}
               />
+              {fieldErr(i, "pct") && <ErrMsg />}
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Civilité</label>
               <Select value={v.civilite} onValueChange={val => handleChange(i, "civilite", val)}>
-                <SelectTrigger className="w-full bg-white !h-[50px]">
+                <SelectTrigger className={`w-full bg-white !h-[50px] ${fieldErr(i, "civilite") ? errBorder : ""}`}>
                   <SelectValue placeholder="Sélectionnez une option" />
                 </SelectTrigger>
                 <SelectContent>
@@ -705,6 +717,7 @@ function AssocieCapitalField({ s, answer, setAnswer, theme }) {
                   <SelectItem value="mme">Madame</SelectItem>
                 </SelectContent>
               </Select>
+              {fieldErr(i, "civilite") && <ErrMsg />}
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Date de naissance</label>
@@ -713,8 +726,9 @@ function AssocieCapitalField({ s, answer, setAnswer, theme }) {
                 onChange={val => handleChange(i, "naissance", val)}
                 placeholder="__/__/____"
                 theme={theme}
-                className="bg-white h-[50px] w-full"
+                className={`bg-white h-[50px] w-full ${fieldErr(i, "naissance") ? errBorder : ""}`}
               />
+              {fieldErr(i, "naissance") && <ErrMsg />}
             </div>
             <div className="flex flex-col gap-1">
               <label className="text-xs text-gray-500">Commune de naissance</label>
@@ -722,8 +736,9 @@ function AssocieCapitalField({ s, answer, setAnswer, theme }) {
                 value={v.commune}
                 onChange={e => handleChange(i, "commune", e.target.value)}
                 placeholder="Ex : Paris"
-                className="bg-white h-[50px]"
+                className={`bg-white h-[50px] ${fieldErr(i, "commune") ? errBorder : ""}`}
               />
+              {fieldErr(i, "commune") && <ErrMsg />}
             </div>
           </div>
         </div>
@@ -732,208 +747,229 @@ function AssocieCapitalField({ s, answer, setAnswer, theme }) {
   );
 }
 
-// ── Per-vehicle fleet details ────────────────────────────────────────────────
-// "Immatriculations (carte grise) des véhicules" becomes one repeating group
-// of fields (véhicule, immatriculation, mode d'achat, usage) per vehicle,
-// with the number of groups driven by the "Nombre de véhicules dans la
-// flotte" question elsewhere in the same section.
-function FlotteVehiculesField({ s, answer, setAnswer, wizardSteps, answers, errors = {} }) {
-  const countField = wizardSteps.find(f => f.key === "flotte_nombre_vehicules");
-  const rawCount = countField ? answers[countField.id] : "";
-  const count = Math.max(0, Math.min(50, parseInt(rawCount, 10) || 0));
+// ── Generic repeating table ───────────────────────────────────────────────────
+// Backs "Historique des contrats précédents", "Sinistres hors-auto" and any
+// future fixed-column repeating table — same look (real <table>, square
+// inputs, trash-per-row, "+ Ajouter") driven by a `columns` config instead of
+// duplicating the table shell per field. Starts at `initialRows` blank rows;
+// once the user has an explicit (possibly empty) answer array — e.g. after
+// deleting every row — that's respected as-is instead of resurrecting rows
+// they just removed.
+const REPEATING_TABLE_FIELDS = {
+  garage_historique_contrats: {
+    addLabel: "Ajouter un contrat",
+    removeLabel: "Supprimer ce contrat",
+    initialRows: 2,
+    hideLabel: true, // eyebrow above already carries the heading
+    columns: [
+      { key: "compagnie", label: "Compagnie d'assurance", type: "text", placeholder: "Ex : AXA, Allianz…" },
+      { key: "dateDebut", label: "Date début", type: "date" },
+      { key: "dateEcheance", label: "Date d'échéance", type: "date" },
+    ],
+  },
+  convoyeur_historique_contrats_table: {
+    addLabel: "Ajouter un contrat",
+    removeLabel: "Supprimer ce contrat",
+    initialRows: 2,
+    hideLabel: true, // eyebrow above already carries the heading
+    columns: [
+      { key: "compagnie", label: "Compagnie", type: "text", placeholder: "Ex : AXA, Allianz…" },
+      { key: "dateDebut", label: "Date début", type: "date" },
+      { key: "dateEcheance", label: "Date d'échéance", type: "date" },
+    ],
+  },
+  negociant_historique_contrats_table: {
+    addLabel: "Ajouter un contrat",
+    removeLabel: "Supprimer ce contrat",
+    initialRows: 2,
+    hideLabel: true, // eyebrow above already carries the heading
+    columns: [
+      { key: "compagnie", label: "Compagnie", type: "text", placeholder: "Ex : AXA, Allianz…" },
+      { key: "dateDebut", label: "Date début", type: "date" },
+      { key: "dateEcheance", label: "Date d'échéance", type: "date" },
+    ],
+  },
+  convoyeur_conducteurs_table: {
+    addLabel: "Ajouter un conducteur",
+    removeLabel: "Supprimer ce conducteur",
+    initialRows: 2,
+    hideLabel: true, // eyebrow above already carries the heading
+    columns: [
+      { key: "nom", label: "Nom", type: "text", placeholder: "Ex : Dupont" },
+      { key: "prenom", label: "Prénom", type: "text", placeholder: "Ex : Jean" },
+      { key: "dateNaissance", label: "Date de naissance", type: "date" },
+    ],
+  },
+  garage_sinistres_hors_auto_table: {
+    addLabel: "Ajouter un sinistre",
+    removeLabel: "Supprimer ce sinistre",
+    initialRows: 2,
+    hideLabel: true, // sits directly under its own gating question
+    columns: [
+      { key: "date", label: "Date de survenance", type: "date" },
+      { key: "type", label: "Type", type: "text", placeholder: "Ex : Incendie, Vol…" },
+      { key: "montant", label: "Montant (€)", type: "number", placeholder: "Montant en €" },
+      { key: "clos", label: "Sinistre clos ?", type: "select", options: [{ label: "Oui", value: "oui" }, { label: "Non", value: "non" }] },
+    ],
+  },
+  garage_sinistres_auto_table: {
+    addLabel: "Ajouter un sinistre",
+    removeLabel: "Supprimer ce sinistre",
+    initialRows: 2,
+    hideLabel: true, // sits directly under its own gating question
+    columns: [
+      { key: "date", label: "Date de survenance", type: "date" },
+      { key: "type", label: "Type", type: "text", placeholder: "Ex : Collision, Vol…" },
+      { key: "nature", label: "Nature", type: "text", placeholder: "Ex : Matériel, Corporel…" },
+      { key: "resp", label: "Resp. (%)", type: "number", placeholder: "Ex : 50" },
+      { key: "montant", label: "Montant (€)", type: "number", placeholder: "Montant en €" },
+    ],
+  },
+  garage_flotte_vehicules_table: {
+    addLabel: "Ajouter un véhicule",
+    removeLabel: "Supprimer ce véhicule",
+    initialRows: 2,
+    showIndex: true,
+    columns: [
+      { key: "immatriculation", label: "Immatriculation", type: "text", placeholder: "Ex : AB-123-CD" },
+      {
+        key: "usage", label: "Usage", type: "select",
+        options: [
+          { label: "Courtoisie", value: "courtoisie" }, { label: "Location", value: "location" },
+          { label: "Société", value: "societe" }, { label: "Gérant", value: "gerant" },
+        ],
+      },
+      {
+        key: "modeAchat", label: "Mode d'achat", type: "select",
+        options: [
+          { label: "Comptant", value: "comptant" }, { label: "Crédit-LOA", value: "credit_loa" },
+          { label: "LLD", value: "lld" }, { label: "Autre", value: "autre" },
+        ],
+      },
+    ],
+  },
+  garage_plaques_w_table: {
+    addLabel: "Ajouter une plaque",
+    removeLabel: "Supprimer cette plaque",
+    initialRows: 2,
+    columns: [
+      { key: "numero", label: "N° de plaque W", type: "text", placeholder: "Ex : W123456" },
+      { key: "dateDelivrance", label: "Date de délivrance", type: "date" },
+      { key: "dateSortie", label: "Date de sortie", type: "date" },
+    ],
+  },
+};
 
-  const stored = Array.isArray(answer) ? answer : [];
-  const rows = Array.from({ length: count }, (_, i) => stored[i] || { vehicule: "", immatriculation: "", modeAchat: "", usage: "" });
-
-  function updateRow(i, field, value) {
-    const next = rows.map((r, idx) => (idx === i ? { ...r, [field]: value } : r));
-    setAnswer(s.id, next);
-  }
-
-  const countEditor = countField && (
-    <div id={`field-card-${countField.id}`} className="flex w-full flex-col gap-2 sm:w-[calc(50%-0.75rem)]">
-      <label htmlFor={`field-${countField.id}`} className="text-[16px] cursor-pointer block text-[var(--color-text)] min-h-11">
-        {countField.question}
-        {!countField.optional && <span className="ml-0.5">*</span>}
-      </label>
-      <Input id={`field-${countField.id}`} type="number" min={0} inputMode="decimal" value={rawCount}
-        onChange={e => setAnswer(countField.id, e.target.value)}
-        className={`bg-white h-[50px] ${errors[countField.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(242,105,61,0.15)]" : ""}`} />
-      {errors[countField.id] && <p className="text-xs text-[var(--color-error)]">{errors[countField.id]}</p>}
-    </div>
-  );
-  const detailsHeading = <p className="text-[16px] text-[var(--color-text)]">{s.question}</p>;
-
-  if (count === 0) {
-    return (
-      <div className="flex flex-col gap-4">
-        {countEditor}
-        {detailsHeading}
-        <p className="text-sm text-gray-400">Renseignez le nombre de véhicules pour ajouter les détails.</p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="flex flex-col gap-6">
-      {countEditor}
-      {detailsHeading}
-      {rows.map((row, i) => (
-        <div key={i} className={`flex flex-col gap-3 pl-8 ${i > 0 ? "pt-6 border-t border-gray-200" : ""}`}>
-          <span className="inline-flex w-fit items-center gap-2 rounded-md bg-[var(--color-brand)]/10 px-3 py-1 text-xs font-bold tracking-wide text-[var(--color-brand)] uppercase">
-            Véhicule {i + 1}
-          </span>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-500">Véhicule</label>
-              <Input
-                value={row.vehicule}
-                onChange={e => updateRow(i, "vehicule", e.target.value)}
-                placeholder="Ex : Renault Trafic"
-                className="bg-white h-[50px]"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-500">N° d'immatriculation</label>
-              <Input
-                value={row.immatriculation}
-                onChange={e => updateRow(i, "immatriculation", e.target.value.toUpperCase())}
-                placeholder="Ex : AB-123-CD"
-                className="bg-white h-[50px]"
-              />
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-500">Mode d'achat</label>
-              <Select value={row.modeAchat} onValueChange={v => updateRow(i, "modeAchat", v)}>
-                <SelectTrigger className="w-full bg-white !h-[50px] data-[size=default]:!h-[50px]">
-                  <SelectValue placeholder="Sélectionnez une option" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="comptant">Comptant</SelectItem>
-                  <SelectItem value="credit">Crédit</SelectItem>
-                  <SelectItem value="leasing">Leasing</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-500">Usage</label>
-              <Select value={row.usage} onValueChange={v => updateRow(i, "usage", v)}>
-                <SelectTrigger className="w-full bg-white !h-[50px] data-[size=default]:!h-[50px]">
-                  <SelectValue placeholder="Sélectionnez une option" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="professionnel">Professionnel</SelectItem>
-                  <SelectItem value="mixte">Mixte (pro et personnel)</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+function emptyRepeatingRow(columns) {
+  return Object.fromEntries(columns.map(c => [c.key, ""]));
 }
 
-const W_GARAGE_MODE_ACHAT_OPTIONS = [
-  { label: "Comptant", value: "comptant" },
-  { label: "LOA", value: "loa" },
-  { label: "LLD", value: "lld" },
-  { label: "Crédit bancaire", value: "credit_bancaire" },
-];
-
-const W_GARAGE_USAGE_OPTIONS = [
-  { label: "Courtoisie", value: "courtoisie" },
-  { label: "Véhicule de société", value: "vehicule_societe" },
-  { label: "Location", value: "location" },
-  { label: "Gérant", value: "gerant" },
-];
-
-// Same repeat-per-count pattern as FlotteVehiculesField above, driven by
-// "w_garage_nombre_vehicules" instead of "flotte_nombre_vehicules" — one
-// Mode d'achat + Usage pair per W Garage vehicle.
-function WGarageVehiculesField({ s, answer, setAnswer, wizardSteps, answers, errors = {}, labelClass }) {
-  const countField = wizardSteps.find(f => f.key === "w_garage_nombre_vehicules");
-  const rawCount = countField ? answers[countField.id] : "";
-  const count = Math.max(0, Math.min(50, parseInt(rawCount, 10) || 0));
-
-  const stored = Array.isArray(answer) ? answer : [];
-  const rows = Array.from({ length: count }, (_, i) => stored[i] || { modeAchat: "", usage: "" });
+function RepeatingTableField({ s, answer, setAnswer, theme, config, rowErrors }) {
+  const { columns, addLabel, removeLabel, initialRows, showIndex } = config;
+  const rows = Array.isArray(answer)
+    ? answer
+    : Array.from({ length: initialRows }, () => emptyRepeatingRow(columns));
+  const fieldErr = (i, key) => !!rowErrors?.[i]?.[key];
+  const errBorder = "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(242,105,61,0.15)]";
 
   function updateRow(i, field, value) {
-    const next = rows.map((r, idx) => (idx === i ? { ...r, [field]: value } : r));
+    const next = rows.map((row, idx) => (idx === i ? { ...row, [field]: value } : row));
     setAnswer(s.id, next);
   }
 
-  const countEditor = countField && (
-    <div id={`field-card-${countField.id}`} className="flex w-full flex-col gap-2 sm:w-[calc(50%-0.75rem)]">
-      <label htmlFor={`field-${countField.id}`} className={`text-[16px] cursor-pointer block min-h-11 ${labelClass}`}>
-        {countField.question}
-        {!countField.optional && <span className="ml-0.5">*</span>}
-      </label>
-      <Input id={`field-${countField.id}`} type="number" min={0} inputMode="decimal" value={rawCount}
-        onChange={e => setAnswer(countField.id, e.target.value)}
-        className={`bg-white h-[50px] ${errors[countField.id] ? "border-[var(--color-error)] hover:border-[var(--color-error)] focus:border-[var(--color-error)] focus:shadow-[0_0_0_2px_rgba(242,105,61,0.15)]" : ""}`} />
-      {errors[countField.id] && <p className="text-xs text-[var(--color-error)]">{errors[countField.id]}</p>}
-    </div>
-  );
-  const detailsHeading = <p className="text-[16px] text-[var(--color-text)]">{s.question}</p>;
+  function addRow() {
+    setAnswer(s.id, [...rows, emptyRepeatingRow(columns)]);
+  }
 
-  if (count === 0) {
-    return (
-      <div className="flex flex-col gap-4">
-        {countEditor}
-        {detailsHeading}
-        <p className="text-sm text-gray-400">Renseignez le nombre de véhicules pour ajouter les détails.</p>
-      </div>
-    );
+  function removeRow(i) {
+    if (rows.length <= 1) return;
+    setAnswer(s.id, rows.filter((_, idx) => idx !== i));
   }
 
   return (
-    <div className="flex flex-col gap-6">
-      {countEditor}
-      {detailsHeading}
-      {rows.map((row, i) => (
-        <div key={i} className={`flex flex-col gap-3 pl-8 ${i > 0 ? "pt-6 border-t border-gray-200" : ""}`}>
-          <span className="inline-flex w-fit items-center gap-2 rounded-md bg-[var(--color-brand)]/10 px-3 py-1 text-xs font-bold tracking-wide text-[var(--color-brand)] uppercase">
-            Véhicule {i + 1}
-          </span>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-500">Mode d'achat</label>
-              <Select value={row.modeAchat} onValueChange={v => updateRow(i, "modeAchat", v)}>
-                <SelectTrigger className="w-full bg-white !h-[50px] data-[size=default]:!h-[50px]">
-                  <SelectValue placeholder="Sélectionnez une option" />
-                </SelectTrigger>
-                <SelectContent>
-                  {W_GARAGE_MODE_ACHAT_OPTIONS.map(o => (
-                    <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="flex flex-col gap-1">
-              <label className="text-xs text-gray-500">Usage</label>
-              <Select value={row.usage} onValueChange={v => updateRow(i, "usage", v)}>
-                <SelectTrigger className="w-full bg-white !h-[50px] data-[size=default]:!h-[50px]">
-                  <SelectValue placeholder="Sélectionnez une option" />
-                </SelectTrigger>
-                <SelectContent>
-                  {W_GARAGE_USAGE_OPTIONS.map(o => (
-                    <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-        </div>
-      ))}
+    <div className="flex flex-col gap-3">
+      <div className="rounded-lg border border-gray-200 bg-white overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-gray-50">
+              {showIndex && <TableHead className="w-10">#</TableHead>}
+              {columns.map(col => <TableHead key={col.key}>{col.label}</TableHead>)}
+              <TableHead className="w-10"><span className="sr-only">Supprimer</span></TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {rows.map((row, i) => (
+              <TableRow key={i}>
+                {showIndex && <TableCell className="text-gray-500 text-center">{i + 1}</TableCell>}
+                {columns.map(col => (
+                  <TableCell key={col.key} className="min-w-[150px]">
+                    {col.type === "date" && (
+                      <DatePickerInput
+                        value={row[col.key]}
+                        onChange={val => updateRow(i, col.key, val)}
+                        placeholder="__/__/____"
+                        theme={theme}
+                        className={`bg-white h-10 w-full rounded-none ${fieldErr(i, col.key) ? errBorder : ""}`}
+                      />
+                    )}
+                    {col.type === "select" && (
+                      <Select value={row[col.key]} onValueChange={val => updateRow(i, col.key, val)}>
+                        <SelectTrigger className={`w-full bg-white !h-10 rounded-none ${fieldErr(i, col.key) ? errBorder : ""}`}>
+                          <SelectValue placeholder="Sélectionnez" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {col.options.map(opt => (
+                            <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                    {(col.type === "text" || col.type === "number") && (
+                      <Input
+                        type={col.type === "number" ? "number" : "text"}
+                        inputMode={col.type === "number" ? "decimal" : undefined}
+                        min={col.type === "number" ? 0 : undefined}
+                        value={row[col.key]}
+                        onChange={e => updateRow(i, col.key, e.target.value)}
+                        placeholder={col.placeholder}
+                        className={`bg-white h-10 rounded-none ${fieldErr(i, col.key) ? errBorder : ""}`}
+                      />
+                    )}
+                  </TableCell>
+                ))}
+                <TableCell>
+                  <button
+                    type="button"
+                    onClick={() => removeRow(i)}
+                    disabled={rows.length <= 1}
+                    aria-label={removeLabel}
+                    className="text-gray-400 hover:text-[var(--color-error)] disabled:hover:text-gray-400 disabled:opacity-40 disabled:cursor-not-allowed transition-colors p-1.5"
+                  >
+                    <Trash2 size={16} />
+                  </button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+      <button
+        type="button"
+        onClick={addRow}
+        className="inline-flex items-center gap-1.5 self-start text-sm font-semibold text-[var(--color-brand)] hover:underline"
+      >
+        <Plus size={16} /> {addLabel}
+      </button>
+      {rowErrors?.some(r => Object.values(r).some(Boolean)) && (
+        <p className="text-xs text-[var(--color-error)]">Merci de compléter tous les champs de chaque ligne.</p>
+      )}
     </div>
   );
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, initialAnswers = {}, theme = "dark", onProgress, onSubmit, footerContent, storageKey, bookingDocs }) {
+export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, initialAnswers = {}, theme = "dark", onProgress, onSubmit, footerContent, floatingButtons = false, storageKey, bookingDocs }) {
   // Questions already answered via URL params (e.g. redirected here from an
   // identity form that collected name/phone/email/etc.) shouldn't be asked
   // again — mark them as always-skipped so they're filtered out of their
@@ -1130,7 +1166,29 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
       if (s.key === "pct_detention_capital") {
         const vals = Array.isArray(answers[s.id]) ? answers[s.id] : [];
         const sum = vals.reduce((acc, v) => acc + (parseFloat(v?.pct) || 0), 0);
-        if (sum !== 100) newErrors[s.id] = "La répartition doit atteindre 100 % au total.";
+        if (sum !== 100) {
+          newErrors[s.id] = "La répartition doit atteindre 100 % au total.";
+        } else {
+          const rowErrors = vals.map(v => ({
+            nom: !v?.nom,
+            pct: !v?.pct,
+            civilite: !v?.civilite,
+            naissance: !v?.naissance,
+            commune: !v?.commune,
+          }));
+          if (rowErrors.some(r => Object.values(r).some(Boolean))) newErrors[s.id] = rowErrors;
+        }
+        continue;
+      }
+      if (s.key in REPEATING_TABLE_FIELDS) {
+        const { columns, initialRows } = REPEATING_TABLE_FIELDS[s.key];
+        const vals = Array.isArray(answers[s.id])
+          ? answers[s.id]
+          : Array.from({ length: initialRows }, () => emptyRepeatingRow(columns));
+        const rowErrors = vals.map(row =>
+          Object.fromEntries(columns.map(col => [col.key, !row?.[col.key]]))
+        );
+        if (rowErrors.some(r => Object.values(r).some(Boolean))) newErrors[s.id] = rowErrors;
         continue;
       }
       const ans = answers[s.id];
@@ -1186,7 +1244,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
 
     return (
       <div key={s.id} id={`field-card-${s.id}`} className={`flex flex-col gap-2 h-full ${wide ? "sm:col-span-2" : ""} ${shouldAnimateReveal ? "conditional-field-reveal" : ""}`} style={conditionalStyle}>
-              {!['w_garage_vehicules', 'flotte_immatriculations'].includes(s.key) && ((s.type === "radio" || s.type === "checkbox") ? (
+              {!REPEATING_TABLE_FIELDS[s.key]?.hideLabel && ((s.type === "radio" || s.type === "checkbox") ? (
                 <p className={`text-[16px] ${t.label} ${!wide ? "min-h-11" : ""}`}>
                   {s.question}
                   {!s.optional && <span className="ml-0.5">*</span>}
@@ -1384,32 +1442,28 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
 
               {/* Multi-associate % détention du capital */}
               {s.key === "pct_detention_capital" && (
-                <AssocieCapitalField s={s} answer={answer} setAnswer={setAnswer} theme={theme} />
+                <AssocieCapitalField s={s} answer={answer} setAnswer={setAnswer} theme={theme} rowErrors={Array.isArray(errors[s.id]) ? errors[s.id] : null} />
               )}
 
-              {/* One repeating field group per vehicle in the fleet */}
-              {s.key === "flotte_immatriculations" && (
-                <FlotteVehiculesField s={s} answer={answer} setAnswer={setAnswer} wizardSteps={wizardSteps} answers={answers} errors={errors} />
-              )}
-
-              {/* One repeating Mode d'achat / Usage pair per W Garage vehicle */}
-              {s.key === "w_garage_vehicules" && (
-                <WGarageVehiculesField s={s} answer={answer} setAnswer={setAnswer} wizardSteps={wizardSteps} answers={answers} errors={errors} labelClass={t.label} />
+              {/* Generic fillable tables — previous contracts, sinistres, fleet vehicles, etc. */}
+              {s.key in REPEATING_TABLE_FIELDS && (
+                <RepeatingTableField s={s} answer={answer} setAnswer={setAnswer} theme={theme} config={REPEATING_TABLE_FIELDS[s.key]} rowErrors={Array.isArray(errors[s.id]) ? errors[s.id] : null} />
               )}
 
               {/* Text / number / email / tel */}
-              {s.type === "input" && s.key !== "pct_detention_capital" && s.key !== "flotte_immatriculations" && s.key !== "w_garage_vehicules" && !["date", "month", "year", "textarea"].includes(s.inputType) && (() => {
+              {s.type === "input" && s.key !== "pct_detention_capital" && !(s.key in REPEATING_TABLE_FIELDS) && !["date", "month", "year", "textarea"].includes(s.inputType) && (() => {
                 const inputEl = (
                   <Input
                     id={`field-${s.id}`}
                     type={s.inputType}
-                    inputMode={s.inputType === "tel" ? "tel" : s.inputType === "number" ? "decimal" : undefined}
+                    inputMode={s.inputType === "tel" ? "tel" : s.key === "siret" ? "numeric" : s.inputType === "number" ? "decimal" : undefined}
                     min={s.inputType === "number" ? 0 : undefined}
                     placeholder={s.placeholder}
                     value={answer}
                     onChange={e => {
                       let v = e.target.value;
                       if (s.inputType === "tel") v = v.replace(/[^\d\s+]/g, "");
+                      if (s.key === "siret") v = v.replace(/\D/g, "").slice(0, 14);
                       if (s.inputType === "number" && v !== "" && parseFloat(v) < 0) v = "0";
                       if (s.uppercase) v = v.toUpperCase();
                       setAnswer(s.id, v);
@@ -1420,7 +1474,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                 return inputEl;
               })()}
 
-              {errors[s.id] && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[s.id]}</p>}
+              {typeof errors[s.id] === "string" && <p className="text-xs text-[var(--color-error)] mt-0.5">{errors[s.id]}</p>}
       </div>
     );
   }
@@ -1552,7 +1606,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                     </div>
                   )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-10">
-                    {packFieldsAvoidingGaps(run.fields.filter(s => !isEmbeddedParentField(s))).map((s, i) => renderFieldCard(s, { index: i }))}
+                    {packFieldsAvoidingGaps(run.fields).map((s, i) => renderFieldCard(s, { index: i }))}
                   </div>
                 </div>
               ))}
@@ -1587,16 +1641,20 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
           </ButtonGroup>
         );
 
-        if (!footerContent) {
-          return <div className="flex items-center justify-end pt-2">{navButtons}</div>;
+        if (footerContent) {
+          return (
+            <div className="fixed inset-x-0 bottom-0 z-40 bg-white border-t border-gray-100 pl-24 pr-4 lg:pl-24 lg:pr-12 py-4 flex items-center justify-between">
+              {footerContent}
+              {navButtons}
+            </div>
+          );
         }
 
-        return (
-          <div className="fixed inset-x-0 bottom-0 z-40 bg-white border-t border-gray-100 pl-24 pr-4 lg:pl-24 lg:pr-12 py-4 flex items-center justify-between">
-            {footerContent}
-            {navButtons}
-          </div>
-        );
+        if (floatingButtons) {
+          return <div className="fixed bottom-0 right-0 lg:right-4 z-40 flex items-center p-4 bg-white">{navButtons}</div>;
+        }
+
+        return <div className="flex items-center justify-end pt-2">{navButtons}</div>;
       })()}
 
     </div>

@@ -117,9 +117,21 @@ export default function GaragistePage({ guideData }) {
           <PageBreadcrumb />
         </div>
         <PageHero
-          title={<>Le bon contrat d&apos;assurance garage commence par un{" "}<em className="italic">simple devis.</em></>}
-          image="/heroes/garage-desktop.webp"
-          mobileImage="/heroes/garage-mobile.webp"
+          images={[
+            // TODO: swap these placeholders for real photos per product once available.
+            {
+              image: "/heroes/garage-desktop.webp", mobileImage: "/heroes/garage-mobile.webp",
+              title: <>Votre assurance <em className="italic">Protect Garage</em> commence par un simple devis.</>,
+            },
+            {
+              image: "/heroes/taxi-desktop.webp", mobileImage: "/heroes/taxi-mobile.webp",
+              title: <>Votre assurance <em className="italic">Convoyeurs</em> commence par un simple devis.</>,
+            },
+            {
+              image: "/heroes/home-desktop.webp", mobileImage: "/heroes/home-mobile.webp",
+              title: <>Votre assurance <em className="italic">Négociants</em> commence par un simple devis.</>,
+            },
+          ]}
           imageAlt="Assurance garage New World Courtage"
           titlePosition="bottom"
           titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[55px]"

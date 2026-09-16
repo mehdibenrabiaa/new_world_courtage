@@ -10,7 +10,8 @@ import CookieBanner from "../components/CookieBanner";
 const bodyFont = Google_Sans_Flex({
   subsets: ["latin"],
   weight: "variable",
-  display: "optional",
+  display: "swap",
+  fallback: ["-apple-system", "Segoe UI", "Roboto", "Helvetica Neue", "Arial", "sans-serif"],
 });
 
 const variants = {
