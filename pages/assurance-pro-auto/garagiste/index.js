@@ -124,11 +124,11 @@ export default function GaragistePage({ guideData }) {
               title: <>Votre assurance <em className="italic">Protect Garage</em> commence par un simple devis.</>,
             },
             {
-              image: "/heroes/taxi-desktop.webp", mobileImage: "/heroes/taxi-mobile.webp",
+              image: "/heroes/garage-convoyeur-desktop.webp", mobileImage: "/heroes/garage-convoyeur-mobile.webp",
               title: <>Votre assurance <em className="italic">Convoyeurs</em> commence par un simple devis.</>,
             },
             {
-              image: "/heroes/home-desktop.webp", mobileImage: "/heroes/home-mobile.webp",
+              image: "/heroes/negociant-automobile-desktop.webp", mobileImage: "/heroes/negociant-automobile-mobile.webp",
               title: <>Votre assurance <em className="italic">Négociants</em> commence par un simple devis.</>,
             },
           ]}

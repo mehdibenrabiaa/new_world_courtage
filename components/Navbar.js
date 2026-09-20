@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react'
+﻿import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import * as NavMenu from '@radix-ui/react-navigation-menu'
@@ -18,7 +18,7 @@ import { NAV_ITEMS } from './navData'
 
 function Logo() {
   return (
-    <Image src="/logos/nwc-logo.svg" alt="New World Courtage" width={182} height={223} className="h-11 w-auto" priority />
+    <Image src="/logos/nwc-logo.svg" alt="New World Courtage" width={182} height={223} className="h-8 w-auto" priority />
   )
 }
 
@@ -206,11 +206,30 @@ function MobileDrawer({ open, onClose }) {
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const headerRef = useRef(null)
+  const [headerHeight, setHeaderHeight] = useState(0)
+
+  // The mega-menu dropdown is positioned fixed to the viewport (see
+  // NavMenu.Content below) rather than absolute-to-header, because Radix's
+  // NavigationMenu internals set their own position on an ancestor between
+  // header and Content, which would otherwise hijack the containing block
+  // and misplace the dropdown. Measuring the real height here instead of a
+  // hardcoded Tailwind class keeps it in sync if the header's padding/
+  // content ever changes again.
+  useEffect(() => {
+    const el = headerRef.current
+    if (!el) return
+    const update = () => setHeaderHeight(el.offsetHeight)
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   return (
     <>
-      <header className="sticky top-0 z-40 h-24 w-full bg-white border-b border-gray-200">
-        <div className="px-4 lg:px-12 2xl:px-24 h-full flex items-center">
+      <header ref={headerRef} className="sticky top-0 z-40 w-full bg-white border-b border-gray-200 py-3">
+        <div className="px-4 lg:px-12 2xl:px-24 flex items-center">
 
           {/* Logo */}
           <Link href="/" className="shrink-0 mr-4 lg:mr-10">
@@ -223,11 +242,14 @@ export default function Navbar() {
               {NAV_ITEMS.map((item) => (
                 <NavMenu.Item key={item.id}>
                   <NavMenu.Trigger onPointerDown={(e) => e.preventDefault()} asChild>
-                    <Button variant="link" className="px-5 py-2 text-base font-semibold data-[state=open]:text-[var(--color-brand)] hover:no-underline">
+                    <Button variant="link" className="px-5 py-2 text-sm font-semibold data-[state=open]:text-[var(--color-brand)] hover:no-underline">
                       {item.label}
                     </Button>
                   </NavMenu.Trigger>
-                  <NavMenu.Content className="fixed top-24 left-0 w-screen bg-white border-b border-gray-200 shadow-lg z-50 [animation:nav-fade-in_0.15s_ease]">
+                  <NavMenu.Content
+                    className="fixed left-0 w-screen bg-white border-b border-gray-200 shadow-lg z-50 [animation:nav-fade-in_0.15s_ease]"
+                    style={{ top: headerHeight }}
+                  >
                     <MegaMenuContent item={item} />
                   </NavMenu.Content>
                 </NavMenu.Item>
@@ -238,7 +260,7 @@ export default function Navbar() {
 
           {/* Utility — desktop */}
           <div className="hidden lg:flex items-center gap-3 ml-auto shrink-0">
-            <Button variant="link" asChild className="px-5 py-2 text-base font-semibold hover:no-underline hover:text-[var(--color-text)]">
+            <Button variant="link" asChild className="px-5 py-2 text-sm font-semibold hover:no-underline hover:text-[var(--color-text)]">
               <Link href="/a-propos/">À propos</Link>
             </Button>
             <CtaButton href="/devis/" />
