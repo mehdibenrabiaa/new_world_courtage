@@ -47,9 +47,8 @@ function useMobileFitText() {
 
 const CATEGORIES = [
   { id: "flotte-transport", label: "Flotte & Transport", href: "/assurance-transport/", icon: "/icons/truck.svg" },
-  { id: "pro-auto", label: "Pro de l'auto", href: "/assurance-pro-auto/", icon: "/icons/car.svg" },
+  { id: "pro-auto", label: "Pro de l'automobile", href: "/assurance-pro-auto/", icon: "/icons/car.svg" },
   { id: "construction", label: "Construction", href: "/assurance-construction/", icon: "/icons/building.svg" },
-  { id: "immobilier", label: "Immobilier", href: "/assurance-immobilier/", icon: "/icons/home.svg" },
   { id: "moto", label: "Moto", href: "/assurance-moto/", icon: "/icons/motorcycle.svg" },
 ];
 

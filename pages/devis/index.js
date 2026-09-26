@@ -8,9 +8,8 @@ const cx = "px-4 sm:px-8 lg:px-28 2xl:px-44";
 
 const CATEGORIES = [
   { id: "flotte-transport", label: "Flotte & Transport", href: "/assurance-transport/devis/", icon: "/icons/truck.svg" },
-  { id: "pro-auto",         label: "Pro de l'auto",       href: "/assurance-pro-auto/",         icon: "/icons/car.svg" },
+  { id: "pro-auto",         label: "Pro de l'automobile", href: "/assurance-pro-auto/",         icon: "/icons/car.svg" },
   { id: "construction",     label: "Construction",         href: "/assurance-construction/",     icon: "/icons/building.svg" },
-  { id: "immobilier",       label: "Immobilier",           href: "/assurance-immobilier/",       icon: "/icons/home.svg" },
 ];
 
 function PageBreadcrumb() {

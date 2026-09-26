@@ -304,11 +304,11 @@ export default function GaragisteDevisPage() {
           <Image src="/logos/nwc-logo.svg" alt="New World Courtage" width={120} height={33} className="h-7 w-auto" />
           <a
             href="tel:+33745891865"
-            className="flex items-center gap-2.5 border border-[var(--color-brand)] hover:bg-[var(--color-brand)]/5 text-[var(--color-brand)] rounded-lg px-4 py-2.5 transition-colors"
+            className="flex items-center gap-2 h-10 border border-[var(--color-brand)] hover:bg-[var(--color-brand)]/5 text-[var(--color-brand)] rounded-lg px-3.5 transition-colors"
           >
-            <Phone size={18} className="shrink-0" />
+            <Phone size={15} className="shrink-0" />
             <span className="text-sm font-semibold">07 45 89 18 65</span>
-            <ChevronRight size={16} className="shrink-0 opacity-70" />
+            <ChevronRight size={14} className="shrink-0 opacity-70" />
           </a>
         </div>
       </header>

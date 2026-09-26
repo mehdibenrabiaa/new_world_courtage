@@ -178,59 +178,13 @@ function toISODate(d) {
   return `${y}-${m}-${day}`;
 }
 
-function BookingPanel({ t, leadId, leadUploadToken, bookingDocs = [] }) {
-  const [bookDate, setBookDate] = useState(null);
-  const [bookSlot, setBookSlot] = useState(null);
-  const [slots, setSlots] = useState([]);
-  const [loadingSlots, setLoadingSlots] = useState(false);
-  const [booking, setBooking] = useState(false);
-  const [bookError, setBookError] = useState(null);
-  const [confirmedBooking, setConfirmedBooking] = useState(null);
+// Just the document-upload half of the old combined booking panel — shown
+// on the Finalisation tab itself, which is now upload-only (see
+// bookingStepLabel below for where the calendar/slot-picking moved to).
+function DocumentUploadPanel({ t, leadId, leadUploadToken, bookingDocs = [] }) {
   const [documentUploads, setDocumentUploads] = useState({});
   const [uploadingFiles, setUploadingFiles] = useState([]);
   const hasUploadedDocs = (documentUploads.documents?.length ?? 0) > 0;
-
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  function isDisabled(date) {
-    const d = date.getDay();
-    return date <= today || d === 0 || d === 6;
-  }
-
-  function handleDate(date) {
-    setBookDate(date);
-    setBookSlot(null);
-    setBookError(null);
-  }
-
-  // Real availability from the consultants table (see backend
-  // routers/consultants.py) instead of a placeholder pattern — a slot only
-  // shows as free if at least one active consultant has no booking there yet.
-  useEffect(() => {
-    if (!bookDate) return;
-    let cancelled = false;
-    setLoadingSlots(true);
-    fetchAvailability(toISODate(bookDate))
-      .then((data) => { if (!cancelled) setSlots(data.slots); })
-      .catch(() => { if (!cancelled) setSlots(SLOTS.map((s) => ({ time: s, available: false }))); })
-      .finally(() => { if (!cancelled) setLoadingSlots(false); });
-    return () => { cancelled = true; };
-  }, [bookDate]);
-
-  function handleConfirm() {
-    if (!bookDate || !bookSlot) return;
-    setBooking(true);
-    setBookError(null);
-    bookConsultation({ date: toISODate(bookDate), time: bookSlot, leadId })
-      .then((res) => setConfirmedBooking(res))
-      .catch((err) => {
-        setBookError(err.message || "Ce créneau n'est plus disponible, merci d'en choisir un autre.");
-        setBookSlot(null);
-        fetchAvailability(toISODate(bookDate)).then((data) => setSlots(data.slots)).catch(() => {});
-      })
-      .finally(() => setBooking(false));
-  }
 
   function handleDocumentUpload(files) {
     if (!files.length || !leadId || !leadUploadToken) return;
@@ -273,39 +227,15 @@ function BookingPanel({ t, leadId, leadUploadToken, bookingDocs = [] }) {
     });
   }
 
-  if (confirmedBooking) {
-    const [y, m, d] = confirmedBooking.date.split("-").map(Number);
-    const confirmedDate = new Date(y, m - 1, d);
-    return (
-      <div className="flex flex-col items-center gap-5 py-10 text-center">
-        <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center">
-          <CalendarDays size={28} className="text-green-600" />
-        </div>
-        <div>
-          <h3 className={`text-xl font-semibold mb-2 ${t.successHeading}`}>Rendez-vous confirmé !</h3>
-          <p className={`text-base ${t.successBody}`}>
-            Nous vous appellerons le{" "}
-            <span className={`font-semibold ${t.successHeading}`}>{fmtDate(confirmedDate)}</span>
-            {" "}à <span className={`font-semibold ${t.successHeading}`}>{confirmedBooking.time}</span>.
-          </p>
-          <p className={`text-sm mt-1 ${t.successBody}`}>Un e-mail de confirmation vous sera envoyé.</p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col gap-8">
 
-      {/* Header — no "success" framing here on purpose: the one-and-only
-          confirmation is "Rendez-vous confirmé !" below, once they've
-          actually picked a slot, so it isn't shown twice. */}
       <div className="flex flex-col items-center gap-2 text-center">
-        <CalendarDays size={40} className="text-[var(--color-brand)]" />
-        <h3 className={`text-xl font-semibold ${t.successHeading}`}>Choisissez un créneau</h3>
+        <Upload size={40} className="text-[var(--color-brand)]" />
+        <h3 className={`text-xl font-semibold ${t.successHeading}`}>Transmettez vos documents</h3>
         <p className={`text-base max-w-sm ${t.successBody}`}>
-          Un de nos experts va vous contacter dans les plus brefs délais. Pour être sûr de vous
-          joindre au bon moment, proposez-nous un créneau ci-dessous.
+          Votre demande a été envoyée. Ajoutez dès maintenant les documents nécessaires à
+          l&apos;étude de votre dossier, puis choisissez un créneau d&apos;appel à l&apos;étape suivante.
         </p>
       </div>
 
@@ -391,6 +321,100 @@ function BookingPanel({ t, leadId, leadUploadToken, bookingDocs = [] }) {
           </div>
         </div>
       )}
+
+    </div>
+  );
+}
+
+// The calendar/slot-picking half of the old combined booking panel — its
+// own hidden step (bookingStepLabel) right after Finalisation, reached only
+// by clicking "Suivant" there, never shown as a tab of its own.
+function BookingCalendarPanel({ t, leadId }) {
+  const [bookDate, setBookDate] = useState(null);
+  const [bookSlot, setBookSlot] = useState(null);
+  const [slots, setSlots] = useState([]);
+  const [loadingSlots, setLoadingSlots] = useState(false);
+  const [booking, setBooking] = useState(false);
+  const [bookError, setBookError] = useState(null);
+  const [confirmedBooking, setConfirmedBooking] = useState(null);
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  function isDisabled(date) {
+    const d = date.getDay();
+    return date <= today || d === 0 || d === 6;
+  }
+
+  function handleDate(date) {
+    setBookDate(date);
+    setBookSlot(null);
+    setBookError(null);
+  }
+
+  // Real availability from the consultants table (see backend
+  // routers/consultants.py) instead of a placeholder pattern — a slot only
+  // shows as free if at least one active consultant has no booking there yet.
+  useEffect(() => {
+    if (!bookDate) return;
+    let cancelled = false;
+    setLoadingSlots(true);
+    fetchAvailability(toISODate(bookDate))
+      .then((data) => { if (!cancelled) setSlots(data.slots); })
+      .catch(() => { if (!cancelled) setSlots(SLOTS.map((s) => ({ time: s, available: false }))); })
+      .finally(() => { if (!cancelled) setLoadingSlots(false); });
+    return () => { cancelled = true; };
+  }, [bookDate]);
+
+  function handleConfirm() {
+    if (!bookDate || !bookSlot) return;
+    setBooking(true);
+    setBookError(null);
+    bookConsultation({ date: toISODate(bookDate), time: bookSlot, leadId })
+      .then((res) => setConfirmedBooking(res))
+      .catch((err) => {
+        setBookError(err.message || "Ce créneau n'est plus disponible, merci d'en choisir un autre.");
+        setBookSlot(null);
+        fetchAvailability(toISODate(bookDate)).then((data) => setSlots(data.slots)).catch(() => {});
+      })
+      .finally(() => setBooking(false));
+  }
+
+  if (confirmedBooking) {
+    const [y, m, d] = confirmedBooking.date.split("-").map(Number);
+    const confirmedDate = new Date(y, m - 1, d);
+    return (
+      <div className="flex flex-col items-center gap-5 py-10 text-center">
+        <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center">
+          <CalendarDays size={28} className="text-green-600" />
+        </div>
+        <div>
+          <h3 className={`text-xl font-semibold mb-2 ${t.successHeading}`}>Rendez-vous confirmé !</h3>
+          <p className={`text-base ${t.successBody}`}>
+            Nous vous appellerons le{" "}
+            <span className={`font-semibold ${t.successHeading}`}>{fmtDate(confirmedDate)}</span>
+            {" "}à <span className={`font-semibold ${t.successHeading}`}>{confirmedBooking.time}</span>.
+          </p>
+          <p className={`text-sm mt-1 ${t.successBody}`}>Un e-mail de confirmation vous sera envoyé.</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-8">
+
+      {/* Header — no "success" framing here on purpose: the one-and-only
+          confirmation is "Rendez-vous confirmé !" below, once they've
+          actually picked a slot, so it isn't shown twice. */}
+      <div className="flex flex-col items-center gap-2 text-center">
+        <CalendarDays size={40} className="text-[var(--color-brand)]" />
+        <h3 className={`text-xl font-semibold ${t.successHeading}`}>Choisissez un créneau</h3>
+        <p className={`text-base max-w-sm ${t.successBody}`}>
+          Un de nos experts va vous contacter dans les plus brefs délais. Pour être sûr de vous
+          joindre au bon moment, proposez-nous un créneau ci-dessous.
+        </p>
+      </div>
 
       {/* Calendar + slots */}
       <Card className="rounded-xl border border-gray-100 shadow-none">
@@ -592,11 +616,11 @@ function formatAnswerValue(step, value) {
 // with zero visible fields (e.g. every question in it was URL-prefilled or
 // none of it applies to the selected products), and returns the first
 // visible section index (or an out-of-bounds index).
-function findVisibleSectionIndex(sections, steps, fromIdx, dir, answers, selectedProducts, pinnedSection) {
+function findVisibleSectionIndex(sections, steps, fromIdx, dir, answers, selectedProducts, pinnedSections = []) {
   let i = fromIdx;
   while (
     i >= 0 && i < sections.length &&
-    sections[i] !== pinnedSection &&
+    !pinnedSections.includes(sections[i]) &&
     sectionFields(steps, sections[i], answers, selectedProducts).length === 0
   ) {
     i += dir;
@@ -691,7 +715,7 @@ function packFieldsAvoidingGaps(fields) {
 // entry can push the sum over 100% or go negative.
 const EMPTY_ASSOCIE = { nom: "", pct: "", civilite: "", naissance: "", commune: "" };
 
-function AssocieCapitalField({ s, answer, setAnswer, theme, rowErrors }) {
+function AssocieCapitalField({ s, answer, setAnswer, theme, rowErrors, defaultFirstName }) {
   const committed = Array.isArray(answer) ? answer : [];
 
   const slots = [];
@@ -702,7 +726,12 @@ function AssocieCapitalField({ s, answer, setAnswer, theme, rowErrors }) {
     if (sum >= 100) break;
   }
   if (slots.length === 0 || (slots[slots.length - 1]?.pct !== "" && sum < 100)) {
-    slots.push({ ...EMPTY_ASSOCIE });
+    // Associé 1 only — the name already entered earlier in this same
+    // section (représentant légal) is very often the majority/only
+    // associate, so it's pre-filled here to save re-typing it; every
+    // associate added after this one starts blank as usual.
+    const isFirstEverSlot = committed.length === 0 && slots.length === 0;
+    slots.push({ ...EMPTY_ASSOCIE, nom: isFirstEverSlot ? (defaultFirstName || "") : "" });
   }
 
   function handleChange(i, field, raw) {
@@ -813,39 +842,6 @@ function AssocieCapitalField({ s, answer, setAnswer, theme, rowErrors }) {
 // deleting every row — that's respected as-is instead of resurrecting rows
 // they just removed.
 const REPEATING_TABLE_FIELDS = {
-  garage_historique_contrats: {
-    addLabel: "Ajouter un contrat",
-    removeLabel: "Supprimer ce contrat",
-    initialRows: 2,
-    hideLabel: true, // eyebrow above already carries the heading
-    columns: [
-      { key: "compagnie", label: "Compagnie d'assurance", type: "text", placeholder: "Ex : AXA, Allianz…" },
-      { key: "dateDebut", label: "Date début", type: "date" },
-      { key: "dateEcheance", label: "Date d'échéance", type: "date" },
-    ],
-  },
-  convoyeur_historique_contrats_table: {
-    addLabel: "Ajouter un contrat",
-    removeLabel: "Supprimer ce contrat",
-    initialRows: 2,
-    hideLabel: true, // eyebrow above already carries the heading
-    columns: [
-      { key: "compagnie", label: "Compagnie", type: "text", placeholder: "Ex : AXA, Allianz…" },
-      { key: "dateDebut", label: "Date début", type: "date" },
-      { key: "dateEcheance", label: "Date d'échéance", type: "date" },
-    ],
-  },
-  negociant_historique_contrats_table: {
-    addLabel: "Ajouter un contrat",
-    removeLabel: "Supprimer ce contrat",
-    initialRows: 2,
-    hideLabel: true, // eyebrow above already carries the heading
-    columns: [
-      { key: "compagnie", label: "Compagnie", type: "text", placeholder: "Ex : AXA, Allianz…" },
-      { key: "dateDebut", label: "Date début", type: "date" },
-      { key: "dateEcheance", label: "Date d'échéance", type: "date" },
-    ],
-  },
   convoyeur_conducteurs_table: {
     addLabel: "Ajouter un conducteur",
     removeLabel: "Supprimer ce conducteur",
@@ -885,7 +881,7 @@ const REPEATING_TABLE_FIELDS = {
   garage_flotte_vehicules_table: {
     addLabel: "Ajouter un véhicule",
     removeLabel: "Supprimer ce véhicule",
-    initialRows: 2,
+    initialRows: 1,
     showIndex: true,
     columns: [
       { key: "immatriculation", label: "Immatriculation", type: "text", placeholder: "Ex : AB-123-CD" },
@@ -905,20 +901,30 @@ const REPEATING_TABLE_FIELDS = {
       },
     ],
   },
-  garage_plaques_w_table: {
-    addLabel: "Ajouter une plaque",
-    removeLabel: "Supprimer cette plaque",
-    initialRows: 2,
-    columns: [
-      { key: "numero", label: "N° de plaque W", type: "text", placeholder: "Ex : W123456" },
-      { key: "dateDelivrance", label: "Date de délivrance", type: "date" },
-      { key: "dateSortie", label: "Date de sortie", type: "date" },
-    ],
-  },
 };
 
 function emptyRepeatingRow(columns) {
   return Object.fromEntries(columns.map(c => [c.key, ""]));
+}
+
+// French plate format: "AA-123-AA" — 2 letters, 3 digits, 2 letters, each
+// hyphen inserted automatically the moment its preceding group is complete
+// (same masking approach as the SIRET/plaque-W fields above). Anything that
+// doesn't fit its slot — a digit typed before the first 2 letters, a
+// manually-typed hyphen, lowercase — is simply dropped rather than kept.
+function formatImmatriculation(raw) {
+  if (raw === "") return "";
+  const cleaned = raw.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  let letters1 = "", digits = "", letters2 = "";
+  for (const ch of cleaned) {
+    if (/[A-Z]/.test(ch) && letters1.length < 2 && digits.length === 0) letters1 += ch;
+    else if (/[0-9]/.test(ch) && letters1.length === 2 && digits.length < 3) digits += ch;
+    else if (/[A-Z]/.test(ch) && digits.length === 3 && letters2.length < 2) letters2 += ch;
+  }
+  let result = letters1 + (letters1.length === 2 ? "-" : "");
+  result += digits + (digits.length === 3 ? "-" : "");
+  result += letters2;
+  return result;
 }
 
 function RepeatingTableField({ s, answer, setAnswer, theme, config, rowErrors }) {
@@ -987,7 +993,11 @@ function RepeatingTableField({ s, answer, setAnswer, theme, config, rowErrors })
                         inputMode={col.type === "number" ? "decimal" : undefined}
                         min={col.type === "number" ? 0 : undefined}
                         value={row[col.key]}
-                        onChange={e => updateRow(i, col.key, e.target.value)}
+                        onChange={e => {
+                          let v = e.target.value;
+                          if (col.key === "immatriculation") v = formatImmatriculation(v);
+                          updateRow(i, col.key, v);
+                        }}
                         placeholder={col.placeholder}
                         className={`bg-white h-10 rounded-none ${fieldErr(i, col.key) ? errBorder : ""}`}
                       />
@@ -1018,7 +1028,10 @@ function RepeatingTableField({ s, answer, setAnswer, theme, config, rowErrors })
         <Plus size={16} /> {addLabel}
       </button>
       {rowErrors?.some(r => Object.values(r).some(Boolean)) && (
-        <p className="text-xs text-[var(--color-error)]">Merci de compléter tous les champs de chaque ligne.</p>
+        <p className="text-xs text-[var(--color-error)]">
+          Merci de compléter tous les champs de chaque ligne
+          {columns.some(c => c.key === "immatriculation") && " (immatriculation au format AA-123-AA)"}.
+        </p>
       )}
     </div>
   );
@@ -1097,12 +1110,22 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   // shows at all, rather than being an unreachable dead end).
   const sections = [...new Set(wizardSteps.map(s => s.section).filter(Boolean))]
     .filter(sec => sectionFields(wizardSteps, sec, answers, selectedProducts).length > 0);
-  // "Finalisation" (submit + booking/upload) is a pseudo-section: it has no
-  // catalog questions of its own, so it's appended unconditionally rather
-  // than going through the sectionFields()>0 filter above, and
-  // findVisibleSectionIndex is told never to auto-skip past it.
-  if (finalStepLabel) sections.push(finalStepLabel);
+  // "Finalisation" (document upload) and the booking step right after it
+  // are both pseudo-sections with no catalog questions of their own, so
+  // they're appended unconditionally rather than going through the
+  // sectionFields()>0 filter above. The booking step is deliberately never
+  // given its own tab (see sectionTabsBar below) — from the tabs bar's
+  // point of view it doesn't exist, it's just where "Suivant" on
+  // Finalisation goes — and findVisibleSectionIndex is told never to
+  // auto-skip past either of them.
+  const bookingStepLabel = finalStepLabel ? `${finalStepLabel}__booking` : null;
+  const pinnedSections = [finalStepLabel, bookingStepLabel].filter(Boolean);
+  if (finalStepLabel) sections.push(finalStepLabel, bookingStepLabel);
   const currentSection = sections[stepIdx];
+  // What the tabs bar/mobile caption should treat as "active" — the hidden
+  // booking step visually belongs to Finalisation, since it has no tab of
+  // its own to highlight.
+  const displaySection = currentSection === bookingStepLabel ? finalStepLabel : currentSection;
   const visibleFields = sectionFields(wizardSteps, currentSection, answers, selectedProducts);
   const prefilledFields = prefilledSectionFields(wizardSteps, currentSection);
   const { generic: genericFields, groups: productGroups } = groupFieldsByProduct(visibleFields, selectedProducts);
@@ -1110,7 +1133,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     const idx = productsGateField?.values?.indexOf(value) ?? -1;
     return idx >= 0 ? productsGateField.options[idx] : value;
   };
-  const isLastStep = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts, finalStepLabel) >= sections.length;
+  const isLastStep = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts, pinnedSections) >= sections.length;
   const progress = Math.round(((stepIdx + 1) / sections.length) * 100);
 
   // Reaching the Finalisation tab *is* the submit action — the lead is
@@ -1266,15 +1289,47 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
           ? answers[s.id]
           : Array.from({ length: initialRows }, () => emptyRepeatingRow(columns));
         const rowErrors = vals.map(row =>
-          Object.fromEntries(columns.map(col => [col.key, !row?.[col.key]]))
+          Object.fromEntries(columns.map(col => [
+            col.key,
+            !row?.[col.key] || (col.key === "immatriculation" && !/^[A-Z]{2}-\d{3}-[A-Z]{2}$/.test(row[col.key])),
+          ]))
         );
         if (rowErrors.some(r => Object.values(r).some(Boolean))) newErrors[s.id] = rowErrors;
         continue;
       }
       const ans = answers[s.id];
       const isEmpty = s.type === "checkbox" ? !Array.isArray(ans) || ans.length === 0 : (ans ?? "") === "";
-      if (isEmpty) newErrors[s.id] = "Ce champ est requis.";
+      if (isEmpty) {
+        newErrors[s.id] = "Ce champ est requis.";
+      } else if (s.key === "siret" && String(ans).replace(/\D/g, "").length !== 14) {
+        // A SIRET is always exactly 14 digits (9-digit SIREN + 5-digit NIC)
+        // — the input already strips non-digits and caps at 14 as you type
+        // (see the onChange handler below), so this only fires on a SIRET
+        // left shorter than that.
+        newErrors[s.id] = "Le SIRET doit contenir 14 chiffres.";
+      } else if (s.key === "garage_plaque_w" && !/^W-\d{3}-[A-Z]{2}$/.test(String(ans))) {
+        // Fixed shape enforced as you type (see the onChange handler
+        // below) — this only fires when it's left incomplete (e.g. fewer
+        // than 3 digits or 2 letters typed).
+        newErrors[s.id] = "Le format doit être W suivi de 3 chiffres puis 2 lettres (ex : W-123-AB).";
+      }
     }
+
+    // Cross-field: the current contract's start date must come before its
+    // own échéance — both are ISO "YYYY-MM-DD" strings (DatePickerInput's
+    // format), so a plain string comparison already sorts chronologically.
+    // Only checked once both fields are individually valid, so this never
+    // masks the plainer "this field is required" error underneath it.
+    const startField = visibleFields.find(f => f.key === "garage_date_debut_contrat_actuel");
+    const endField = visibleFields.find(f => f.key === "garage_date_echeance_contrat_actuel");
+    if (startField && endField && !newErrors[startField.id] && !newErrors[endField.id]) {
+      const startVal = answers[startField.id];
+      const endVal = answers[endField.id];
+      if (startVal && endVal && startVal >= endVal) {
+        newErrors[startField.id] = "La date de début du contrat doit être antérieure à la date d'échéance.";
+      }
+    }
+
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       scrollToFirstError(visibleFields, newErrors);
@@ -1282,7 +1337,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     }
 
     setErrors({});
-    const next = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts, finalStepLabel);
+    const next = findVisibleSectionIndex(sections, wizardSteps, stepIdx + 1, 1, answers, selectedProducts, pinnedSections);
     if (next >= sections.length) {
       clearStoredProgress(storageKey);
       setSubmitted(true);
@@ -1306,7 +1361,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   // follow-up press of the actual browser Back button continues stepping
   // back instead of bouncing forward again through an entry we just added.
   function handleBack() {
-    const prev = findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts, finalStepLabel);
+    const prev = findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts, pinnedSections);
     if (prev >= 0 || gateFields.length > 0) {
       setErrors({});
       router.back();
@@ -1520,10 +1575,20 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                 />
               )}
 
-              {/* Multi-associate % détention du capital */}
-              {s.key === "pct_detention_capital" && (
-                <AssocieCapitalField s={s} answer={answer} setAnswer={setAnswer} theme={theme} rowErrors={Array.isArray(errors[s.id]) ? errors[s.id] : null} />
-              )}
+              {/* Multi-associate % détention du capital — Associé 1 defaults
+                  to whatever name was already entered for "représentant
+                  légal" earlier in this same section/URL prefill. */}
+              {s.key === "pct_detention_capital" && (() => {
+                const repLegalStep = wizardSteps.find(f => f.key === "representant_legal");
+                const defaultFirstName = repLegalStep ? answers[repLegalStep.id] : "";
+                return (
+                  <AssocieCapitalField
+                    s={s} answer={answer} setAnswer={setAnswer} theme={theme}
+                    rowErrors={Array.isArray(errors[s.id]) ? errors[s.id] : null}
+                    defaultFirstName={defaultFirstName}
+                  />
+                );
+              })()}
 
               {/* Generic fillable tables — previous contracts, sinistres, fleet vehicles, etc. */}
               {s.key in REPEATING_TABLE_FIELDS && (
@@ -1543,7 +1608,30 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                     onChange={e => {
                       let v = e.target.value;
                       if (s.inputType === "tel") v = v.replace(/[^\d\s+]/g, "");
-                      if (s.key === "siret") v = v.replace(/\D/g, "").slice(0, 14);
+                      // Digits only — a typed space (or anything else) is
+                      // dropped rather than kept, then the 3-3-3-5 grouping
+                      // is re-applied automatically so the field always
+                      // shows "123 456 789 00012" without the user ever
+                      // having typed a space themselves.
+                      if (s.key === "siret") v = formatAnswerValue(s, v.replace(/\D/g, "").slice(0, 14));
+                      if (s.key === "garage_plaque_w" && v !== "") {
+                        // Fixed shape: "W-" + 3 digits + "-" + 2 letters —
+                        // every character typed is routed into whichever
+                        // slot it fits (digits fill first, then letters,
+                        // any hyphen the user types is just stripped along
+                        // with everything else non-alphanumeric), and both
+                        // hyphens are (re)inserted automatically — the
+                        // second one appears the moment the 3rd digit is
+                        // typed, not before.
+                        let cleaned = v.toUpperCase().replace(/[^A-Z0-9]/g, "");
+                        if (cleaned.startsWith("W")) cleaned = cleaned.slice(1);
+                        let digits = "", letters = "";
+                        for (const ch of cleaned) {
+                          if (/[0-9]/.test(ch) && digits.length < 3 && letters.length === 0) digits += ch;
+                          else if (/[A-Z]/.test(ch) && letters.length < 2) letters += ch;
+                        }
+                        v = "W-" + digits + (digits.length === 3 ? "-" : "") + letters;
+                      }
                       if (s.inputType === "number" && v !== "" && parseFloat(v) < 0) v = "0";
                       if (s.uppercase) v = v.toUpperCase();
                       setAnswer(s.id, v);
@@ -1580,17 +1668,22 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   // Section tabs — full icon+label tabs on tablet/desktop; on mobile,
   // icon-only tabs (so all sections always fit in one row with no
   // side-scrolling) plus a caption naming the current section. The last
-  // section (e.g. Finalisation) stays visibly active as the current step
-  // throughout booking instead of the tabs just disappearing.
-  const sectionTabsBar = sections.length > 1 && (
+  // visible section (Finalisation) stays visibly active as the current
+  // step throughout booking instead of the tabs just disappearing — and
+  // the hidden booking step right after it (see bookingStepLabel) never
+  // gets a tab of its own at all, so it's filtered out here entirely
+  // rather than just not-highlighted.
+  const visibleTabSections = sections.filter(s => s !== bookingStepLabel);
+  const displayStepIdx = visibleTabSections.indexOf(displaySection);
+  const sectionTabsBar = visibleTabSections.length > 1 && (
     <>
       <div
         className="hidden sm:grid gap-0.5 sticky top-16 z-30 bg-white pt-3 pb-3"
-        style={{ gridTemplateColumns: `repeat(${sections.length}, minmax(0, 1fr))` }}
+        style={{ gridTemplateColumns: `repeat(${visibleTabSections.length}, minmax(0, 1fr))` }}
       >
-        {sections.map((section, i) => {
+        {visibleTabSections.map((section) => {
           const Icon = SECTION_ICONS[section] || Circle;
-          const isActive = i === stepIdx;
+          const isActive = section === displaySection;
           return (
             <div
               key={section}
@@ -1608,11 +1701,11 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
       <div className="sm:hidden flex flex-col gap-2 sticky top-16 z-30 bg-white pt-3 pb-3">
         <div
           className="grid gap-0.5"
-          style={{ gridTemplateColumns: `repeat(${sections.length}, minmax(0, 1fr))` }}
+          style={{ gridTemplateColumns: `repeat(${visibleTabSections.length}, minmax(0, 1fr))` }}
         >
-          {sections.map((section, i) => {
+          {visibleTabSections.map((section) => {
             const Icon = SECTION_ICONS[section] || Circle;
-            const isActive = i === stepIdx;
+            const isActive = section === displaySection;
             return (
               <div
                 key={section}
@@ -1626,7 +1719,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
           })}
         </div>
         <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 text-center">
-          Étape {stepIdx + 1}/{sections.length} · {currentSection}
+          Étape {displayStepIdx + 1}/{visibleTabSections.length} · {displaySection}
         </p>
       </div>
     </>
@@ -1663,7 +1756,9 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
           Each block also stays scoped to its own group either way. */}
       <div key={currentSection} className={`flex flex-col gap-16 ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}>
         {currentSection === finalStepLabel ? (
-          <BookingPanel t={t} leadId={createdLeadId} leadUploadToken={createdLeadUploadToken} bookingDocs={bookingDocs} />
+          <DocumentUploadPanel t={t} leadId={createdLeadId} leadUploadToken={createdLeadUploadToken} bookingDocs={bookingDocs} />
+        ) : currentSection === bookingStepLabel ? (
+          <BookingCalendarPanel t={t} leadId={createdLeadId} />
         ) : (
           <>
             {genericFields.length > 0 && (
@@ -1698,16 +1793,18 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
         )}
       </div>
 
-      {/* Navigation — none on the Finalisation tab: landing there already
-          submits (see the effect above), so there's nothing left to
-          validate/advance and no "back" once the lead exists. */}
-      {currentSection !== finalStepLabel && (() => {
+      {/* Navigation — none on the hidden booking step: landing there is
+          only ever reached via the "Suivant" click below, and there's
+          nothing left to validate/advance past it. Finalisation itself
+          keeps normal Suivant/Retour — clicking Suivant there is what
+          moves on to the booking step. */}
+      {currentSection !== bookingStepLabel && (() => {
         const navButtons = (
-          <ButtonGroup className="max-w-full">
+          <ButtonGroup className="max-w-full rounded-tl-[var(--radius)]">
             <Button
               variant="outline"
               onClick={handleBack}
-              disabled={findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts, finalStepLabel) < 0 && gateFields.length === 0}
+              disabled={findVisibleSectionIndex(sections, wizardSteps, stepIdx - 1, -1, answers, selectedProducts, pinnedSections) < 0 && gateFields.length === 0}
               className="h-12 px-5 gap-1"
             >
               <ChevronLeft size={16} />

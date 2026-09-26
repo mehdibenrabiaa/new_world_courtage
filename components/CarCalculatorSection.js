@@ -7,6 +7,7 @@ export default function CarCalculatorSection({
   variant = "vehicle",
   title = <>Recevez votre devis d&apos;assurance auto <em className={`italic ${libreCaslon.className}`}>gratuitement.</em></>,
   subtitle = "Votre devis assurance auto au même prix que chez l'assureur, tout simplement.",
+  badgeTitle = "0 frais. 0 commission.",
   children,
 }) {
   return (
@@ -26,7 +27,7 @@ export default function CarCalculatorSection({
 
             <div className="inline-flex items-start bg-white/10 border border-white/20 rounded-xl px-5 py-4 max-w-lg">
               <div className="flex flex-col gap-1">
-                <p className="text-sm font-semibold text-white">0 frais. 0 commission.</p>
+                <p className="text-sm font-semibold text-white">{badgeTitle}</p>
                 <p className="text-sm text-white leading-snug">
                   {subtitle}
                 </p>

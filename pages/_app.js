@@ -23,11 +23,26 @@ const NO_NAV_ROUTES = [
   "/assurance-transport/devis",
   "/assurance-transport/taxi/devis",
   "/assurance-pro-auto/garagiste/devis",
+  "/connexion",
+  "/inscription",
+  "/mot-de-passe-oublie",
+  "/reinitialiser-mot-de-passe",
+  "/oauth-callback",
+  "/espace-client",
+  "/espace-partenaire",
 ];
+
+// Espace client/partenaire behave like a small tabbed dashboard (see
+// components/EspaceClientLayout.js) rather than page-to-page marketing
+// navigation — the fade-transition below is the right call between two
+// different articles/products, but between tabs of the same dashboard it
+// just reads as the whole page blinking, so those routes skip it entirely.
+const NO_TRANSITION_ROUTES = ["/espace-client", "/espace-partenaire"];
 
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const hideNav = NO_NAV_ROUTES.some((r) => router.pathname.startsWith(r));
+  const skipTransition = NO_TRANSITION_ROUTES.some((r) => router.pathname.startsWith(r));
 
   // NEXT_PUBLIC_APP_VERSION/BUILD_TIME are set once in next.config.js when
   // the server boots (or `next build` runs), so this reflects the deploy,
@@ -52,17 +67,21 @@ export default function MyApp({ Component, pageProps }) {
       </Head>
       {!hideNav && <Navbar />}
       <div className="max-w-[1600px] mx-auto">
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={router.pathname}
-            variants={variants}
-            initial="hidden"
-            animate="visible"
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
-            <Component {...pageProps} />
-          </motion.div>
-        </AnimatePresence>
+        {skipTransition ? (
+          <Component {...pageProps} />
+        ) : (
+          <AnimatePresence mode="wait" initial={false}>
+            <motion.div
+              key={router.pathname}
+              variants={variants}
+              initial="hidden"
+              animate="visible"
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <Component {...pageProps} />
+            </motion.div>
+          </AnimatePresence>
+        )}
         <CookieBanner />
       </div>
 

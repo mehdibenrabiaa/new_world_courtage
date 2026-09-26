@@ -173,6 +173,10 @@ function MobileDrawer({ open, onClose }) {
                 À propos
               </Link>
 
+              <Link href="/connexion/" onClick={onClose} className="block px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-[var(--color-text)]">
+                Se connecter
+              </Link>
+
               <div className="h-px bg-gray-200 mx-5 my-2" />
 
               <div className="px-5 py-3 flex flex-col gap-3">
@@ -262,6 +266,9 @@ export default function Navbar() {
           <div className="hidden lg:flex items-center gap-3 ml-auto shrink-0">
             <Button variant="link" asChild className="px-5 py-2 text-sm font-semibold hover:no-underline hover:text-[var(--color-text)]">
               <Link href="/a-propos/">À propos</Link>
+            </Button>
+            <Button variant="link" asChild className="px-5 py-2 text-sm font-semibold hover:no-underline hover:text-[var(--color-text)]">
+              <Link href="/connexion/">Se connecter</Link>
             </Button>
             <CtaButton href="/devis/" />
           </div>

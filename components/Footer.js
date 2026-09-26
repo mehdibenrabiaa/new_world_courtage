@@ -17,9 +17,8 @@ const TOP_LINKS = [
     items: [
       { label: "Toutes nos assurances", href: "/nos-assurances/" },
       { label: "Flotte & Transport", href: "/assurance-transport/" },
-      { label: "Pro de l'auto", href: "/assurance-pro-auto/" },
+      { label: "Pro de l'automobile", href: "/assurance-pro-auto/" },
       { label: "Construction", href: "/assurance-construction/" },
-      { label: "Immobilier", href: "/assurance-immobilier/" },
       { label: "Calculateur assurance auto", href: "/assurance-transport/calculateur/" },
     ],
   },
@@ -54,7 +53,7 @@ const GUIDE_LINKS = [
     ],
   },
   {
-    heading: "Pro de l'auto",
+    heading: "Pro de l'automobile",
     items: [
       { label: "Assurance garagiste", href: "/assurance-pro-auto/garagiste/" },
       { label: "Assurance carrossier", href: "/assurance-pro-auto/carrossier/" },
@@ -69,15 +68,6 @@ const GUIDE_LINKS = [
       { label: "RC et décennale", href: "/assurance-construction/rc-decennale/" },
       { label: "Dommages ouvrage", href: "/assurance-construction/dommages-ouvrage/" },
       { label: "Assurance engins de chantier", href: "/assurance-construction/engins-chantier/" },
-    ],
-  },
-  {
-    heading: "Immobilier",
-    items: [
-      { label: "Assurance copropriété", href: "/assurance-immobilier/copropriete/" },
-      { label: "Assurance immeuble", href: "/assurance-immobilier/immeuble/" },
-      { label: "Assurance loyers impayés", href: "/assurance-immobilier/loyers-impayes/" },
-      { label: "Assurance syndic", href: "/assurance-immobilier/syndic/" },
     ],
   },
 ];

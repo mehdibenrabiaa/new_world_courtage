@@ -1,11 +1,34 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronRight, ChevronLeft, ImageOffIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { libreCaslon } from "@/lib/fonts";
 import CtaButton from "@/components/CtaButton";
+
+// A missing `image` is already handled by the Icon fallback below — this is
+// for the other case: a URL that's actually set but fails to load (the file
+// was deleted from disk, a bad upload, a stale URL). Without this the
+// browser just shows its own broken-image glyph instead of anything on-brand.
+// `wrapperClassName` sizes the card slot itself (used either way, so the
+// layout doesn't shift on failure); `imgClassName` only applies once the
+// image has actually loaded.
+function CardImage({ src, alt, wrapperClassName, imgClassName }) {
+  const [failed, setFailed] = useState(false);
+  if (!src || failed) {
+    return (
+      <div className={`bg-[var(--color-light)] flex items-center justify-center ${wrapperClassName}`}>
+        <ImageOffIcon size={28} strokeWidth={1.2} className="text-gray-300" />
+      </div>
+    );
+  }
+  return (
+    <div className={wrapperClassName}>
+      <img src={src} alt={alt} loading="lazy" onError={() => setFailed(true)} className={imgClassName} />
+    </div>
+  );
+}
 
 function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imageVariant }) {
   const titleClass = `leading-[1.2] text-[var(--color-text)] ${titleFont === "serif" ? libreCaslon.className : "font-bold"}`;
@@ -20,17 +43,25 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
           <Icon size={64} strokeWidth={1.2} className="text-[var(--color-brand)]" />
         </div>
       ) : imageVariant === "contain" ? (
-        <div className="w-full h-44 bg-[var(--color-light)] flex items-center justify-center p-6 shrink-0">
-          <img src={image} alt={imageAlt} className="max-w-[90px] lg:max-w-[110px] max-h-full object-contain" />
-        </div>
+        <CardImage
+          src={image}
+          alt={imageAlt}
+          wrapperClassName="w-full h-44 flex items-center justify-center p-6 shrink-0"
+          imgClassName="max-w-[90px] lg:max-w-[110px] max-h-full object-contain"
+        />
       ) : Icon ? (
         <>
           <div className="lg:hidden w-full h-44 bg-[var(--color-light)] flex items-center justify-center shrink-0">
             <Icon size={64} strokeWidth={1.2} className="text-[var(--color-brand)]" />
           </div>
           {image ? (
-            <div className="hidden lg:block w-full h-44 relative overflow-hidden shrink-0">
-              <img src={image} alt={imageAlt} loading="lazy" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="hidden lg:block w-full h-44 shrink-0">
+              <CardImage
+                src={image}
+                alt={imageAlt}
+                wrapperClassName="w-full h-44 relative overflow-hidden"
+                imgClassName="absolute inset-0 w-full h-full object-cover"
+              />
             </div>
           ) : (
             <div className="hidden lg:block w-full h-44 bg-[var(--color-light)] flex items-center justify-center shrink-0">
@@ -39,9 +70,12 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
           )}
         </>
       ) : (
-        <div className="w-full h-44 relative overflow-hidden shrink-0">
-          <img src={image} alt={imageAlt} className="absolute inset-0 w-full h-full object-cover" />
-        </div>
+        <CardImage
+          src={image}
+          alt={imageAlt}
+          wrapperClassName="w-full h-44 relative overflow-hidden shrink-0"
+          imgClassName="absolute inset-0 w-full h-full object-cover"
+        />
       );
 
     const inner = (

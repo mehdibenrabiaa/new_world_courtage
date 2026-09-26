@@ -105,37 +105,6 @@ const CONSTRUCTION_CARDS = [
   },
 ];
 
-const IMMOBILIER_CARDS = [
-  {
-    image: "/cards/co-ownership.webp",
-    imageAlt: "Assurance copropriété",
-    title: "Assurance copropriété",
-    description: "Une couverture complète pour les parties communes et la responsabilité civile de la copropriété.",
-    href: "/assurance-immobilier/copropriete/",
-  },
-  {
-    image: "/cards/building-landlord.webp",
-    imageAlt: "Assurance immeuble",
-    title: "Assurance immeuble",
-    description: "Protégez votre patrimoine immobilier locatif contre les sinistres et pertes de loyers.",
-    href: "/assurance-immobilier/immeuble/",
-  },
-  {
-    image: "/cards/unpaid-rent.webp",
-    imageAlt: "Assurance loyers impayés",
-    title: "Assurance loyers impayés",
-    description: "Sécurisez vos revenus locatifs en cas de défaut de paiement de vos locataires.",
-    href: "/assurance-immobilier/loyers-impayes/",
-  },
-  {
-    image: "/cards/property-manager.webp",
-    imageAlt: "Assurance syndic",
-    title: "Assurance syndic",
-    description: "Une couverture dédiée à la responsabilité civile professionnelle des syndics de copropriété.",
-    href: "/assurance-immobilier/syndic/",
-  },
-];
-
 function PageBreadcrumb() {
   return (
     <Breadcrumb className={`${cx} pt-6 pb-2`}>
@@ -200,19 +169,6 @@ export default function NosAssurancesPage() {
           layout="grid"
           cols={4}
           items={CONSTRUCTION_CARDS}
-        />
-
-        <InfoCardsSection
-          title="Assurance"
-          titleItalic="immobilier"
-          subtitle="Copropriété, immeuble, syndic, loyers impayés — sécurisez votre patrimoine immobilier."
-          cardStyle="style2"
-          showLink
-          withContainer
-          titleFont="sans"
-          layout="grid"
-          cols={4}
-          items={IMMOBILIER_CARDS}
         />
 
         <ReadyCta />

@@ -34,33 +34,28 @@ export const NAV_ITEMS = [
   },
   {
     id: 'pro-auto',
-    label: "Pro de l'auto",
+    label: "Pro de l'automobile",
     href: '/assurance-pro-auto/',
     cta: { tagline: "Protégez votre activité automobile professionnelle", button: 'Devis gratuit', href: '/assurance-pro-auto/' },
     sections: [
       {
-        heading: 'Réparation & Entretien',
+        heading: 'Garage',
+        links: [
+          { label: 'Assurance convoyage', href: '/assurance-pro-auto/garagiste/' },
+          { label: 'Assurance dépanneur', href: '/assurance-pro-auto/garagiste/' },
+          { label: 'Assurance négociant automobile', href: '/assurance-pro-auto/garagiste/' },
+          { label: 'Assurance auto-école', href: '/assurance-pro-auto/garagiste/' },
+        ],
+      },
+      {
+        heading: 'Autres activités',
         links: [
           { label: 'Assurance garagiste', href: '/assurance-pro-auto/garagiste/' },
           { label: 'Assurance carrossier', href: '/assurance-pro-auto/garagiste/' },
-          { label: 'Assurance dépanneur', href: '/assurance-pro-auto/garagiste/' },
           { label: 'Assurance contrôleur technique', href: '/assurance-pro-auto/garagiste/' },
           { label: 'Assurance station de lavage', href: '/assurance-pro-auto/garagiste/' },
-        ],
-      },
-      {
-        heading: 'Commerce & Négoce',
-        links: [
-          { label: 'Assurance négociant automobile', href: '/assurance-pro-auto/garagiste/' },
           { label: 'Assurance centre automobile', href: '/assurance-pro-auto/garagiste/' },
           { label: 'Assurance casse automobile', href: '/assurance-pro-auto/garagiste/' },
-        ],
-      },
-      {
-        heading: 'Transport & Services',
-        links: [
-          { label: 'Assurance convoyeur', href: '/assurance-pro-auto/garagiste/' },
-          { label: 'Assurance auto-école', href: '/assurance-pro-auto/garagiste/' },
           { label: 'Assurance société de location de véhicules', href: '/assurance-pro-auto/garagiste/' },
         ],
       },
@@ -98,30 +93,6 @@ export const NAV_ITEMS = [
         links: [
           { label: 'Assurance désamiantage', href: '/assurance-construction/desamiantage/' },
           { label: 'Bureaux & entrepôts', href: '/assurance-construction/bureaux-entrepots/' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'immobilier',
-    label: 'Immobilier',
-    href: '/assurance-immobilier/',
-    cta: { tagline: "Protégez vos biens immobiliers avec la bonne couverture", button: 'Devis gratuit', href: '/assurance-immobilier/' },
-    sections: [
-      {
-        heading: 'Copropriété & Immeuble',
-        links: [
-          { label: 'Assurance copropriété', href: '/assurance-immobilier/copropriete/' },
-          { label: 'Assurance copropriétaire', href: '/assurance-immobilier/coproprietaire/' },
-          { label: 'Assurance syndic', href: '/assurance-immobilier/syndic/' },
-          { label: 'Assurance immeuble', href: '/assurance-immobilier/immeuble/' },
-        ],
-      },
-      {
-        heading: 'Couvertures locatives',
-        links: [
-          { label: 'Assurance loyers impayés', href: '/assurance-immobilier/loyers-impayes/' },
-          { label: 'Assurance multirisques immeuble', href: '/assurance-immobilier/multirisques-immeuble/' },
         ],
       },
     ],

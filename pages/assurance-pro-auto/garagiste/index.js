@@ -143,7 +143,8 @@ export default function GaragistePage({ guideData }) {
 
         <CarCalculatorSection
           title={<>Recevez votre devis d&apos;assurance garage <em className="italic">gratuitement.</em></>}
-          subtitle="Mécanicien, carrossier, centre d'entretien — un devis personnalisé pour votre garage, au même prix que chez l'assureur."
+          badgeTitle="Devis personnalisé"
+          subtitle="Mécanicien, carrossier, centre d'entretien — adapté à votre activité, au même prix que chez l'assureur."
         >
           <GarageIdentityForm redirectTo="/assurance-pro-auto/garagiste/devis/" />
         </CarCalculatorSection>
