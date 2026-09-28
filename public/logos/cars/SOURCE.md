@@ -1,0 +1,1 @@
+Car brand logos sourced from https://github.com/filippofilip95/car-logos-dataset (original images from Carlogos.org). Per-image source URLs are recorded in lib/car-logos.json. Brand trademarks belong to their respective owners.

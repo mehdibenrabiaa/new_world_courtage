@@ -20,6 +20,7 @@ const variants = {
 };
 
 const NO_NAV_ROUTES = [
+  "/assurance-auto/devis",
   "/assurance-transport/devis",
   "/assurance-transport/taxi/devis",
   "/assurance-pro-auto/garagiste/devis",

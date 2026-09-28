@@ -9,18 +9,30 @@ import { libreCaslon } from "@/lib/fonts";
 // back to the top-level `title` prop.
 const ROTATE_INTERVAL_MS = 4000;
 
-export default function PageHero({ title, image = "/about-pic.jpg", mobileImage, images, imageAlt = "", titlePosition = "top", titleClassName = "", titleWidth = "lg:w-[80%]" }) {
+export default function PageHero({ title, image = "/about-pic.jpg", mobileImage, images, imageAlt = "", titlePosition = "top", titleClassName = "", titleWidth = "lg:w-[80%]", initialIndex = 0, autoRotate = true }) {
   const slides = images && images.length > 0 ? images : [{ image, mobileImage }];
-  const [active, setActive] = useState(0);
+  const [active, setActive] = useState(initialIndex);
   const currentTitle = slides[active].title ?? title;
 
+  // useState(initialIndex) only applies on mount — clicking another navbar
+  // link (e.g. convoyage -> négociant) is a client-side query-string-only
+  // navigation on the *same* page/component, not a remount, so without this
+  // the slide would stay frozen on whatever it was until a hard refresh.
   useEffect(() => {
-    if (slides.length < 2) return;
+    setActive(initialIndex);
+  }, [initialIndex]);
+
+  useEffect(() => {
+    // Landing on a specific slide (e.g. via the navbar's ?activite= link —
+    // see the garagiste page) means that's the product the visitor actually
+    // asked for; auto-rotating it away after 4s would undo the whole point
+    // of deep-linking to it.
+    if (!autoRotate || slides.length < 2) return;
     const id = setInterval(() => {
       setActive((i) => (i + 1) % slides.length);
     }, ROTATE_INTERVAL_MS);
     return () => clearInterval(id);
-  }, [slides.length]);
+  }, [slides.length, autoRotate]);
 
   return (
     <section className="w-full py-4">

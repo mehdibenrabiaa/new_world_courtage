@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="1112" viewBox="0 0 512 1112">
+  <rect width="512" height="1112" fill="#0755B7"/>
+  <defs>
+    <polygon id="star" points="0,-28 6.58,-9.06 26.63,-8.65 10.65,3.46 16.46,22.65 0,11.2 -16.46,22.65 -10.65,3.46 -26.63,-8.65 -6.58,-9.06"/>
+  </defs>
+  <g fill="#FFD500" transform="translate(256 300)">
+    <use href="#star" transform="translate(0,-172)"/>
+    <use href="#star" transform="translate(92,-147)"/>
+    <use href="#star" transform="translate(159,-80)"/>
+    <use href="#star" transform="translate(184,12)"/>
+    <use href="#star" transform="translate(159,104)"/>
+    <use href="#star" transform="translate(92,171)"/>
+    <use href="#star" transform="translate(0,196)"/>
+    <use href="#star" transform="translate(-92,171)"/>
+    <use href="#star" transform="translate(-159,104)"/>
+    <use href="#star" transform="translate(-184,12)"/>
+    <use href="#star" transform="translate(-159,-80)"/>
+    <use href="#star" transform="translate(-92,-147)"/>
+  </g>
+  <text x="256" y="930" text-anchor="middle" fill="#fff" font-family="Arial, Helvetica, sans-serif" font-size="350" font-weight="700">F</text>
+</svg>

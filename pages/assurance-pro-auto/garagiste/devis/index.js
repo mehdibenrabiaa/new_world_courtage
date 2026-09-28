@@ -346,6 +346,7 @@ export default function GaragisteDevisPage() {
               onSubmit={handleSubmit}
               theme="light"
               storageKey="garagiste"
+              choiceCardClassName="min-h-20"
               bookingDocs={buildBookingDocs(steps)}
               floatingButtons
               finalStepLabel="Finalisation"

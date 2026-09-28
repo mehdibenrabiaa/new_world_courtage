@@ -1039,7 +1039,7 @@ function RepeatingTableField({ s, answer, setAnswer, theme, config, rowErrors })
 
 // ─────────────────────────────────────────────────────────────────────────────
 
-export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, initialAnswers = {}, theme = "dark", onProgress, onSubmit, footerContent, floatingButtons = false, storageKey, bookingDocs, finalStepLabel }) {
+export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, initialAnswers = {}, theme = "dark", onProgress, onSubmit, footerContent, floatingButtons = false, storageKey, bookingDocs, finalStepLabel, choiceCardClassName }) {
   // Questions already answered via URL params (e.g. redirected here from an
   // identity form that collected name/phone/email/etc.) shouldn't be asked
   // again — mark them as always-skipped so they're filtered out of their
@@ -1067,6 +1067,10 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   const [createdLeadUploadToken, setCreatedLeadUploadToken] = useState(null);
   const [errors, setErrors] = useState({});
   const [hydrated, setHydrated] = useState(false);
+  // True only when this visit actually resumed something saved from a
+  // previous one (not just because storageKey is set) — drives the
+  // "content de vous revoir" banner below.
+  const [restoredFromStorage, setRestoredFromStorage] = useState(false);
 
   const t = TOKENS[theme];
   const router = useRouter();
@@ -1174,8 +1178,21 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
     const mergedAnswers = saved ? { ...saved.answers, ...initialAnswers } : initialAnswers;
     setAnswers(mergedAnswers);
     setHydrated(true);
+    if (saved?.answers && Object.keys(saved.answers).length > 0) setRestoredFromStorage(true);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  // "Repartir de zéro" — drops everything localStorage remembered (but not
+  // the URL-derived initialAnswers, e.g. identity fields from the previous
+  // screen — those aren't "an old visit", they're this one) and sends the
+  // wizard back to its very first screen.
+  function handleStartOver() {
+    clearStoredProgress(storageKey);
+    setAnswers(initialAnswers);
+    setRestoredFromStorage(false);
+    const { step, ...rest } = router.query;
+    router.push({ pathname: router.pathname, query: rest }, undefined, { shallow: true, scroll: true });
+  }
 
   // Slide-in direction for the step transition — derived by comparing this
   // render's step against the last one, so it's correct whether the change
@@ -1412,7 +1429,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                             : "hover:border-[var(--color-brand)]"
                       }`}
                     >
-                      <Field orientation="horizontal">
+                      <Field orientation="horizontal" className={choiceCardClassName}>
                         <FieldContent>
                           <FieldTitle>{opt}</FieldTitle>
                         </FieldContent>
@@ -1465,7 +1482,7 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
                               : "hover:border-[var(--color-brand)] bg-white"
                         }`}
                       >
-                        <Field orientation="horizontal">
+                        <Field orientation="horizontal" className={choiceCardClassName}>
                           <FieldContent>
                             <FieldTitle>{opt}</FieldTitle>
                           </FieldContent>
@@ -1728,6 +1745,22 @@ export default function CarInsuranceForm({ steps: rawSteps = DEFAULT_STEPS, init
   return (
     <>
     <div className="flex flex-col gap-10">
+
+      {restoredFromStorage && (
+        <div className="rounded-lg border border-[var(--color-brand)]/20 bg-[var(--color-brand)]/5 p-5 flex flex-col gap-1.5">
+          <p className="font-semibold text-[var(--color-text)]">Bonjour, content de vous revoir !</p>
+          <p className="text-sm text-gray-600">
+            Nous avons conservé vos informations suite à votre dernière visite. Vérifiez-les et complétez
+            si besoin pour obtenir les offres les plus adaptées à votre situation.
+          </p>
+          <p className="text-sm text-gray-600">
+            Il ne s&apos;agit pas de vous ?{" "}
+            <button type="button" onClick={handleStartOver} className="font-semibold text-[var(--color-brand)] hover:underline">
+              Repartir de zéro
+            </button>
+          </p>
+        </div>
+      )}
 
       {sectionTabsBar}
 

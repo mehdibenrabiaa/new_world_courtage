@@ -56,6 +56,7 @@ const GUIDE_LINKS = [
     heading: "Pro de l'automobile",
     items: [
       { label: "Assurance garagiste", href: "/assurance-pro-auto/garagiste/" },
+      { label: "Assurance négociant automobile", href: "/assurance-pro-auto/garagiste/?activite=negociant" },
       { label: "Assurance carrossier", href: "/assurance-pro-auto/carrossier/" },
       { label: "Assurance auto-école", href: "/assurance-pro-auto/auto-ecole/" },
       { label: "Assurance concessionnaire", href: "/assurance-pro-auto/concessionnaire/" },

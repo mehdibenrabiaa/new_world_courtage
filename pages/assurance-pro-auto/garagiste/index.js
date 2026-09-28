@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { useRouter } from "next/router";
 import PageHero from "@/components/PageHero";
 import CarCalculatorSection from "@/components/CarCalculatorSection";
 import GarageIdentityForm from "@/components/GarageIdentityForm";
@@ -35,6 +36,11 @@ const GARAGISTE_PARTNERS = [
 ];
 
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
+
+// Maps the navbar's ?activite= query param (see navData.js) to the matching
+// slide index in the hero carousel below — index 0 (garage) is the default,
+// so it doesn't need an entry here.
+const HERO_SLIDE_BY_ACTIVITE = { convoyage: 1, negociant: 2 };
 const GUIDE_ICONS = [ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText];
 
 const GUIDE_CARDS = [
@@ -91,6 +97,10 @@ export async function getServerSideProps() {
 // for taxi — collects identity up front and redirects into /devis/ with it
 // as query params (see that page's buildInitialAnswers for how it's read).
 export default function GaragistePage({ guideData }) {
+  const router = useRouter();
+  const cameFromActivite = router.query.activite in HERO_SLIDE_BY_ACTIVITE;
+  const heroInitialIndex = cameFromActivite ? HERO_SLIDE_BY_ACTIVITE[router.query.activite] : 0;
+
   const offerCards = (guideData ?? []).map((g, i) => ({
     ...(g.image_url
       ? { image: g.image_url, imageAlt: g.title }
@@ -117,6 +127,8 @@ export default function GaragistePage({ guideData }) {
           <PageBreadcrumb />
         </div>
         <PageHero
+          initialIndex={heroInitialIndex}
+          autoRotate={!cameFromActivite}
           images={[
             // TODO: swap these placeholders for real photos per product once available.
             {

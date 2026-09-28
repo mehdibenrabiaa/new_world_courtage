@@ -41,16 +41,14 @@ export const NAV_ITEMS = [
       {
         heading: 'Garage',
         links: [
-          { label: 'Assurance convoyage', href: '/assurance-pro-auto/garagiste/' },
-          { label: 'Assurance dépanneur', href: '/assurance-pro-auto/garagiste/' },
-          { label: 'Assurance négociant automobile', href: '/assurance-pro-auto/garagiste/' },
-          { label: 'Assurance auto-école', href: '/assurance-pro-auto/garagiste/' },
+          { label: 'Assurance garagiste', href: '/assurance-pro-auto/garagiste/' },
+          { label: 'Assurance convoyage', href: '/assurance-pro-auto/garagiste/?activite=convoyage' },
+          { label: 'Assurance négociant automobile', href: '/assurance-pro-auto/garagiste/?activite=negociant' },
         ],
       },
       {
         heading: 'Autres activités',
         links: [
-          { label: 'Assurance garagiste', href: '/assurance-pro-auto/garagiste/' },
           { label: 'Assurance carrossier', href: '/assurance-pro-auto/garagiste/' },
           { label: 'Assurance contrôleur technique', href: '/assurance-pro-auto/garagiste/' },
           { label: 'Assurance station de lavage', href: '/assurance-pro-auto/garagiste/' },
