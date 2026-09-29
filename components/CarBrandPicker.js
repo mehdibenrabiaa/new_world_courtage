@@ -7,7 +7,7 @@ import CAR_LOGOS from "@/lib/car-logos.json";
 const FEATURED_BRANDS = ["Renault", "Peugeot", "Citroën", "Volkswagen", "Toyota", "Dacia", "BMW", "Audi"];
 const normalize = (value) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 
-export default function CarBrandPicker({ value, onChange }) {
+export default function CarBrandPicker({ value, onChange, required = false, error }) {
   const [query, setQuery] = useState("");
   const [showAll, setShowAll] = useState(false);
   const search = normalize(query.trim());
@@ -33,10 +33,10 @@ export default function CarBrandPicker({ value, onChange }) {
           <span>{search ? `${visibleBrands.length} marque${visibleBrands.length === 1 ? "" : "s"}` : showAll ? "Toutes les marques" : "Sélection de marques"}</span>
           {value && <span className="flex items-center gap-1 font-medium text-[var(--color-brand)]"><Check size={13} aria-hidden="true" />{value === "other" ? "Autre marque" : value}</span>}
         </div>
-        <div id="brand-logo-grid" role="radiogroup" aria-labelledby="auto-brand-question" className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
+        <div id="brand-logo-grid" role="radiogroup" aria-required={required} aria-invalid={Boolean(error)} aria-describedby={error ? "brand-search-error" : undefined} aria-labelledby="auto-brand-question" className="grid grid-cols-2 gap-2 sm:grid-cols-4 sm:gap-3">
           {visibleBrands.map((name) => (
             <label key={name} className="relative min-w-0 cursor-pointer">
-              <input type="radio" name="brand" value={name} checked={value === name} onChange={() => onChange(name)} className="peer sr-only" />
+              <input required={required} type="radio" name="brand" value={name} checked={value === name} onChange={() => onChange(name)} className="peer sr-only" />
               <span className="flex min-h-24 flex-col items-center justify-center gap-2 rounded-lg border border-gray-100 bg-white px-3 py-3 transition-[border-color,background-color,box-shadow] duration-200 hover:border-gray-300 hover:shadow-sm peer-checked:border-[var(--color-brand)] peer-checked:bg-[var(--color-brand)]/5 peer-focus-visible:ring-2 peer-focus-visible:ring-[var(--color-brand)] peer-focus-visible:ring-offset-2">
                 <img src={CAR_LOGOS[name].src} alt="" width={80} height={40} loading="lazy" className="h-10 w-20 object-contain" />
                 <span className="text-center text-xs font-medium text-[var(--color-text)]">{name}</span>
@@ -45,7 +45,7 @@ export default function CarBrandPicker({ value, onChange }) {
             </label>
           ))}
           <label className="col-span-full mt-2 flex w-fit cursor-pointer items-center gap-2 text-sm text-gray-600">
-            <input type="radio" name="brand" value="other" checked={value === "other"} onChange={() => onChange("other")} className="size-4 accent-[var(--color-brand)]" />
+            <input required={required} type="radio" name="brand" value="other" checked={value === "other"} onChange={() => onChange("other")} className="size-4 accent-[var(--color-brand)]" />
             Ma marque n’est pas dans la liste
           </label>
         </div>
