@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Car, Route, UserRound, History, ShieldCheck, ContactRound, ChevronLeft, ChevronRight, Cctv, Fence, ParkingMeter, SquareParking, Warehouse, Building2, Venus, Mars, IdCard, UsersRound, Euro, Globe } from "lucide-react";
+import { Car, Route, UserRound, History, ShieldCheck, ContactRound, ChevronLeft, ChevronRight, Cctv, Fence, ParkingMeter, SquareParking, Warehouse, Building2, Venus, Mars } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
@@ -111,10 +111,10 @@ const HOME_INSURANCE_OFFER_OPTIONS = [
 ];
 
 const LICENSE_TYPE_OPTIONS = [
-  { value: "b", label: "Permis B", Icon: IdCard },
-  { value: "b_accompanied", label: "Permis B avec conduite accompagnée", Icon: UsersRound },
-  { value: "foreign_eu", label: "Permis étranger obtenu en Union Européenne", Icon: Euro },
-  { value: "foreign_non_eu", label: "Permis étranger obtenu hors Union Européenne", Icon: Globe },
+  { value: "b", label: "Permis B", iconSrc: "/icons/permis-b.svg" },
+  { value: "b_accompanied", label: "Permis B avec conduite accompagnée", iconSrc: "/icons/permis-conduite-accompagnee.svg" },
+  { value: "foreign_eu", label: "Permis étranger obtenu en Union Européenne", iconSrc: "/icons/permis-etranger-ue.svg" },
+  { value: "foreign_non_eu", label: "Permis étranger obtenu hors Union Européenne", iconSrc: "/icons/permis-etranger-hors-ue.svg" },
 ];
 
 const MARITAL_STATUS_OPTIONS = [
@@ -135,8 +135,36 @@ const YES_NO_OPTIONS = [
   { value: "no", label: "Non" },
 ];
 
+const MAX_CHILDREN = 6;
+const CHILD_ORDINALS = ["premier", "deuxième", "troisième", "quatrième", "cinquième", "sixième"];
+// Children under 25: born this year or in the previous 25 years.
+const CHILD_BIRTH_YEARS = Array.from({ length: 26 }, (_, index) => String(new Date().getFullYear() - index));
+
+const PREVIOUSLY_INSURED_OPTIONS = [
+  { value: "main_driver", label: "Oui, comme conducteur principal" },
+  { value: "secondary_driver", label: "Oui, comme conducteur secondaire" },
+  { value: "no", label: "Non" },
+];
+
+const CURRENT_COVERAGE_OPTIONS = [
+  { value: "uninsured_under_3_months", label: "Voiture non assurée depuis moins de 3 mois" },
+  { value: "uninsured_over_3_months", label: "Voiture non assurée depuis plus de 3 mois" },
+  { value: "third_party", label: "Formule Tiers" },
+  { value: "theft_fire", label: "Formule Vol & Incendie" },
+  { value: "comprehensive", label: "Formule Tous Risques" },
+];
+
+// Main French car insurers, alphabetical; "Autre" covers everything else,
+// including drivers who were never insured.
+const INSURER_OPTIONS = [
+  "Abeille Assurances", "Allianz", "AMV", "April", "AXA", "Banque Populaire", "BNP Paribas Cardif",
+  "Caisse d'Épargne", "Crédit Agricole (Pacifica)", "Crédit Mutuel", "Direct Assurance", "Euro-Assurance",
+  "Generali", "GMF", "Groupama", "L'olivier Assurance", "La Banque Postale", "LCL", "Leocare",
+  "MAAF", "MACIF", "MAIF", "Matmut", "MMA", "Société Générale (Sogessur)", "Thélem Assurances",
+].map((label) => ({ value: label, label })).concat({ value: "other", label: "Autre" });
+
 // Last step that has questions so far — "Suivant" is hidden there.
-const LAST_BUILT_STEP = 2;
+const LAST_BUILT_STEP = 3;
 
 const WORK_COUNTRIES = [
   { value: "FR", label: "France" },
@@ -152,8 +180,16 @@ const WORK_COUNTRIES = [
   { value: "other", label: "Autre pays" },
 ];
 
-const STORAGE_KEY = "nwc-assurance-auto-vehicle-choice";
-const SEARCH_STORAGE_KEY = "nwc-assurance-auto-search-method";
+// Every answer is saved here so a reload or a later visit resumes the form.
+const STORAGE_KEY = "nwc-assurance-auto-answers";
+// Keys used before all answers were saved; removed on load.
+const LEGACY_STORAGE_KEYS = ["nwc-assurance-auto-vehicle-choice", "nwc-assurance-auto-search-method"];
+const EMPTY_FIRST_REGISTRATION = { month: "", year: "" };
+function hasSavedAnswer(value) {
+  if (typeof value === "string") return value.trim().length > 0;
+  if (value && typeof value === "object") return Object.values(value).some(hasSavedAnswer);
+  return false;
+}
 const SEARCH_OPTIONS = [
   { value: "registration", label: "Par plaque d'immatriculation" },
   { value: "make_model", label: "Par marque/modèle" },
@@ -162,6 +198,13 @@ const VEHICLE_OPTIONS = [
   { value: "current", label: "Ma voiture actuelle" },
   { value: "future", label: "Une voiture que je souhaite acheter" },
 ];
+
+// Paints an SVG file in the current text colour (like a lucide icon) by
+// using it as a CSS mask, so it can switch colour on selection.
+function MaskIcon({ src, className = "" }) {
+  const mask = `url(${src}) center / contain no-repeat`;
+  return <span aria-hidden="true" className={`inline-block bg-current ${className}`} style={{ WebkitMask: mask, mask }} />;
+}
 
 function ValidationError({ id, message }) {
   return message ? <p id={`${id}-error`} role="alert" className="mt-2 text-sm text-[var(--color-error)]">{message}</p> : null;
@@ -205,6 +248,7 @@ export default function AssuranceAutoDevisPage() {
   const [firstRegistration, setFirstRegistration] = useState({ month: "", year: "" });
   const [validationAttempted, setValidationAttempted] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [restoredFromStorage, setRestoredFromStorage] = useState(false);
   const selectedModel = brand === "other" || model === "other" ? customModel.trim() : model;
   const vehicleIdentified = vehicleChoice === "current" && (
     (searchMethod === "registration" && registration.trim().length > 0) ||
@@ -237,6 +281,41 @@ export default function AssuranceAutoDevisPage() {
   const [licenseType, setLicenseType] = useState("");
   const [maritalStatus, setMaritalStatus] = useState("");
   const [partnerHasLicense, setPartnerHasLicense] = useState("");
+  const [partnerBirthDate, setPartnerBirthDate] = useState("");
+  const [partnerLicenseDate, setPartnerLicenseDate] = useState("");
+  const [partnerInsuredElsewhere, setPartnerInsuredElsewhere] = useState("");
+  const [hasChildrenUnder25, setHasChildrenUnder25] = useState("");
+  const [childrenCount, setChildrenCount] = useState("");
+  const [childBirthYears, setChildBirthYears] = useState([]);
+  const [step2Attempted, setStep2Attempted] = useState(false);
+  const [previouslyInsured, setPreviouslyInsured] = useState("");
+  const [currentlyInsured, setCurrentlyInsured] = useState("");
+  const [currentCoverage, setCurrentCoverage] = useState("");
+  const [previousInsurer, setPreviousInsurer] = useState("");
+  const answers = {
+    vehicleChoice, searchMethod, registration, brand, model, customBrand, customModel, firstRegistration,
+    professionalCategory, profession, vehicleUsage, workCountry, customWorkCountry, workCity, parkingCity,
+    nightParking, annualMileage, usageFrequency, previousCarDuration, registrationHolder,
+    civility, birthDate, housing, homeInsuranceOffer, postalAddress, licenseDate, licenseType,
+    maritalStatus, partnerHasLicense, partnerBirthDate, partnerLicenseDate, partnerInsuredElsewhere,
+    hasChildrenUnder25, childrenCount, childBirthYears,
+    previouslyInsured, currentlyInsured, currentCoverage, previousInsurer,
+  };
+  const answerSetters = {
+    vehicleChoice: setVehicleChoice, searchMethod: setSearchMethod, registration: setRegistration, brand: setBrand,
+    model: setModel, customBrand: setCustomBrand, customModel: setCustomModel, firstRegistration: setFirstRegistration,
+    professionalCategory: setProfessionalCategory, profession: setProfession, vehicleUsage: setVehicleUsage,
+    workCountry: setWorkCountry, customWorkCountry: setCustomWorkCountry, workCity: setWorkCity, parkingCity: setParkingCity,
+    nightParking: setNightParking, annualMileage: setAnnualMileage, usageFrequency: setUsageFrequency,
+    previousCarDuration: setPreviousCarDuration, registrationHolder: setRegistrationHolder,
+    civility: setCivility, birthDate: setBirthDate, housing: setHousing, homeInsuranceOffer: setHomeInsuranceOffer,
+    postalAddress: setPostalAddress, licenseDate: setLicenseDate, licenseType: setLicenseType,
+    maritalStatus: setMaritalStatus, partnerHasLicense: setPartnerHasLicense, partnerBirthDate: setPartnerBirthDate,
+    partnerLicenseDate: setPartnerLicenseDate, partnerInsuredElsewhere: setPartnerInsuredElsewhere,
+    hasChildrenUnder25: setHasChildrenUnder25, childrenCount: setChildrenCount, childBirthYears: setChildBirthYears,
+    previouslyInsured: setPreviouslyInsured, currentlyInsured: setCurrentlyInsured,
+    currentCoverage: setCurrentCoverage, previousInsurer: setPreviousInsurer,
+  };
   const [direction, setDirection] = useState("next");
   const stepRankRef = useRef(null);
   const stepAnimation = direction === "next" ? "slide-in-right" : "slide-in-left";
@@ -278,8 +357,89 @@ export default function AssuranceAutoDevisPage() {
   const showLicenseType = showLicenseDate && licenseDate !== "";
   const showMaritalStatus = showLicenseType && licenseType !== "";
   const showPartnerHasLicense = showMaritalStatus && PARTNER_STATUSES.includes(maritalStatus);
+  const showPartnerBirthDate = showPartnerHasLicense && partnerHasLicense !== "";
+  const showPartnerLicenseDate = showPartnerBirthDate && partnerHasLicense === "yes" && /^\d{4}-\d{2}-\d{2}$/.test(partnerBirthDate);
+  const showPartnerInsuredElsewhere = showPartnerLicenseDate && partnerLicenseDate !== "";
+  // Asked to everyone once marital status is answered — after the partner
+  // questions when the driver has a partner.
+  const partnerQuestionsDone = !PARTNER_STATUSES.includes(maritalStatus)
+    || (partnerHasLicense === "no" && /^\d{4}-\d{2}-\d{2}$/.test(partnerBirthDate))
+    || (partnerHasLicense === "yes" && partnerInsuredElsewhere !== "");
+  const showChildrenUnder25 = showMaritalStatus && maritalStatus !== "" && partnerQuestionsDone;
+  const showChildrenCount = showChildrenUnder25 && hasChildrenUnder25 === "yes";
+  const visibleChildCount = showChildrenCount ? Number(childrenCount) || 0 : 0;
+
+  function setChildBirthYear(index, year) {
+    setChildBirthYears((years) => {
+      const next = [...years];
+      while (next.length <= index) next.push("");
+      next[index] = year;
+      return next;
+    });
+  }
+  // Partner questions follow the respondent's civilité: a woman is asked
+  // about "votre conjoint", a man about "votre conjointe".
+  const partnerLicenseQuestion = civility === "madame"
+    ? "Votre conjoint a-t-il le permis ?"
+    : civility === "monsieur"
+      ? "Votre conjointe a-t-elle le permis ?"
+      : "Votre conjoint(e) a-t-il/elle le permis ?";
+  const partnerBirthDateQuestion = civility === "madame"
+    ? "Quelle est la date de naissance de votre conjoint ?"
+    : civility === "monsieur"
+      ? "Quelle est la date de naissance de votre conjointe ?"
+      : "Quelle est la date de naissance de votre conjoint(e) ?";
+  const partnerLicenseDateQuestion = civility === "madame"
+    ? "Quand a-t-il eu son permis ?"
+    : civility === "monsieur"
+      ? "Quand a-t-elle eu son permis ?"
+      : "Quand a-t-il/elle eu son permis ?";
+  const partnerInsuredElsewhereQuestion = civility === "madame"
+    ? "Est-il assuré comme conducteur principal pour une autre voiture ?"
+    : civility === "monsieur"
+      ? "Est-elle assurée comme conducteur principal pour une autre voiture ?"
+      : "Est-il/elle assuré(e) comme conducteur principal pour une autre voiture ?";
+  // First unanswered step-2 question (in reveal order) and the element to
+  // focus for it; null once the whole step is answered.
+  const isIsoDate = (value) => /^\d{4}-\d{2}-\d{2}$/.test(value);
+  const hasPartner = PARTNER_STATUSES.includes(maritalStatus);
+  const step2Missing = [
+    ["civility", civility !== "", `civility-${CIVILITY_OPTIONS[0].value}`],
+    ["birth-date", isIsoDate(birthDate), "birth-date"],
+    ["housing", housing !== "", "housing"],
+    ["home-insurance-offer", homeInsuranceOffer !== "", `home-insurance-offer-${HOME_INSURANCE_OFFER_OPTIONS[0].value}`],
+    ["postal-address", isFilled(postalAddress), "postal-address"],
+    ["license-date", licenseDate !== "", "license-date"],
+    ["license-type", licenseType !== "", `license-type-${LICENSE_TYPE_OPTIONS[0].value}`],
+    ["marital-status", maritalStatus !== "", `marital-status-${MARITAL_STATUS_OPTIONS[0].value}`],
+    ...(hasPartner ? [
+      ["partner-license", partnerHasLicense !== "", "partner-license-yes"],
+      ["partner-birth-date", isIsoDate(partnerBirthDate), "partner-birth-date"],
+      ...(partnerHasLicense === "yes" ? [
+        ["partner-license-date", partnerLicenseDate !== "", "partner-license-date"],
+        ["partner-insured", partnerInsuredElsewhere !== "", "partner-insured-yes"],
+      ] : []),
+    ] : []),
+    ["children-under-25", hasChildrenUnder25 !== "", "children-under-25-yes"],
+    ...(hasChildrenUnder25 === "yes" ? [
+      ["children-count", childrenCount !== "", "children-count"],
+      ...Array.from({ length: Number(childrenCount) || 0 }, (_, index) => [
+        `child-birth-year-${index}`, Boolean(childBirthYears[index]), `child-birth-year-${index}`,
+      ]),
+    ] : []),
+  ].find(([, filled]) => !filled) ?? null;
+  const step2Complete = step2Missing === null;
+  const step2Error = (key) => step2Attempted && step2Missing?.[0] === key ? "Veuillez répondre à cette question pour continuer." : null;
+  const showCurrentlyInsured = previouslyInsured === "main_driver" || previouslyInsured === "secondary_driver";
+  const showCurrentCoverage = previouslyInsured !== "" && (!showCurrentlyInsured || currentlyInsured !== "");
+  const showPreviousInsurer = showCurrentCoverage && currentCoverage !== "";
+  const currentlyInsuredQuestion = civility === "madame"
+    ? "Êtes-vous actuellement assurée ?"
+    : civility === "monsieur"
+      ? "Êtes-vous actuellement assuré ?"
+      : "Êtes-vous actuellement assuré(e) ?";
   // A step can only be reached once every earlier step is complete.
-  const maxStep = !vehicleComplete ? 0 : !step1Complete ? 1 : 2;
+  const maxStep = !vehicleComplete ? 0 : !step1Complete ? 1 : !step2Complete ? 2 : 3;
   const requestedStep = Math.min(Math.max(Number.parseInt(router.query.step, 10) || 0, 0), LAST_BUILT_STEP);
   const currentStep = hydrated ? Math.min(requestedStep, maxStep) : 0;
 
@@ -309,6 +469,11 @@ export default function AssuranceAutoDevisPage() {
       focusField(step1Missing[2]);
       return;
     }
+    if (step > currentStep && currentStep === 2 && !step2Complete) {
+      setStep2Attempted(true);
+      focusField(step2Missing[2]);
+      return;
+    }
     router.push({ pathname: router.pathname, query: { ...router.query, step: String(step) } }, undefined, { shallow: true, scroll: false });
     window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }
@@ -316,6 +481,10 @@ export default function AssuranceAutoDevisPage() {
   useEffect(() => {
     setStep1Attempted(false);
   }, [step1Missing?.[0]]);
+
+  useEffect(() => {
+    setStep2Attempted(false);
+  }, [step2Missing?.[0]]);
 
   // Slide direction comes from comparing steps, so browser Back/Forward
   // animates the right way too.
@@ -327,10 +496,6 @@ export default function AssuranceAutoDevisPage() {
   }, [currentStep]);
 
   useEffect(() => {
-    setFirstRegistration({ month: "", year: "" });
-  }, [vehicleChoice, searchMethod, registration, brand, model, customBrand, customModel]);
-
-  useEffect(() => {
     if (router.isReady && hydrated && requestedStep > maxStep) {
       if (maxStep === 0) setValidationAttempted(true);
       router.replace({ pathname: router.pathname, query: { ...router.query, step: String(maxStep) } }, undefined, { shallow: true, scroll: false });
@@ -339,35 +504,78 @@ export default function AssuranceAutoDevisPage() {
 
   useEffect(() => {
     try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (VEHICLE_OPTIONS.some((option) => option.value === saved)) {
-        setVehicleChoice(saved);
-        if (saved === "current") {
-          const savedMethod = localStorage.getItem(SEARCH_STORAGE_KEY);
-          if (SEARCH_OPTIONS.some((option) => option.value === savedMethod)) {
-            setSearchMethod(savedMethod);
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      if (saved && typeof saved === "object") {
+        const restored = {};
+        for (const [key, setter] of Object.entries(answerSetters)) {
+          const value = saved[key];
+          if (key === "childBirthYears") {
+            if (Array.isArray(value)) restored[key] = value.slice(0, MAX_CHILDREN).map((year) => (typeof year === "string" ? year : ""));
+          } else if (key === "firstRegistration") {
+            if (value && typeof value.month === "string" && typeof value.year === "string") restored[key] = { month: value.month, year: value.year };
+          } else if (typeof value === "string") {
+            restored[key] = value;
           }
+          if (Object.hasOwn(restored, key)) setter(restored[key]);
         }
+        setRestoredFromStorage(hasSavedAnswer(restored));
       }
+      for (const key of LEGACY_STORAGE_KEYS) localStorage.removeItem(key);
     } catch {
       // The form remains usable when browser storage is unavailable.
     } finally {
       setHydrated(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const serializedAnswers = JSON.stringify(answers);
+  useEffect(() => {
+    if (!hydrated) return;
+    try {
+      if (hasSavedAnswer(JSON.parse(serializedAnswers))) {
+        localStorage.setItem(STORAGE_KEY, serializedAnswers);
+      } else {
+        localStorage.removeItem(STORAGE_KEY);
+      }
+    } catch {
+      // Keeping the answers in component state is enough for this visit.
+    }
+  }, [hydrated, serializedAnswers]);
+
+  async function handleStartOver() {
+    // Move back before clearing answers so the step guard does not show
+    // validation errors for the intentionally empty form.
+    await router.replace({ pathname: router.pathname, query: { ...router.query, step: "0" } }, undefined, { shallow: true, scroll: false });
+    for (const [key, setter] of Object.entries(answerSetters)) {
+      setter(key === "firstRegistration" ? { ...EMPTY_FIRST_REGISTRATION } : key === "childBirthYears" ? [] : "");
+    }
+    setValidationAttempted(false);
+    setStep1Attempted(false);
+    setStep2Attempted(false);
+    setRestoredFromStorage(false);
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+      for (const key of LEGACY_STORAGE_KEYS) localStorage.removeItem(key);
+    } catch {
+      // Resetting the in-memory form still works when storage is blocked.
+    }
+    window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
+  }
+
+  // The first-registration date belongs to one specific car, so it is
+  // cleared whenever the user changes how that car is identified.
+  function clearFirstRegistration() {
+    setFirstRegistration(EMPTY_FIRST_REGISTRATION);
+  }
+
   function selectVehicle(value) {
+    if (value !== vehicleChoice) clearFirstRegistration();
     setVehicleChoice(value);
     if (value !== "current") {
       setSearchMethod("");
       resetVehicleModel();
       setRegistration("");
-    }
-    try {
-      localStorage.setItem(STORAGE_KEY, value);
-      if (value !== "current") localStorage.removeItem(SEARCH_STORAGE_KEY);
-    } catch {
-      // Keeping the answer in component state is enough for this visit.
     }
   }
 
@@ -379,6 +587,7 @@ export default function AssuranceAutoDevisPage() {
   }
 
   function selectBrand(value) {
+    if (value !== brand) clearFirstRegistration();
     setBrand(value);
     setModel("");
     setCustomBrand("");
@@ -386,14 +595,10 @@ export default function AssuranceAutoDevisPage() {
   }
 
   function selectSearchMethod(value) {
+    if (value !== searchMethod) clearFirstRegistration();
     setSearchMethod(value);
     if (value !== "make_model") resetVehicleModel();
     if (value !== "registration") setRegistration("");
-    try {
-      localStorage.setItem(SEARCH_STORAGE_KEY, value);
-    } catch {
-      // The selection still works when browser storage is unavailable.
-    }
   }
 
   return (
@@ -406,6 +611,21 @@ export default function AssuranceAutoDevisPage() {
       <main className="min-h-screen bg-white">
         <div className="max-w-4xl mx-auto px-4 lg:px-6 pt-10 lg:pt-16 pb-40">
           <p className="mb-3 text-sm font-semibold text-[var(--color-brand)]">Assurance Auto</p>
+          {restoredFromStorage && (
+            <div className="mb-8 rounded-lg border border-[var(--color-brand)]/20 bg-[var(--color-brand)]/5 p-5 flex flex-col gap-1.5">
+              <p className="font-semibold text-[var(--color-text)]">Bonjour, content de vous revoir !</p>
+              <p className="text-sm text-gray-600">
+                Nous avons conservé vos informations suite à votre dernière visite. Vérifiez-les et complétez
+                si besoin pour obtenir les offres les plus adaptées à votre situation.
+              </p>
+              <p className="text-sm text-gray-600">
+                Il ne s&apos;agit pas de vous ?{" "}
+                <button type="button" onClick={handleStartOver} className="font-semibold text-[var(--color-brand)] hover:underline">
+                  Repartir de zéro
+                </button>
+              </p>
+            </div>
+          )}
           <ResponsiveFormSteps sections={FORM_SECTIONS} currentStep={currentStep} />
           <form noValidate onSubmit={(event) => { event.preventDefault(); if (currentStep < LAST_BUILT_STEP) goToStep(currentStep + 1); }}>
             <div hidden={currentStep !== 0} className={currentStep === 0 ? stepAnimation : undefined}>
@@ -508,7 +728,7 @@ export default function AssuranceAutoDevisPage() {
                   name="registration"
                   type="text"
                   value={registration}
-                  onChange={(event) => setRegistration(formatRegistration(event.target.value))}
+                  onChange={(event) => { setRegistration(formatRegistration(event.target.value)); clearFirstRegistration(); }}
                   placeholder="AA-123-AA"
                   maxLength={9}
                   pattern="[A-Z]{2}-[0-9]{3}-[A-Z]{2}"
@@ -532,7 +752,7 @@ export default function AssuranceAutoDevisPage() {
                 {brand === "other" && (
                   <div className="conditional-field-reveal mt-4">
                     <label htmlFor="auto-custom-brand" className="mb-2 block text-sm font-medium">Précisez la marque</label>
-                    <Input id="auto-custom-brand" {...fieldProps("auto-custom-brand")} name="custom_brand" value={customBrand} onChange={(event) => { setCustomBrand(event.target.value); setCustomModel(""); }} placeholder="Marque de votre voiture" className="h-[50px] bg-white sm:max-w-sm" />
+                    <Input id="auto-custom-brand" {...fieldProps("auto-custom-brand")} name="custom_brand" value={customBrand} onChange={(event) => { setCustomBrand(event.target.value); setCustomModel(""); clearFirstRegistration(); }} placeholder="Marque de votre voiture" className="h-[50px] bg-white sm:max-w-sm" />
                     <ValidationError id="auto-custom-brand" message={errors["auto-custom-brand"]} />
                   </div>
                 )}
@@ -544,7 +764,7 @@ export default function AssuranceAutoDevisPage() {
                   Quel est le modèle de votre voiture ?
                 </label>
                 {brand !== "other" && (
-                  <Select required name="model" value={model} onValueChange={(value) => { setModel(value); setCustomModel(""); }}>
+                  <Select required name="model" value={model} onValueChange={(value) => { if (value !== model) clearFirstRegistration(); setModel(value); setCustomModel(""); }}>
                     <SelectTrigger id="auto-model" {...fieldProps("auto-model")} className="!h-[50px] w-full bg-white sm:max-w-sm">
                       <SelectValue placeholder="Sélectionnez un modèle" />
                     </SelectTrigger>
@@ -558,7 +778,7 @@ export default function AssuranceAutoDevisPage() {
                 {(brand === "other" || model === "other") && (
                   <div className={brand === "other" ? "" : "conditional-field-reveal mt-4"}>
                     {brand !== "other" && <label htmlFor="auto-custom-model" className="mb-2 block text-sm font-medium">Précisez le modèle</label>}
-                    <Input id="auto-custom-model" {...fieldProps("auto-custom-model")} name="custom_model" value={customModel} onChange={(event) => setCustomModel(event.target.value)} placeholder="Modèle de votre voiture" className="h-[50px] bg-white sm:max-w-sm" />
+                    <Input id="auto-custom-model" {...fieldProps("auto-custom-model")} name="custom_model" value={customModel} onChange={(event) => { setCustomModel(event.target.value); clearFirstRegistration(); }} placeholder="Modèle de votre voiture" className="h-[50px] bg-white sm:max-w-sm" />
                     <ValidationError id="auto-custom-model" message={errors["auto-custom-model"]} />
                   </div>
                 )}
@@ -906,6 +1126,7 @@ export default function AssuranceAutoDevisPage() {
                     </FieldLabel>
                   ))}
                 </div>
+                <ValidationError id="civility" message={step2Error("civility")} />
               </fieldset>
               {showBirthDate && (
               <div className="conditional-field-reveal mt-6 bg-gray-100 p-6">
@@ -915,6 +1136,7 @@ export default function AssuranceAutoDevisPage() {
                 <div className="sm:max-w-sm">
                   <DatePickerInput id="birth-date" value={birthDate} onChange={setBirthDate} theme="light" className="h-[50px] w-full bg-white" />
                 </div>
+                <ValidationError id="birth-date" message={step2Error("birth-date")} />
               </div>
               )}
               {showHousing && (
@@ -934,6 +1156,7 @@ export default function AssuranceAutoDevisPage() {
                     {HOUSING_OPTIONS.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}
                   </SelectContent>
                 </Select>
+                <ValidationError id="housing" message={step2Error("housing")} />
               </div>
               )}
               {showHomeInsuranceOffer && (
@@ -971,6 +1194,7 @@ export default function AssuranceAutoDevisPage() {
                     </FieldLabel>
                   ))}
                 </div>
+                <ValidationError id="home-insurance-offer" message={step2Error("home-insurance-offer")} />
               </fieldset>
               )}
               {showPostalAddress && (
@@ -992,6 +1216,7 @@ export default function AssuranceAutoDevisPage() {
                   aria-describedby="postal-address-description"
                   className="h-[50px] bg-white"
                 />
+                <ValidationError id="postal-address" message={step2Error("postal-address")} />
               </div>
               )}
               {showLicenseDate && (
@@ -1002,10 +1227,11 @@ export default function AssuranceAutoDevisPage() {
                 <p id="license-date-description" className="mb-4 text-sm text-gray-600">
                   Cette information apparaît sur votre permis de conduire.
                 </p>
-                <div role="group" aria-labelledby="license-date-question" aria-describedby="license-date-description" className="sm:max-w-sm">
+                <div id="license-date" tabIndex={-1} role="group" aria-labelledby="license-date-question" aria-describedby="license-date-description" className="sm:max-w-sm">
                   {/* Same month + year dropdowns as the garage questionnaire; value is "YYYY-MM". */}
                   <MonthYearInput mode="month" value={licenseDate} onChange={setLicenseDate} className="w-full" />
                 </div>
+                <ValidationError id="license-date" message={step2Error("license-date")} />
               </div>
               )}
               {showLicenseType && (
@@ -1015,7 +1241,7 @@ export default function AssuranceAutoDevisPage() {
                   Quel type de permis de conduire avez-vous ?
                 </p>
                 <div role="radiogroup" aria-labelledby="license-type-question" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                  {LICENSE_TYPE_OPTIONS.map(({ value, label, Icon }) => (
+                  {LICENSE_TYPE_OPTIONS.map(({ value, label, iconSrc }) => (
                     <FieldLabel
                       key={value}
                       htmlFor={`license-type-${value}`}
@@ -1032,7 +1258,7 @@ export default function AssuranceAutoDevisPage() {
                             licenseType === value ? "bg-[var(--color-brand)] text-white" : "bg-[var(--color-brand)]/10 text-[var(--color-brand)]"
                           }`}
                         >
-                          <Icon size={22} strokeWidth={1.75} />
+                          <MaskIcon src={iconSrc} className="size-7" />
                         </span>
                         <FieldContent>
                           <FieldTitle>{label}</FieldTitle>
@@ -1050,6 +1276,7 @@ export default function AssuranceAutoDevisPage() {
                     </FieldLabel>
                   ))}
                 </div>
+                <ValidationError id="license-type" message={step2Error("license-type")} />
               </fieldset>
               )}
               {showMaritalStatus && (
@@ -1087,13 +1314,14 @@ export default function AssuranceAutoDevisPage() {
                     </FieldLabel>
                   ))}
                 </div>
+                <ValidationError id="marital-status" message={step2Error("marital-status")} />
               </fieldset>
               )}
               {showPartnerHasLicense && (
               <fieldset className="conditional-field-reveal mt-6 min-w-0 bg-gray-100 p-6">
                 <legend className="sr-only">Permis du conjoint</legend>
                 <p id="partner-license-question" className="mb-4 text-base font-semibold text-[var(--color-text)]">
-                  Votre conjoint(e) a-t-il/elle le permis ?
+                  {partnerLicenseQuestion}
                 </p>
                 <div role="radiogroup" aria-labelledby="partner-license-question" className="grid grid-cols-2 gap-3 sm:max-w-sm">
                   {YES_NO_OPTIONS.map((option) => (
@@ -1121,7 +1349,262 @@ export default function AssuranceAutoDevisPage() {
                     </FieldLabel>
                   ))}
                 </div>
+                <ValidationError id="partner-license" message={step2Error("partner-license")} />
               </fieldset>
+              )}
+              {showPartnerBirthDate && (
+              <div className="conditional-field-reveal mt-6 bg-gray-100 p-6">
+                <label htmlFor="partner-birth-date" className="mb-4 block text-base font-semibold text-[var(--color-text)]">
+                  {partnerBirthDateQuestion}
+                </label>
+                <div className="sm:max-w-sm">
+                  <DatePickerInput id="partner-birth-date" value={partnerBirthDate} onChange={setPartnerBirthDate} theme="light" className="h-[50px] w-full bg-white" />
+                </div>
+                <ValidationError id="partner-birth-date" message={step2Error("partner-birth-date")} />
+              </div>
+              )}
+              {showPartnerLicenseDate && (
+              <div className="conditional-field-reveal mt-6 bg-gray-100 p-6">
+                <p id="partner-license-date-question" className="mb-4 text-base font-semibold text-[var(--color-text)]">
+                  {partnerLicenseDateQuestion}
+                </p>
+                <div id="partner-license-date" tabIndex={-1} role="group" aria-labelledby="partner-license-date-question" className="sm:max-w-sm">
+                  <MonthYearInput mode="month" value={partnerLicenseDate} onChange={setPartnerLicenseDate} className="w-full" />
+                </div>
+                <ValidationError id="partner-license-date" message={step2Error("partner-license-date")} />
+              </div>
+              )}
+              {showPartnerInsuredElsewhere && (
+              <fieldset className="conditional-field-reveal mt-6 min-w-0 bg-gray-100 p-6">
+                <legend className="sr-only">Assurance du conjoint pour une autre voiture</legend>
+                <p id="partner-insured-question" className="mb-4 text-base font-semibold text-[var(--color-text)]">
+                  {partnerInsuredElsewhereQuestion}
+                </p>
+                <div role="radiogroup" aria-labelledby="partner-insured-question" className="grid grid-cols-2 gap-3 sm:max-w-sm">
+                  {YES_NO_OPTIONS.map((option) => (
+                    <FieldLabel
+                      key={option.value}
+                      htmlFor={`partner-insured-${option.value}`}
+                      className={`cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-[var(--color-brand)] focus-within:ring-offset-2 ${
+                        partnerInsuredElsewhere === option.value
+                          ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
+                          : "bg-white hover:border-[var(--color-brand)]"
+                      }`}
+                    >
+                      <Field orientation="horizontal" className="min-h-14 items-center">
+                        <FieldContent><FieldTitle>{option.label}</FieldTitle></FieldContent>
+                        <input
+                          id={`partner-insured-${option.value}`}
+                          type="radio"
+                          name="partner_insured_elsewhere"
+                          value={option.value}
+                          checked={partnerInsuredElsewhere === option.value}
+                          onChange={() => setPartnerInsuredElsewhere(option.value)}
+                          className="size-5 shrink-0 accent-[var(--color-brand)]"
+                        />
+                      </Field>
+                    </FieldLabel>
+                  ))}
+                </div>
+                <ValidationError id="partner-insured" message={step2Error("partner-insured")} />
+              </fieldset>
+              )}
+              {showChildrenUnder25 && (
+              <fieldset className="conditional-field-reveal mt-6 min-w-0 bg-gray-100 p-6">
+                <legend className="sr-only">Enfants de moins de 25 ans</legend>
+                <p id="children-under-25-question" className="mb-2 text-base font-semibold text-[var(--color-text)]">
+                  Avez-vous des enfants de moins de 25 ans ?
+                </p>
+                <p id="children-under-25-description" className="mb-4 text-sm text-gray-600">
+                  Vous avez des enfants de moins de 25 ans ? Si oui, les assureurs estiment qu&apos;ils peuvent être amenés à conduire votre voiture. Cette information leur servira à vous proposer une offre plus adaptée aux besoins de votre famille.
+                </p>
+                <div role="radiogroup" aria-labelledby="children-under-25-question" aria-describedby="children-under-25-description" className="grid grid-cols-2 gap-3 sm:max-w-sm">
+                  {YES_NO_OPTIONS.map((option) => (
+                    <FieldLabel
+                      key={option.value}
+                      htmlFor={`children-under-25-${option.value}`}
+                      className={`cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-[var(--color-brand)] focus-within:ring-offset-2 ${
+                        hasChildrenUnder25 === option.value
+                          ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
+                          : "bg-white hover:border-[var(--color-brand)]"
+                      }`}
+                    >
+                      <Field orientation="horizontal" className="min-h-14 items-center">
+                        <FieldContent><FieldTitle>{option.label}</FieldTitle></FieldContent>
+                        <input
+                          id={`children-under-25-${option.value}`}
+                          type="radio"
+                          name="has_children_under_25"
+                          value={option.value}
+                          checked={hasChildrenUnder25 === option.value}
+                          onChange={() => setHasChildrenUnder25(option.value)}
+                          className="size-5 shrink-0 accent-[var(--color-brand)]"
+                        />
+                      </Field>
+                    </FieldLabel>
+                  ))}
+                </div>
+                <ValidationError id="children-under-25" message={step2Error("children-under-25")} />
+              </fieldset>
+              )}
+              {showChildrenCount && (
+              <div className="conditional-field-reveal mt-6 bg-gray-100 p-6">
+                <label htmlFor="children-count" className="mb-4 block text-base font-semibold text-[var(--color-text)]">
+                  Combien d&apos;enfants de moins de 25 ans avez-vous ?
+                </label>
+                <Select name="children_count" value={childrenCount} onValueChange={setChildrenCount}>
+                  <SelectTrigger id="children-count" className="!h-[50px] w-full bg-white sm:max-w-sm">
+                    <SelectValue placeholder="Nombre d'enfants" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {Array.from({ length: MAX_CHILDREN }, (_, index) => String(index + 1)).map((count) => (
+                      <SelectItem key={count} value={count}>{count} enfant{count === "1" ? "" : "s"}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <ValidationError id="children-count" message={step2Error("children-count")} />
+              </div>
+              )}
+              {visibleChildCount > 0 && (
+              <div key={visibleChildCount} className="conditional-field-reveal mt-6 grid grid-cols-1 gap-x-6 gap-y-6 bg-gray-100 p-6 sm:grid-cols-2">
+                {Array.from({ length: visibleChildCount }, (_, index) => (
+                  <div key={index} className="min-w-0">
+                    <label htmlFor={`child-birth-year-${index}`} className="mb-4 block text-base font-semibold text-[var(--color-text)]">
+                      Quelle est l&apos;année de naissance du {CHILD_ORDINALS[index]} enfant ?
+                    </label>
+                    <Select name={`child_birth_year_${index + 1}`} value={childBirthYears[index] ?? ""} onValueChange={(year) => setChildBirthYear(index, year)}>
+                      <SelectTrigger id={`child-birth-year-${index}`} className="!h-[50px] w-full bg-white">
+                        <SelectValue placeholder="Année" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CHILD_BIRTH_YEARS.map((year) => <SelectItem key={year} value={year}>{year}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                    <ValidationError id={`child-birth-year-${index}`} message={step2Error(`child-birth-year-${index}`)} />
+                  </div>
+                ))}
+              </div>
+              )}
+            </div>
+            <div hidden={currentStep !== 3} className={currentStep === 3 ? stepAnimation : undefined}>
+              <fieldset className="min-w-0 bg-gray-100 p-6">
+                <legend className="sr-only">Assurance auto précédente</legend>
+                <p id="previously-insured-question" className="mb-4 text-base font-semibold text-[var(--color-text)]">
+                  Avez-vous déjà assuré une voiture ?
+                </p>
+                <div role="radiogroup" aria-labelledby="previously-insured-question" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {PREVIOUSLY_INSURED_OPTIONS.map((option) => (
+                    <FieldLabel
+                      key={option.value}
+                      htmlFor={`previously-insured-${option.value}`}
+                      className={`cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-[var(--color-brand)] focus-within:ring-offset-2 ${
+                        previouslyInsured === option.value
+                          ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
+                          : "bg-white hover:border-[var(--color-brand)]"
+                      }`}
+                    >
+                      <Field orientation="horizontal" className="min-h-20">
+                        <FieldContent><FieldTitle>{option.label}</FieldTitle></FieldContent>
+                        <input
+                          id={`previously-insured-${option.value}`}
+                          type="radio"
+                          name="previously_insured"
+                          value={option.value}
+                          checked={previouslyInsured === option.value}
+                          onChange={() => setPreviouslyInsured(option.value)}
+                          className="size-5 shrink-0 accent-[var(--color-brand)]"
+                        />
+                      </Field>
+                    </FieldLabel>
+                  ))}
+                </div>
+              </fieldset>
+              {showCurrentlyInsured && (
+              <fieldset className="conditional-field-reveal mt-6 min-w-0 bg-gray-100 p-6">
+                <legend className="sr-only">Assurance actuelle</legend>
+                <p id="currently-insured-question" className="mb-4 text-base font-semibold text-[var(--color-text)]">
+                  {currentlyInsuredQuestion}
+                </p>
+                <div role="radiogroup" aria-labelledby="currently-insured-question" className="grid grid-cols-2 gap-3 sm:max-w-sm">
+                  {YES_NO_OPTIONS.map((option) => (
+                    <FieldLabel
+                      key={option.value}
+                      htmlFor={`currently-insured-${option.value}`}
+                      className={`cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-[var(--color-brand)] focus-within:ring-offset-2 ${
+                        currentlyInsured === option.value
+                          ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
+                          : "bg-white hover:border-[var(--color-brand)]"
+                      }`}
+                    >
+                      <Field orientation="horizontal" className="min-h-14 items-center">
+                        <FieldContent><FieldTitle>{option.label}</FieldTitle></FieldContent>
+                        <input
+                          id={`currently-insured-${option.value}`}
+                          type="radio"
+                          name="currently_insured"
+                          value={option.value}
+                          checked={currentlyInsured === option.value}
+                          onChange={() => setCurrentlyInsured(option.value)}
+                          className="size-5 shrink-0 accent-[var(--color-brand)]"
+                        />
+                      </Field>
+                    </FieldLabel>
+                  ))}
+                </div>
+              </fieldset>
+              )}
+              {showCurrentCoverage && (
+              <fieldset className="conditional-field-reveal mt-6 min-w-0 bg-gray-100 p-6">
+                <legend className="sr-only">Couverture actuelle de la voiture</legend>
+                <p id="current-coverage-question" className="mb-4 text-base font-semibold text-[var(--color-text)]">
+                  Quelle est la couverture actuelle de votre voiture ?
+                </p>
+                <div role="radiogroup" aria-labelledby="current-coverage-question" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {CURRENT_COVERAGE_OPTIONS.map((option) => (
+                    <FieldLabel
+                      key={option.value}
+                      htmlFor={`current-coverage-${option.value}`}
+                      className={`cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-[var(--color-brand)] focus-within:ring-offset-2 ${
+                        currentCoverage === option.value
+                          ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
+                          : "bg-white hover:border-[var(--color-brand)]"
+                      }`}
+                    >
+                      <Field orientation="horizontal" className="min-h-20">
+                        <FieldContent><FieldTitle>{option.label}</FieldTitle></FieldContent>
+                        <input
+                          id={`current-coverage-${option.value}`}
+                          type="radio"
+                          name="current_coverage"
+                          value={option.value}
+                          checked={currentCoverage === option.value}
+                          onChange={() => setCurrentCoverage(option.value)}
+                          className="size-5 shrink-0 accent-[var(--color-brand)]"
+                        />
+                      </Field>
+                    </FieldLabel>
+                  ))}
+                </div>
+              </fieldset>
+              )}
+              {showPreviousInsurer && (
+              <div className="conditional-field-reveal mt-6 bg-gray-100 p-6">
+                <label htmlFor="previous-insurer" className="mb-2 block text-base font-semibold text-[var(--color-text)]">
+                  Quel est l&apos;assureur actuel ou précédent ?
+                </label>
+                <div id="previous-insurer-description" className="mb-4 space-y-1 text-sm text-gray-600">
+                  <p>Nous avons besoin de cette information pour vous proposer des offres adaptées.</p>
+                  <p>Si vous n&apos;avez jamais été assuré ou que vous ne vous souvenez pas de l&apos;assureur, indiquez &quot;Autre&quot;.</p>
+                </div>
+                <Select name="previous_insurer" value={previousInsurer} onValueChange={setPreviousInsurer}>
+                  <SelectTrigger id="previous-insurer" aria-describedby="previous-insurer-description" className="!h-[50px] w-full bg-white sm:max-w-sm">
+                    <SelectValue placeholder="Sélectionnez un assureur" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {INSURER_OPTIONS.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
               )}
             </div>
             <div className="fixed bottom-0 right-0 lg:right-4 z-40 flex items-center p-4 bg-white">

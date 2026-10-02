@@ -23,7 +23,7 @@ export function MonthYearInput({ value, onChange, mode = "month", error = false,
     onChange(`${y}-${monthPart || "01"}`);
   }
 
-  const triggerCls = `bg-white h-[50px] ${error ? "border-[var(--color-error)] hover:border-[var(--color-error)]" : ""}`;
+  const triggerCls = `bg-white !h-[50px] ${error ? "border-[var(--color-error)] hover:border-[var(--color-error)]" : ""}`;
 
   if (mode === "year") {
     return (
