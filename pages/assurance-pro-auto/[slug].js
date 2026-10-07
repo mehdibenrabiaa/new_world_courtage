@@ -1,13 +1,5 @@
 import Head from "next/head";
 import Link from "next/link";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import ArticleHero from "@/components/ArticleHero";
 import ArticleSection from "@/components/ArticleSection";
 import AccentCardGrid from "@/components/AccentCardGrid";
@@ -21,29 +13,6 @@ export async function getServerSideProps({ params }) {
   return { props: { guide } };
 }
 
-function PageBreadcrumb({ category, categoryHref, title }) {
-  return (
-    <Breadcrumb className="px-4 sm:px-8 lg:px-16 2xl:px-24 pt-6 pb-2">
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          {categoryHref ? (
-            <BreadcrumbLink href={categoryHref}>{category}</BreadcrumbLink>
-          ) : (
-            <span>{category}</span>
-          )}
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage className="max-w-[240px] truncate">{title}</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
 // A guide's CTA href is authored relative to the domain root (e.g. "assurance-pro-auto/garagiste"),
 // with or without a leading slash — normalize to always resolve from root, never relative to the
@@ -155,12 +124,6 @@ export default function GuidePage({ guide }) {
       </Head>
 
       <main className="bg-white">
-        <PageBreadcrumb
-          category={guide.category}
-          categoryHref={guide.category_href}
-          title={guide.title}
-        />
-
         <ArticleHero
           category={guide.category}
           categoryHref={guide.category_href}

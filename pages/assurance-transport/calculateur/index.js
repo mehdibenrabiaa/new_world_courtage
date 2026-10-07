@@ -1,29 +1,9 @@
 ﻿import Head from "next/head";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import PageHero from "../../../components/PageHero";
+import PhotoHero from "@/components/PhotoHero";
 import CarCalculatorSection from "../../../components/CarCalculatorSection";
 import CarInsuranceProcess from "../../../components/CarInsuranceProcess";
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
-function PageBreadcrumb() {
-  return (
-    <Breadcrumb className={`${cx} pt-6 pb-2`}>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/assurance-auto/">Assurance auto</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Calculateur</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
 export default function CarInsuranceCalculatorPage() {
   return (
@@ -39,8 +19,8 @@ export default function CarInsuranceCalculatorPage() {
       </Head>
 
       <main>
-        <PageBreadcrumb />
-        <PageHero title={<>Calculez <em className="italic">rapidement</em> vos besoins en<br className="hidden lg:block" />assurance automobile.</>} image="/pages/calculator-desktop.jpg" imageAlt="Calculateur assurance auto" titlePosition="bottom" titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[48px]" />
+        <PhotoHero
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Assurance auto", href: "/assurance-auto/" }, { label: "Calculateur" }]} title={<>Calculez <em className="italic">rapidement</em> vos besoins en<br className="hidden lg:block" />assurance automobile.</>} image="/pages/calculator-desktop.jpg" imageAlt="Calculateur assurance auto" />
         <CarCalculatorSection />
         <CarInsuranceProcess />
       </main>

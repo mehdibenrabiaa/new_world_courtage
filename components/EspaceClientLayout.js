@@ -6,7 +6,8 @@ import { LogOutIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import QuestionnaireHeader from "@/components/QuestionnaireHeader";
-import { getCachedAccount, getMe, isLoggedIn, logoutAccount } from "@/lib/accounts";
+import { getCachedAccount, getMe, isLoggedIn, onSessionEndedElsewhere } from "@/lib/accounts";
+import { useLogout } from "@/components/AccountMenu";
 
 const TABS = [
   { href: "/espace-client/", pathname: "/espace-client", label: "Tableau de bord" },
@@ -45,10 +46,10 @@ export default function EspaceClientLayout({ title, children }) {
       .catch(() => router.replace("/connexion/"));
   }, [router]);
 
-  async function handleLogout() {
-    await logoutAccount();
-    router.push("/connexion/");
-  }
+  // Logged out in another tab: this private page must close too.
+  useEffect(() => onSessionEndedElsewhere(() => router.replace("/connexion/")), [router]);
+
+  const handleLogout = useLogout(setAccount);
 
   if (!account) {
     return (
@@ -76,7 +77,7 @@ export default function EspaceClientLayout({ title, children }) {
             <h1 className="text-xl font-bold text-[var(--color-text)]">Bonjour {account.name.split(" ")[0]}</h1>
             <p className="text-sm text-gray-500">{account.email}</p>
           </div>
-          <Button variant="outline" onClick={handleLogout} className="gap-1.5 shrink-0">
+          <Button variant="outline" onClick={() => handleLogout()} className="gap-1.5 shrink-0">
             <LogOutIcon size={15} /> Déconnexion
           </Button>
         </div>

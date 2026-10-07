@@ -1,37 +1,22 @@
-﻿import { libreCaslon } from "@/lib/fonts";
-
+// Trust strip: two equal square tiles (Trustpilot, ORIAS),
+// styled like the partner-logo tiles.
 export default function TrustPilot({ score = 4.8, className = "" }) {
   return (
-    <div className={`w-full px-4 lg:px-12 2xl:px-24 py-8 ${className}`}>
-      <div className="max-w-4xl mx-auto py-12 flex flex-col sm:flex-row flex-wrap justify-center items-center gap-16 sm:gap-10 lg:gap-14">
-
-        {/* Trustpilot existing design */}
-        <div className="flex flex-col items-start gap-2">
-          <img src="/logos/trustpilot.svg" alt="Trustpilot" loading="lazy" className="h-20 sm:h-14 w-auto object-contain" />
-          <p className="text-[16px] sm:text-[13px] font-semibold text-[var(--color-text)] leading-tight">
+    <section className={`w-full px-4 lg:px-12 2xl:px-24 py-8 ${className}`} aria-label="Pourquoi nous faire confiance">
+      <ul className="mx-auto grid max-w-3xl grid-cols-1 gap-4 sm:grid-cols-2">
+        <li className="flex min-h-40 flex-col items-center justify-center gap-3 border border-gray-200 bg-white px-6 py-8 text-center">
+          <img src="/logos/trustpilot.svg" alt="Trustpilot" loading="lazy" className="h-12 w-auto object-contain" />
+          <p className="text-[15px] font-semibold text-[var(--color-text)]">
             TrustScore <span className="text-[#00593a]">{score}</span> sur 5
           </p>
-        </div>
+        </li>
 
-        <div className="h-px sm:h-20 w-24 sm:w-px bg-gray-200 block" />
+        <li className="flex min-h-40 flex-col items-center justify-center gap-3 border border-gray-200 bg-white px-6 py-8 text-center">
+          <img src="/logos/orias.svg" alt="ORIAS" loading="lazy" className="h-12 w-auto object-contain" />
+          <p className="text-[15px] font-semibold text-[var(--color-text)]">Courtier immatriculé à l&apos;ORIAS</p>
+        </li>
 
-        {/* ORIAS */}
-        <div className="flex flex-col items-center gap-1.5">
-          <img src="/logos/orias.svg" alt="ORIAS" loading="lazy" className="h-20 sm:h-14 w-auto object-contain" />
-        </div>
-
-        <div className="h-px sm:h-20 w-24 sm:w-px bg-gray-200 block" />
-
-        {/* Sans frais */}
-        <div className="flex flex-col items-center sm:items-start gap-0">
-          <p className={`text-[36px] sm:text-[32px] italic text-[#4b4b4b] leading-tight ${libreCaslon.className}`}>Sans frais</p>
-          <p className="text-[18px] sm:text-[16px] text-[#4b4b4b] leading-tight">Sans engagement</p>
-          <p className="text-[14px] sm:text-[12px] font-normal text-[#4b4b4b] leading-snug">Même prix que chez l&apos;assureur</p>
-        </div>
-
-      </div>
-
-
-    </div>
+      </ul>
+    </section>
   );
 }

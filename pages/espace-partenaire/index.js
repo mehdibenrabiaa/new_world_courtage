@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import QuestionnaireHeader from "@/components/QuestionnaireHeader";
-import { getMe, getMyReferral, isLoggedIn, logoutAccount } from "@/lib/accounts";
+import { getMe, getMyReferral, isLoggedIn, onSessionEndedElsewhere } from "@/lib/accounts";
+import { useLogout } from "@/components/AccountMenu";
 
 export default function EspacePartenaire() {
   const router = useRouter();
@@ -37,10 +38,10 @@ export default function EspacePartenaire() {
       });
   }, [router]);
 
-  async function handleLogout() {
-    await logoutAccount();
-    router.push("/connexion/");
-  }
+  // Logged out in another tab: this private page must close too.
+  useEffect(() => onSessionEndedElsewhere(() => router.replace("/connexion/")), [router]);
+
+  const handleLogout = useLogout();
 
   async function handleCopy() {
     if (!referral) return;
@@ -81,7 +82,7 @@ export default function EspacePartenaire() {
               <h1 className="text-2xl font-bold text-[var(--color-text)]">Bonjour {account.name.split(" ")[0]}</h1>
               <p className="text-sm text-gray-500">{account.email}</p>
             </div>
-            <Button variant="outline" onClick={handleLogout} className="gap-1.5 shrink-0">
+            <Button variant="outline" onClick={() => handleLogout()} className="gap-1.5 shrink-0">
               <LogOutIcon size={15} /> Déconnexion
             </Button>
           </div>

@@ -1,9 +1,8 @@
 ﻿import { useState, useEffect, useRef } from 'react'
-import Image from 'next/image'
 import Link from 'next/link'
 import * as NavMenu from '@radix-ui/react-navigation-menu'
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { Menu, X, Phone, Mail, ChevronLeft } from 'lucide-react'
+import { Menu, X, Phone, Mail, ChevronLeft, ChevronRight, Eye, Lock, LogOut, UserRound } from 'lucide-react'
 
 function WhatsAppIcon({ size = 15 }) {
   return (
@@ -15,12 +14,19 @@ function WhatsAppIcon({ size = 15 }) {
 import { Button } from '@/components/ui/button'
 import CtaButton from '@/components/CtaButton'
 import { NAV_ITEMS } from './navData'
+import SiteLogo from './SiteLogo'
+import AccountMenu, { LogoutNotice, accountLinks, firstName, useAccount, useLogout } from './AccountMenu'
 
-function Logo() {
-  return (
-    <Image src="/logos/nwc-logo.svg" alt="New World Courtage" width={182} height={223} className="h-8 w-auto" priority />
-  )
-}
+// Top utility row of the desktop header.
+const TOP_LEFT_LINKS = [
+  { label: 'À propos', href: '/a-propos/' },
+  { label: 'Nos assurances', href: '/nos-assurances/' },
+]
+const TOP_RIGHT_LINKS = [
+  { label: 'Accessibilité', href: '/accessibilite/', Icon: Eye },
+  { label: 'Contact', href: '/contact/', Icon: Mail },
+  { label: '07 45 89 18 65', href: 'tel:+33745891865', Icon: Phone },
+]
 
 // ── Mega-menu content (renders inside Radix Viewport) ─────────────────────
 
@@ -62,60 +68,93 @@ function MegaMenuContent({ item }) {
   )
 }
 
-// ── Mobile second-level panel ──────────────────────────────────────────────
+// ── Mobile drawer pieces ───────────────────────────────────────────────────
+// Square, line-separated rows and full-width brand blocks, matching the
+// desktop header.
+
+const drawerRow = 'flex items-center justify-between gap-3 w-full px-5 py-4 text-left text-[15px] font-medium text-[var(--color-text)] border-b border-gray-200 hover:bg-gray-50 transition-colors'
+
+function DrawerButtons({ onClose, account, setAccount }) {
+  const logout = useLogout(setAccount)
+  return (
+    <div className="flex flex-col">
+      {account && (
+        <div className="border-t border-gray-200">
+          <p className="flex items-center gap-2 px-5 pt-4 pb-2 text-[13px] font-bold uppercase tracking-widest text-gray-500">
+            <UserRound size={15} aria-hidden="true" />
+            {firstName(account)}
+          </p>
+          {accountLinks(account).map(({ label, href }) => (
+            <Link key={href} href={href} onClick={onClose} className={drawerRow}>
+              {label}
+              <ChevronRight size={16} className="shrink-0 text-gray-400" aria-hidden="true" />
+            </Link>
+          ))}
+        </div>
+      )}
+      <Link href="/devis/" onClick={onClose} className="flex items-center justify-center py-4 text-[15px] font-bold text-white bg-[#3b9bd8] hover:bg-[#2c87c2] transition-colors">
+        Devis gratuit
+      </Link>
+      {account ? (
+        <button type="button" onClick={() => { onClose(); logout() }} className="flex items-center justify-center gap-2 py-4 text-[15px] font-bold text-white bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] transition-colors">
+          <LogOut size={16} strokeWidth={2} aria-hidden="true" />
+          Déconnexion
+        </button>
+      ) : (
+        <Link href="/connexion/" onClick={onClose} className="flex items-center justify-center gap-2 py-4 text-[15px] font-bold text-white bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] transition-colors">
+          <Lock size={16} strokeWidth={2} aria-hidden="true" />
+          Espace client
+        </Link>
+      )}
+    </div>
+  )
+}
 
 function MobilePanel({ item, onBack, onClose }) {
   return (
     <div>
       <button
         onClick={onBack}
-        className="flex items-center gap-2 w-full px-5 py-4 text-base font-bold text-[var(--color-text)] border-b border-gray-200 hover:bg-gray-50"
+        className="flex items-center gap-2 w-full px-5 py-4 text-[15px] font-bold text-[var(--color-text)] bg-[var(--color-light)] border-b border-gray-200 hover:bg-gray-100"
       >
-        <ChevronLeft size={18} className="text-[var(--color-brand)]" />
+        <ChevronLeft size={18} className="text-[var(--color-brand)]" aria-hidden="true" />
         {item.label}
       </button>
 
-      <div className="pb-4">
-        {item.sections.map((section) => (
-          <div key={section.heading} className="px-5 pt-4">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-[var(--color-text)] mb-2">
-              {section.heading}
-            </p>
-            {section.links.map((link, i) =>
-              link.separator ? (
-                <div key={`sep-${i}`} className="my-1 border-t border-gray-100" />
-              ) : (
-                <Link
-                  key={link.label}
-                  href={link.href}
-                  onClick={onClose}
-                  className="block py-2.5 text-sm text-[var(--color-text)] border-b border-gray-100 last:border-0 hover:text-[var(--color-brand)]"
-                >
-                  {link.label}
-                </Link>
-              )
-            )}
-          </div>
-        ))}
-
-        <div className="mx-5 mt-5 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <p className="text-[13.5px] font-medium text-[var(--color-text)] mb-3">{item.cta.tagline}</p>
-          <Link
-            href={item.cta.href}
-            onClick={onClose}
-            className="block text-center py-3 bg-[var(--color-brand)] text-white text-sm font-bold rounded-full hover:bg-[var(--color-brand-hover)] transition-colors"
-          >
-            {item.cta.button}
-          </Link>
+      {item.sections.map((section) => (
+        <div key={section.heading}>
+          <p className="px-5 pt-5 pb-2 text-[11px] font-bold uppercase tracking-widest text-gray-500 border-b border-gray-200">
+            {section.heading}
+          </p>
+          {section.links.map((link, i) =>
+            link.separator ? null : (
+              <Link key={`${link.label}-${i}`} href={link.href} onClick={onClose} className={drawerRow}>
+                {link.label}
+                <ChevronRight size={16} className="shrink-0 text-gray-400" aria-hidden="true" />
+              </Link>
+            )
+          )}
         </div>
-      </div>
+      ))}
+
+      <p className="px-5 pt-6 pb-4 text-[14px] font-medium text-[var(--color-text)]">{item.cta.tagline}</p>
+      <Link href={item.cta.href} onClick={onClose} className="flex items-center justify-center py-4 text-[15px] font-bold text-white bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] transition-colors">
+        {item.cta.button}
+      </Link>
     </div>
   )
 }
 
 // ── Mobile drawer ──────────────────────────────────────────────────────────
 
-function MobileDrawer({ open, onClose }) {
+const DRAWER_LINKS = [
+  { label: 'À propos', href: '/a-propos/' },
+  { label: 'Nos assurances', href: '/nos-assurances/' },
+  { label: 'Accessibilité', href: '/accessibilite/', Icon: Eye },
+  { label: 'Contact', href: '/contact/', Icon: Mail },
+]
+
+function MobileDrawer({ open, onClose, account, setAccount }) {
   const [activePanel, setActivePanel] = useState(null)
   const [animClass, setAnimClass] = useState('')
 
@@ -140,13 +179,13 @@ function MobileDrawer({ open, onClose }) {
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
       <SheetContent side="right" aria-label="Navigation menu">
         <SheetTitle className="sr-only">Menu de navigation</SheetTitle>
-        <SheetHeader className="px-5 h-24 border-b border-gray-200">
-          <Link href="/" onClick={onClose}>
-            <Logo />
+        <SheetHeader className="h-16 items-stretch border-b border-gray-200">
+          <Link href="/" onClick={onClose} className="flex items-center border-r border-gray-200 px-4">
+            <SiteLogo className="h-9 w-auto" />
           </Link>
           <SheetClose asChild>
-            <button aria-label="Close menu" className="flex items-center justify-center p-1.5 rounded-md hover:bg-gray-100">
-              <X size={22} />
+            <button aria-label="Fermer le menu" className="flex w-14 items-center justify-center hover:bg-gray-50">
+              <X size={22} aria-hidden="true" />
             </button>
           </SheetClose>
         </SheetHeader>
@@ -156,47 +195,40 @@ function MobileDrawer({ open, onClose }) {
           {activePanel ? (
             <MobilePanel item={activePanel} onBack={handleBack} onClose={onClose} />
           ) : (
-            <div className="py-2">
+            <div>
               {NAV_ITEMS.map((item) => (
-                <button
-                  key={item.id}
-                  onClick={() => handleOpenPanel(item)}
-                  className="w-full text-left px-5 py-3.5 text-base font-medium text-[var(--color-text)] hover:bg-gray-50"
-                >
+                <button key={item.id} onClick={() => handleOpenPanel(item)} className={drawerRow}>
                   {item.label}
+                  <ChevronRight size={18} className="shrink-0 text-[var(--color-brand)]" aria-hidden="true" />
                 </button>
               ))}
 
-              <div className="h-px bg-gray-200 mx-5 my-2" />
+              <div className="bg-[var(--color-light)] border-b border-gray-200">
+                {DRAWER_LINKS.map(({ label, href, Icon }) => (
+                  <Link key={href} href={href} onClick={onClose} className="flex items-center gap-3 px-5 py-3 text-[14px] text-[var(--color-text)] hover:text-[var(--color-brand)]">
+                    {Icon && <Icon size={15} strokeWidth={1.75} aria-hidden="true" />}
+                    {label}
+                  </Link>
+                ))}
+              </div>
 
-              <Link href="/a-propos/" onClick={onClose} className="block px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-[var(--color-text)]">
-                À propos
-              </Link>
-
-              <Link href="/connexion/" onClick={onClose} className="block px-5 py-3 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-[var(--color-text)]">
-                Se connecter
-              </Link>
-
-              <div className="h-px bg-gray-200 mx-5 my-2" />
-
-              <div className="px-5 py-3 flex flex-col gap-3">
-                <p className="text-[11px] font-bold uppercase tracking-widest text-gray-400">Contact</p>
-                <a href="mailto:contact@newworldcourtage.com" className="flex items-center gap-3 text-base text-[var(--color-text)] hover:text-[var(--color-brand)]">
-                  <Mail size={16} className="text-[var(--color-brand)] shrink-0" />
+              <div className="px-5 py-5 flex flex-col gap-3">
+                <p className="text-[11px] font-bold uppercase tracking-widest text-gray-500">Contact</p>
+                <a href="mailto:contact@newworldcourtage.com" className="flex items-center gap-3 text-[14px] text-[var(--color-text)] hover:text-[var(--color-brand)]">
+                  <Mail size={16} className="text-[var(--color-brand)] shrink-0" aria-hidden="true" />
                   contact@newworldcourtage.com
                 </a>
-                <a href="tel:+33745891865" className="flex items-center gap-3 text-base text-[var(--color-text)] hover:text-[var(--color-brand)]">
-                  <Phone size={16} className="text-[var(--color-brand)] shrink-0" />
+                <a href="tel:+33745891865" className="flex items-center gap-3 text-[14px] text-[var(--color-text)] hover:text-[var(--color-brand)]">
+                  <Phone size={16} className="text-[var(--color-brand)] shrink-0" aria-hidden="true" />
                   07 45 89 18 65
                 </a>
-                <a href="https://wa.me/33774595329" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-base text-[var(--color-text)] hover:text-[var(--color-brand)]">
+                <a href="https://wa.me/33774595329" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[14px] text-[var(--color-text)] hover:text-[var(--color-brand)]">
                   <span className="text-[var(--color-brand)] shrink-0"><WhatsAppIcon size={16} /></span>
                   07 74 59 53 29
                 </a>
               </div>
-              <div className="mx-5 mt-3 mb-2" onClick={onClose}>
-                <CtaButton href="/devis/" className="w-full justify-center" />
-              </div>
+
+              <DrawerButtons onClose={onClose} account={account} setAccount={setAccount} />
             </div>
           )}
           </div>
@@ -210,6 +242,7 @@ function MobileDrawer({ open, onClose }) {
 
 export default function Navbar() {
   const [drawerOpen, setDrawerOpen] = useState(false)
+  const [account, setAccount] = useAccount()
   const headerRef = useRef(null)
   const [headerHeight, setHeaderHeight] = useState(0)
 
@@ -232,59 +265,88 @@ export default function Navbar() {
 
   return (
     <>
-      <header ref={headerRef} className="sticky top-0 z-40 w-full bg-white border-b border-gray-200 py-3">
-        <div className="px-4 lg:px-12 2xl:px-24 flex items-center">
+      <header ref={headerRef} className="sticky top-0 z-40 w-full bg-white border-b border-gray-200">
 
-          {/* Logo */}
-          <Link href="/" className="shrink-0 mr-4 lg:mr-10">
-            <Logo />
+        {/* Desktop — logo cell spanning a utility row and a main row */}
+        <div className="hidden lg:flex">
+          <Link href="/" className="flex shrink-0 items-center border-r border-gray-200 px-8 xl:px-12">
+            <SiteLogo className="h-10 w-auto" />
           </Link>
 
-          {/* Desktop primary nav — Radix NavigationMenu */}
-          <NavMenu.Root delayDuration={100} className="hidden lg:block flex-1">
-            <NavMenu.List className="flex items-center gap-0.5 list-none m-0 p-0">
-              {NAV_ITEMS.map((item) => (
-                <NavMenu.Item key={item.id}>
-                  <NavMenu.Trigger onPointerDown={(e) => e.preventDefault()} asChild>
-                    <Button variant="link" className="px-5 py-2 text-sm font-semibold data-[state=open]:text-[var(--color-brand)] hover:no-underline">
-                      {item.label}
-                    </Button>
-                  </NavMenu.Trigger>
-                  <NavMenu.Content
-                    className="fixed left-0 w-screen bg-white border-b border-gray-200 shadow-lg z-50 [animation:nav-fade-in_0.15s_ease]"
-                    style={{ top: headerHeight }}
-                  >
-                    <MegaMenuContent item={item} />
-                  </NavMenu.Content>
-                </NavMenu.Item>
-              ))}
-            </NavMenu.List>
+          <div className="flex min-w-0 flex-1 flex-col">
+            {/* Utility row */}
+            <div className="flex h-[34px] items-center justify-between border-b border-gray-200 px-5 text-[14px] text-[var(--color-text)]">
+              <div className="flex items-center gap-7">
+                {TOP_LEFT_LINKS.map(({ label, href }) => (
+                  <Link key={href} href={href} className="hover:text-[var(--color-brand)]">{label}</Link>
+                ))}
+              </div>
+              <div className="flex items-center gap-7">
+                {TOP_RIGHT_LINKS.map(({ label, href, Icon }) => (
+                  <Link key={href} href={href} className="flex items-center gap-2 hover:text-[var(--color-brand)]">
+                    <Icon size={15} strokeWidth={1.75} aria-hidden="true" />
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            </div>
 
-          </NavMenu.Root>
+            {/* Main row */}
+            <div className="flex h-[52px] items-stretch">
+              <NavMenu.Root delayDuration={100} className="flex flex-1 items-center">
+                <NavMenu.List className="flex items-center gap-0.5 list-none m-0 p-0">
+                  {NAV_ITEMS.map((item) => (
+                    <NavMenu.Item key={item.id}>
+                      <NavMenu.Trigger onPointerDown={(e) => e.preventDefault()} asChild>
+                        <Button variant="link" className="px-5 py-2 text-[15px] font-medium data-[state=open]:text-[var(--color-brand)] hover:no-underline">
+                          {item.label}
+                        </Button>
+                      </NavMenu.Trigger>
+                      <NavMenu.Content
+                        className="fixed left-0 w-screen bg-white border-b border-gray-200 shadow-lg z-50 [animation:nav-fade-in_0.15s_ease]"
+                        style={{ top: headerHeight }}
+                      >
+                        <MegaMenuContent item={item} />
+                      </NavMenu.Content>
+                    </NavMenu.Item>
+                  ))}
+                </NavMenu.List>
+              </NavMenu.Root>
 
-          {/* Utility — desktop */}
-          <div className="hidden lg:flex items-center gap-3 ml-auto shrink-0">
-            <Button variant="link" asChild className="px-5 py-2 text-sm font-semibold hover:no-underline hover:text-[var(--color-text)]">
-              <Link href="/a-propos/">À propos</Link>
-            </Button>
-            <Button variant="link" asChild className="px-5 py-2 text-sm font-semibold hover:no-underline hover:text-[var(--color-text)]">
-              <Link href="/connexion/">Se connecter</Link>
-            </Button>
-            <CtaButton href="/devis/" />
+              <Link href="/devis/" className="flex items-center px-7 text-[15px] font-bold text-white bg-[#3b9bd8] hover:bg-[#2c87c2] transition-colors">
+                Devis gratuit
+              </Link>
+              <AccountMenu account={account} setAccount={setAccount} />
+            </div>
           </div>
+        </div>
 
-          {/* Mobile right — Get a Quote (sm) + hamburger */}
-          <div className="lg:hidden ml-auto flex items-center gap-2 shrink-0">
-            <CtaButton href="/devis/" />
-            <Button variant="ghost" size="icon" onClick={() => setDrawerOpen(true)} aria-label="Open menu">
-              <Menu size={22} />
-            </Button>
-          </div>
-
+        {/* Mobile — same blocks as desktop: logo cell, then full-height
+            Devis gratuit / Espace client buttons and the menu toggle */}
+        <div className="lg:hidden flex h-16 items-stretch">
+          <Link href="/" className="flex shrink-0 items-center border-r border-gray-200 px-4">
+            <SiteLogo className="h-9 w-auto" />
+          </Link>
+          <div className="flex-1" />
+          <Link href="/devis/" className="flex items-center px-4 sm:px-6 text-[14px] font-bold text-white bg-[#3b9bd8] hover:bg-[#2c87c2] transition-colors">
+            Devis<span className="hidden sm:inline">&nbsp;gratuit</span>
+          </Link>
+          <Link
+            href={account ? accountLinks(account)[0].href : "/connexion/"}
+            aria-label={account ? accountLinks(account)[0].label : "Espace client"}
+            className="flex items-center gap-2 px-4 sm:px-6 text-[14px] font-bold text-white bg-[var(--color-brand)] hover:bg-[var(--color-brand-hover)] transition-colors"
+          >
+            {account ? <UserRound size={18} strokeWidth={2} aria-hidden="true" /> : <Lock size={17} strokeWidth={2} aria-hidden="true" />}
+            <span className="hidden sm:inline">{account ? firstName(account) : "Espace client"}</span>
+          </Link>
+          <button type="button" onClick={() => setDrawerOpen(true)} aria-label="Ouvrir le menu" className="flex w-14 items-center justify-center text-[var(--color-text)] hover:bg-gray-50">
+            <Menu size={24} aria-hidden="true" />
+          </button>
         </div>
       </header>
 
-      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} />
+      <MobileDrawer open={drawerOpen} onClose={() => setDrawerOpen(false)} account={account} setAccount={setAccount} />
+      <LogoutNotice />
     </>
   )
 }

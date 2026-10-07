@@ -1,7 +1,7 @@
 ﻿import Head from "next/head";
-import Image from "next/image";
+import QuestionnaireHeader from "@/components/QuestionnaireHeader";
 import { useRouter } from "next/router";
-import { Phone, ChevronRight } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import CarInsuranceForm from "@/components/CarInsuranceForm";
 
 function bucketBonusMalus(raw) {
@@ -31,19 +31,7 @@ export default function DevisPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <header className="sticky top-0 z-40 w-full bg-gray-200">
-        <div className="flex items-center justify-between px-4 lg:px-12 h-16">
-          <Image src="/logos/nwc-logo.svg" alt="New World Courtage" width={120} height={33} className="h-7 w-auto" />
-          <a
-            href="tel:+33745891865"
-            className="flex items-center gap-2.5 border border-[var(--color-brand)] hover:bg-[var(--color-brand)]/5 text-[var(--color-brand)] rounded-lg px-4 py-2.5 transition-colors"
-          >
-            <Phone size={18} className="shrink-0" />
-            <span className="text-sm font-semibold">07 45 89 18 65</span>
-            <ChevronRight size={16} className="shrink-0 opacity-70" />
-          </a>
-        </div>
-      </header>
+      <QuestionnaireHeader />
 
       <main className="min-h-screen bg-white">
         <div className="max-w-4xl mx-auto px-4 lg:px-6 py-10 lg:py-16">

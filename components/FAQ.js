@@ -18,7 +18,7 @@ const ITEMS = [
   },
   {
     q: "Quels types d'assurances proposez-vous ?",
-    a: "Nous couvrons l'assurance auto, habitation, santé, décennale, moto et poids lourd. Nos conseillers comparent les offres de plus de 100 compagnies partenaires pour vous proposer la meilleure protection au meilleur tarif.",
+    a: "Nous couvrons l'assurance auto et moto (y compris pour les conducteurs à risques aggravés : malus, résiliation, suspension de permis), l'assurance taxi et chauffeur VTC, ainsi que l'assurance des professionnels de l'automobile : garagistes, convoyeurs et négociants. Nos conseillers comparent les offres de plus de 100 compagnies partenaires pour vous proposer la meilleure protection au meilleur tarif.",
   },
   {
     q: "Comment obtenir un devis ?",
@@ -36,7 +36,7 @@ export default function FAQ({ className = "" }) {
   return (
     <section className={`w-full py-10 ${className}`}>
       <div className="flex flex-col gap-6 max-w-2xl mx-auto px-4 sm:px-0">
-        <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] text-center ${libreCaslon.className}`}>
+        <h2 className={`text-[28px] sm:text-[34px] lg:text-[40px] leading-[1.1] text-[var(--color-text)] text-center ${libreCaslon.className}`}>
           Questions fréquentes
         </h2>
         <Accordion>

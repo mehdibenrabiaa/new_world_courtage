@@ -1,33 +1,48 @@
+// The products New World Courtage sells, grouped as in the header mega menu.
+// Only link to pages that exist.
 export const NAV_ITEMS = [
   {
-    id: 'auto',
-    label: 'Flotte & Transport',
+    id: 'auto-moto',
+    label: 'Auto & Moto',
+    href: '/assurance-auto/devis/',
+    cta: { tagline: "Assurez votre voiture ou votre moto au meilleur prix", button: 'Devis gratuit', href: '/assurance-auto/devis/' },
+    sections: [
+      {
+        heading: 'Particuliers',
+        links: [
+          { label: 'Assurance auto', href: '/assurance-auto/devis/' },
+          { label: 'Assurance moto', href: '/assurance-moto/' },
+          { label: 'Assurance risques aggravés', href: '/assurance-risques-aggraves/' },
+        ],
+      },
+      {
+        heading: 'Outils',
+        links: [
+          { label: 'Calculateur assurance auto', href: '/assurance-transport/calculateur/' },
+          { label: 'Comparer toutes nos assurances', href: '/nos-assurances/' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'taxi-vtc',
+    label: 'Taxi & VTC',
     href: '/assurance-transport/',
-    cta: { tagline: "Protégez votre flotte et vos véhicules professionnels", button: 'Devis gratuit', href: '/assurance-transport/' },
+    cta: { tagline: "Protégez votre activité de transport de personnes", button: 'Devis gratuit', href: '/assurance-transport/' },
     sections: [
       {
         heading: 'Transport de personnes',
         links: [
           { label: 'Assurance taxi', href: '/assurance-transport/taxi/' },
-          { label: 'Assurance ambulance', href: '/assurance-transport/ambulance/' },
-          { label: 'Assurance transport public de voyageurs', href: '/assurance-transport/transport-public-voyageurs/' },
           { label: 'Assurance chauffeur VTC', href: '/assurance-transport/chauffeur-vtc/' },
         ],
       },
       {
-        heading: 'Transport de marchandises',
+        heading: 'Guides taxi',
         links: [
-          { label: 'Assurance poids lourd', href: '/assurance-transport/poids-lourd/' },
-          { label: 'Assurance transpalette', href: '/assurance-transport/transpalette/' },
-          { label: 'Assurance marchandise transportée', href: '/assurance-transport/marchandise-transportee/' },
-        ],
-      },
-      {
-        heading: 'Autres véhicules professionnels',
-        links: [
-          { label: 'Assurance auto mission', href: '/assurance-transport/auto-mission/' },
-          { label: 'Assurance triporteur électrique', href: '/assurance-transport/triporteur-electrique/' },
-          { label: 'Assurance 2 roues professionnelle', href: '/assurance-transport/2-roues-professionnelle/' },
+          { label: 'Comment choisir son assurance taxi', href: '/assurance-transport/comment-choisir-assurance-taxi/' },
+          { label: 'Comment souscrire une assurance taxi', href: '/assurance-transport/comment-souscrire-assurance-taxi/' },
+          { label: 'Quelle couverture pour un taxi ?', href: '/assurance-transport/quelle-couverture-assurance-taxi/' },
         ],
       },
     ],
@@ -35,8 +50,8 @@ export const NAV_ITEMS = [
   {
     id: 'pro-auto',
     label: "Pro de l'automobile",
-    href: '/assurance-pro-auto/',
-    cta: { tagline: "Protégez votre activité automobile professionnelle", button: 'Devis gratuit', href: '/assurance-pro-auto/' },
+    href: '/assurance-pro-auto/garagiste/',
+    cta: { tagline: "Protégez votre activité automobile professionnelle", button: 'Devis gratuit', href: '/assurance-pro-auto/garagiste/' },
     sections: [
       {
         heading: 'Garage',
@@ -47,50 +62,12 @@ export const NAV_ITEMS = [
         ],
       },
       {
-        heading: 'Autres activités',
+        // Guides published from the CRM (see pages/assurance-pro-auto/[slug].js).
+        heading: 'Guides garage',
         links: [
-          { label: 'Assurance carrossier', href: '/assurance-pro-auto/garagiste/' },
-          { label: 'Assurance contrôleur technique', href: '/assurance-pro-auto/garagiste/' },
-          { label: 'Assurance station de lavage', href: '/assurance-pro-auto/garagiste/' },
-          { label: 'Assurance centre automobile', href: '/assurance-pro-auto/garagiste/' },
-          { label: 'Assurance casse automobile', href: '/assurance-pro-auto/garagiste/' },
-          { label: 'Assurance société de location de véhicules', href: '/assurance-pro-auto/garagiste/' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'construction',
-    label: 'Construction',
-    href: '/assurance-construction/',
-    cta: { tagline: "Protégez vos chantiers et vos engins professionnels", button: 'Devis gratuit', href: '/assurance-construction/' },
-    sections: [
-      {
-        heading: 'Garanties & Responsabilités',
-        links: [
-          { label: 'Tous risques chantier (TRC)', href: '/assurance-construction/tous-risques-chantier/' },
-          { label: 'Responsabilité civile et décennale', href: '/assurance-construction/rc-decennale/' },
-          { label: 'Dommages ouvrage', href: '/assurance-construction/dommages-ouvrage/' },
-          { label: "Garanties financières d'achèvement", href: '/assurance-construction/garanties-financieres/' },
-          { label: 'Constructeur non réalisateur', href: '/assurance-construction/constructeur-non-realisateur/' },
-          { label: 'Décennale entreprise étrangère', href: '/assurance-construction/decennale-entreprise-etrangere/' },
-        ],
-      },
-      {
-        heading: 'Matériels & Engins',
-        links: [
-          { label: 'Assurance engins de chantier', href: '/assurance-construction/engins-chantier/' },
-          { label: 'Assurance camion béton / malaxeur', href: '/assurance-construction/camion-beton/' },
-          { label: 'Grue mobile & engins de levage', href: '/assurance-construction/grue-engins-levage/' },
-          { label: 'Centrale à béton', href: '/assurance-construction/centrale-beton/' },
-          { label: 'Bris de machine', href: '/assurance-construction/bris-de-machine/' },
-        ],
-      },
-      {
-        heading: 'Activités spécifiques',
-        links: [
-          { label: 'Assurance désamiantage', href: '/assurance-construction/desamiantage/' },
-          { label: 'Bureaux & entrepôts', href: '/assurance-construction/bureaux-entrepots/' },
+          { label: "Le guide complet de l'assurance garage", href: '/assurance-pro-auto/assurance-garage-guide-complet/' },
+          { label: "Prix d'une assurance garage", href: '/assurance-pro-auto/prix-assurance-garage/' },
+          { label: 'Garantie des véhicules confiés', href: '/assurance-pro-auto/garantie-vehicules-confies-garage/' },
         ],
       },
     ],

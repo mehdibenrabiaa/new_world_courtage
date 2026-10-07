@@ -23,6 +23,8 @@ const NO_NAV_ROUTES = [
   "/assurance-auto/devis",
   "/assurance-transport/devis",
   "/assurance-transport/taxi/devis",
+  "/assurance-transport/chauffeur-vtc/devis",
+  "/assurance-moto/devis",
   "/assurance-pro-auto/garagiste/devis",
   "/connexion",
   "/inscription",

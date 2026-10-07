@@ -1,48 +1,18 @@
 import Head from "next/head";
+import PhotoHero from "@/components/PhotoHero";
+import { LogoTile } from "@/components/Partners";
 import { libreCaslon } from "@/lib/fonts";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import ReadyCta from "@/components/ReadyCta";
 import { PARTNERS } from "@/lib/partners";
 
 const cx = "px-4 sm:px-8 lg:px-28 2xl:px-44";
 
-function PageBreadcrumb() {
-  return (
-    <Breadcrumb className={`${cx} pt-6 pb-2`}>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/a-propos/">À propos</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Nos partenaires</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
-
-function Hero() {
-  return (
-    <div className={cx}>
-      <div className="bg-[var(--color-brand)] px-10 pt-20 lg:pt-[140px] pb-8 flex items-end">
-        <h1 className="text-[24px] lg:text-[30px] font-semibold leading-none text-white">
-          Nos partenaires
-        </h1>
-      </div>
-    </div>
-  );
-}
 
 function Intro() {
   return (
     <section className={`${cx} py-10 lg:py-14`}>
       <div className="max-w-3xl mx-auto flex flex-col gap-5 text-center">
-        <h2 className={`text-[8vw] sm:text-[36px] lg:text-[44px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
+        <h2 className={`text-[28px] sm:text-[34px] lg:text-[40px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
           Plus de <em className={`italic ${libreCaslon.className}`}>100 compagnies</em> partenaires.
         </h2>
         <p className="text-[15px] text-gray-600 leading-relaxed">
@@ -56,22 +26,14 @@ function Intro() {
   );
 }
 
-function PartnerCard({ name, src }) {
-  return (
-    <div className="flex items-center justify-center h-24 lg:h-28 rounded-xl border border-gray-100 bg-white px-6 hover:border-gray-300 transition-colors duration-150">
-      <img src={src} alt={name} loading="lazy" className="h-9 lg:h-11 w-auto object-contain max-w-[140px]" />
-    </div>
-  );
-}
-
 function PartnerGrid() {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="rounded-[20px] bg-[var(--color-light)] px-4 py-10 lg:px-8 lg:py-14">
+        <div className="bg-[var(--color-light)] px-4 py-10 lg:px-8 lg:py-14">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 max-w-4xl mx-auto">
             {PARTNERS.map(({ id, name, src }) => (
-              <PartnerCard key={id} name={name} src={src} />
+              <LogoTile key={id} name={name} src={src} className="h-24 lg:h-28" />
             ))}
           </div>
         </div>
@@ -84,7 +46,7 @@ function HowWeChoose() {
   return (
     <section className={`${cx} py-10 lg:py-14`}>
       <div className="max-w-3xl mx-auto flex flex-col gap-4">
-        <h2 className="text-xl font-bold text-[#131212]">Comment nous choisissons nos partenaires</h2>
+        <h2 className={`text-[24px] lg:text-[28px] leading-[1.15] text-[var(--color-text)] ${libreCaslon.className}`}>Comment nous <em className={`italic ${libreCaslon.className}`}>choisissons</em> nos partenaires</h2>
         <div className="flex flex-col gap-3 text-[15px] text-gray-600 leading-relaxed">
           <p>
             Chaque assureur partenaire est sélectionné pour la solidité de ses garanties, la
@@ -117,8 +79,12 @@ export default function NosPartenairesPage() {
       </Head>
 
       <main>
-        <PageBreadcrumb />
-        <Hero />
+        <PhotoHero
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "À propos", href: "/a-propos/" }, { label: "Nos partenaires" }]}
+          image="/sections/who-we-are.webp"
+          title={<>Nos <em>partenaires</em>.</>}
+          subtitle="Un large réseau d'assureurs français et internationaux, comparés en toute indépendance pour vous."
+        />
         <Intro />
         <PartnerGrid />
         <HowWeChoose />

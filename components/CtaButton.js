@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { ChevronRight } from "lucide-react";
 
 export default function CtaButton({ href = "/devis", label = "Devis gratuit", className = "", target, rel, type = "link", onClick }) {
-  const buttonClassName = cn("cta-btn text-white text-sm font-normal py-2.5 px-4", className);
+  const buttonClassName = cn("cta-btn h-12 px-6 text-white text-[15px] font-bold", className);
 
   if (type === "submit" || type === "button") {
     return (

@@ -3,13 +3,8 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { Eye, EyeOff } from "lucide-react";
-import { Card, CardContent } from "@/components/ui/card";
-import { Field, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
-import { Button } from "@/components/ui/button";
 import SocialAuthButtons from "@/components/SocialAuthButtons";
-import QuestionnaireHeader from "@/components/QuestionnaireHeader";
+import AuthLayout, { AuthSubmit, authInputClass } from "@/components/AuthLayout";
 import { loginAccount } from "@/lib/accounts";
 
 export default function Connexion() {
@@ -41,82 +36,73 @@ export default function Connexion() {
         <meta name="robots" content="noindex, follow" />
       </Head>
 
-      <QuestionnaireHeader />
+      <AuthLayout>
+        <form onSubmit={handleSubmit} className="flex flex-1 flex-col">
+          <h1 className="mb-7 text-center text-[28px] font-medium leading-tight text-[var(--color-text)]">
+            Connectez-vous à votre espace
+          </h1>
 
-      <main className="min-h-[calc(100vh-4rem)] bg-[var(--color-light)] flex items-center justify-center px-4 py-20">
-        <Card className="w-full max-w-lg p-2">
-          <CardContent className="flex flex-col gap-7 p-7 sm:p-9">
-            <div className="flex flex-col gap-2 text-center">
-              <h1 className="text-3xl font-bold text-[var(--color-text)]">Connexion</h1>
-              <p className="text-base text-gray-500">
-                Accédez à votre espace New World Courtage.
-              </p>
+          <div className="flex flex-col gap-5">
+            <div>
+              <label htmlFor="email" className="sr-only">Adresse email</label>
+              <input
+                id="email"
+                type="email"
+                autoComplete="email"
+                placeholder="Entrez votre adresse email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className={authInputClass}
+              />
             </div>
 
-            <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-              <Field>
-                <FieldLabel htmlFor="email" className="text-base">Email</FieldLabel>
-                <Input
-                  id="email"
-                  type="email"
-                  autoComplete="email"
-                  placeholder="vous@exemple.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                  className="h-12 text-base"
-                />
-              </Field>
+            <div className="relative">
+              <label htmlFor="password" className="sr-only">Mot de passe</label>
+              <input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder="Entrez votre mot de passe"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className={`${authInputClass} pr-12`}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                className="absolute inset-y-0 right-0 flex w-12 items-center justify-center text-gray-600 hover:text-[var(--color-text)]"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+          </div>
 
-              <Field>
-                <div className="flex items-center justify-between">
-                  <FieldLabel htmlFor="password" className="text-base">Mot de passe</FieldLabel>
-                  <Link href="/mot-de-passe-oublie/" className="text-sm font-medium text-gray-500 hover:text-[var(--color-text)] hover:underline">
-                    Mot de passe oublié ?
-                  </Link>
-                </div>
-                <InputGroup className="h-12">
-                  <InputGroupInput
-                    id="password"
-                    type={showPassword ? "text" : "password"}
-                    autoComplete="current-password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    className="text-base"
-                  />
-                  <InputGroupAddon align="inline-end">
-                    <InputGroupButton
-                      type="button"
-                      size="icon-sm"
-                      aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-                      onClick={() => setShowPassword((v) => !v)}
-                    >
-                      {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-                    </InputGroupButton>
-                  </InputGroupAddon>
-                </InputGroup>
-              </Field>
+          <Link href="/mot-de-passe-oublie/" className="mt-6 self-center text-[14px] text-[var(--color-brand)] hover:underline">
+            Mot de passe oublié ?
+          </Link>
 
-              {error && <p className="text-sm text-red-600">{error}</p>}
+          {error && <p role="alert" className="mt-5 text-sm text-red-600">{error}</p>}
 
-              <Button type="submit" size="lg" disabled={loading} className="w-full mt-1 text-white text-base">
-                {loading ? "Connexion…" : "Se connecter"}
-              </Button>
-            </form>
-
+          <div className="mt-8">
             <SocialAuthButtons type="client" large />
+          </div>
 
-            <p className="text-center text-sm text-gray-500">
+          <div className="mt-auto pt-10">
+            <p className="mb-4 text-center text-[14px] text-gray-600">
               Pas encore de compte ?{" "}
-              <Link href="/inscription/" className="font-semibold text-[var(--color-text)] hover:underline">
-                S'inscrire
+              <Link href="/inscription/" className="font-semibold text-[var(--color-brand)] hover:underline">
+                Créer un compte
               </Link>
             </p>
-          </CardContent>
-        </Card>
-      </main>
+            <AuthSubmit disabled={loading || !email || !password}>
+              {loading ? "Connexion…" : "Valider"}
+            </AuthSubmit>
+          </div>
+        </form>
+      </AuthLayout>
     </>
   );
 }

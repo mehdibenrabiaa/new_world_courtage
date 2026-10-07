@@ -1,34 +1,26 @@
 ﻿import InfoCardsSection from "@/components/InfoCardsSection";
-import { Search, MessageCircle, Star, ShieldCheck } from "lucide-react";
+import { MessageCircle, Star, ShieldCheck } from "lucide-react";
 
 const STEPS = [
   {
-    image: "/sections/step-choose-insurance.webp",
-    imageAlt: "Choose your insurance type",
-    Icon: Search,
-    title: "Choisissez votre type d'assurance",
-    description:
-      "Sélectionnez parmi nos catégories — auto, habitation, santé ou décennale — selon vos besoins spécifiques.",
-  },
-  {
-    image: "/sections/step-talk-to-expert.webp",
-    imageAlt: "Talk to an expert",
+    image: "/sections/step-expert.webp",
+    imageAlt: "Une conseillère échange avec un client autour d'une table",
     Icon: MessageCircle,
     title: "Échangez avec un expert",
     description:
-      "Prenez contact avec l'un de nos conseillers agréés et transmettez-lui vos documents. Il analyse votre situation en détail.",
+      "Décrivez votre activité et vos besoins à l'un de nos conseillers agréés et transmettez-lui vos documents. Il analyse votre situation en détail.",
   },
   {
-    image: "/sections/step-receive-offers.webp",
-    imageAlt: "Receive the best offers",
+    image: "/sections/step-offers.webp",
+    imageAlt: "Une femme compare des offres sur son ordinateur portable",
     Icon: Star,
     title: "Recevez les meilleures offres",
     description:
       "Notre expert compare les offres de plus de 100 assureurs pour identifier les garanties les mieux adaptées à vos besoins et à votre budget.",
   },
   {
-    image: "/sections/step-subscribe-protected.webp",
-    imageAlt: "Subscribe and get protected",
+    image: "/sections/step-subscribe.webp",
+    imageAlt: "Poignée de main au-dessus d'un contrat signé",
     Icon: ShieldCheck,
     title: "Souscrivez et soyez protégé",
     description:
@@ -46,7 +38,7 @@ export default function OurProcess() {
       cardStyle="style2"
       showSteps
       withContainer
-      cols={4}
+      cols={3}
       ctaLabel="Devis gratuit"
     />
   );

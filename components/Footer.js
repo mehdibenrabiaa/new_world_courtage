@@ -16,9 +16,7 @@ const TOP_LINKS = [
     heading: "Nos assurances",
     items: [
       { label: "Toutes nos assurances", href: "/nos-assurances/" },
-      { label: "Flotte & Transport", href: "/assurance-transport/" },
-      { label: "Pro de l'automobile", href: "/assurance-pro-auto/" },
-      { label: "Construction", href: "/assurance-construction/" },
+      { label: "Devis gratuit", href: "/devis/" },
       { label: "Calculateur assurance auto", href: "/assurance-transport/calculateur/" },
     ],
   },
@@ -27,7 +25,6 @@ const TOP_LINKS = [
     items: [
       { label: "À propos", href: "/a-propos/" },
       { label: "Avis clients", href: "/a-propos/avis-clients/" },
-      { label: "Actualités", href: "/actualites/" },
       { label: "Partenariats", href: "/a-propos/nos-partenaires/" },
     ],
   },
@@ -44,31 +41,26 @@ const CONTACT = {
 
 const GUIDE_LINKS = [
   {
-    heading: "Flotte & Transport",
+    heading: "Auto & Moto",
+    items: [
+      { label: "Assurance auto", href: "/assurance-auto/devis/" },
+      { label: "Assurance moto", href: "/assurance-moto/" },
+      { label: "Assurance risques aggravés", href: "/assurance-risques-aggraves/" },
+    ],
+  },
+  {
+    heading: "Taxi & VTC",
     items: [
       { label: "Assurance taxi", href: "/assurance-transport/taxi/" },
-      { label: "Assurance ambulance", href: "/assurance-transport/ambulance/" },
       { label: "Assurance chauffeur VTC", href: "/assurance-transport/chauffeur-vtc/" },
-      { label: "Assurance poids lourd", href: "/assurance-transport/poids-lourd/" },
     ],
   },
   {
     heading: "Pro de l'automobile",
     items: [
       { label: "Assurance garagiste", href: "/assurance-pro-auto/garagiste/" },
+      { label: "Assurance convoyage", href: "/assurance-pro-auto/garagiste/?activite=convoyage" },
       { label: "Assurance négociant automobile", href: "/assurance-pro-auto/garagiste/?activite=negociant" },
-      { label: "Assurance carrossier", href: "/assurance-pro-auto/carrossier/" },
-      { label: "Assurance auto-école", href: "/assurance-pro-auto/auto-ecole/" },
-      { label: "Assurance concessionnaire", href: "/assurance-pro-auto/concessionnaire/" },
-    ],
-  },
-  {
-    heading: "Construction",
-    items: [
-      { label: "Tous risques chantier", href: "/assurance-construction/tous-risques-chantier/" },
-      { label: "RC et décennale", href: "/assurance-construction/rc-decennale/" },
-      { label: "Dommages ouvrage", href: "/assurance-construction/dommages-ouvrage/" },
-      { label: "Assurance engins de chantier", href: "/assurance-construction/engins-chantier/" },
     ],
   },
 ];
@@ -82,11 +74,11 @@ const LEGAL_LINKS = [
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[var(--color-blue-navy)] mt-4">
+    <footer className="w-full bg-[var(--color-brand)] mt-4">
       <div className="px-4 sm:px-6 lg:px-12 2xl:px-24 py-14">
 
         {/* Top section — logo + columns */}
-        <div className="flex flex-col md:flex-row gap-10 md:gap-12 lg:gap-16 pb-12 border-b border-white/10">
+        <div className="flex flex-col md:flex-row gap-10 md:gap-12 lg:gap-16 pb-12 border-b border-white/20">
 
           {/* Logo */}
           <div className="shrink-0">
@@ -119,24 +111,24 @@ export default function Footer() {
               <ul className="flex flex-col gap-3.5">
                 <li>
                   <a href={`mailto:${CONTACT.email}`} className="flex items-center gap-2.5 text-[15px] text-white/75 hover:text-white transition-colors break-all">
-                    <Mail size={15} className="shrink-0 text-white/60" />
+                    <Mail size={15} className="shrink-0 text-white/75" />
                     {CONTACT.email}
                   </a>
                 </li>
                 <li>
                   <a href={`tel:${CONTACT.tel}`} className="flex items-center gap-2.5 text-[15px] text-white/75 hover:text-white transition-colors">
-                    <Phone size={15} className="shrink-0 text-white/60" />
+                    <Phone size={15} className="shrink-0 text-white/75" />
                     {CONTACT.phone}
                   </a>
                 </li>
                 <li>
                   <a href={CONTACT.whatsappHref} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2.5 text-[15px] text-white/75 hover:text-white transition-colors">
-                    <span className="shrink-0 text-white/60"><WhatsAppIcon size={15} /></span>
+                    <span className="shrink-0 text-white/75"><WhatsAppIcon size={15} /></span>
                     {CONTACT.whatsappDisplay}
                   </a>
                 </li>
                 <li className="flex items-start gap-2.5 text-[15px] text-white/75">
-                  <MapPin size={15} className="shrink-0 text-white/60 mt-0.5" />
+                  <MapPin size={15} className="shrink-0 text-white/75 mt-0.5" />
                   <div>
                     {CONTACT.address.map((line) => (
                       <p key={line}>{line}</p>
@@ -150,7 +142,7 @@ export default function Footer() {
         </div>
 
         {/* Guide link groups */}
-        <div className="py-12 border-b border-white/10">
+        <div className="py-12 border-b border-white/20">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-10">
             {GUIDE_LINKS.map(({ heading, items }) => (
               <div key={heading} className="flex flex-col gap-3">
@@ -174,21 +166,21 @@ export default function Footer() {
 
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             {LEGAL_LINKS.map(({ label, href }) => (
-              <Link key={href} href={href} className="text-[14px] text-white/60 transition-colors">
+              <Link key={href} href={href} className="text-[14px] text-white/75 transition-colors">
                 {label}
               </Link>
             ))}
           </div>
 
-          <p className="text-[13px] text-white/60 leading-relaxed max-w-4xl">
+          <p className="text-[13px] text-white/75 leading-relaxed max-w-4xl">
             New World Courtage SAS — courtier en assurance indépendant immatriculé à l&apos;ORIAS. Les informations fournies sur ce site ont été développées à des fins générales d&apos;information et d&apos;éducation. Nous faisons de notre mieux pour nous assurer que ces informations sont exactes et à jour. Les devis ou fourchettes de primes d&apos;assurance affichés ne sont pas contractuels. La prime définitive est déterminée par la compagnie d&apos;assurance à l&apos;issue du processus de souscription.
           </p>
 
-          <p className="text-[13px] text-white/60 leading-relaxed max-w-4xl">
-            <strong className="text-white/60">Mention :</strong> Les images présentes sur ce site peuvent être générées par intelligence artificielle. Toute ressemblance avec des personnes réelles, vivantes ou décédées, serait purement fortuite.
+          <p className="text-[13px] text-white/75 leading-relaxed max-w-4xl">
+            <strong className="text-white/75">Mention :</strong> Les images présentes sur ce site peuvent être générées par intelligence artificielle. Toute ressemblance avec des personnes réelles, vivantes ou décédées, serait purement fortuite.
           </p>
 
-          <p className="text-[13px] text-white/60">
+          <p className="text-[13px] text-white/75">
             © {new Date().getFullYear()} New World Courtage. Tous droits réservés.
           </p>
 

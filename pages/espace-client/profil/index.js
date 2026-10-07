@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton } from "@/components/ui/input-group";
 import { Button } from "@/components/ui/button";
 import EspaceClientLayout from "@/components/EspaceClientLayout";
+import { useLogout } from "@/components/AccountMenu";
 import { changePassword, updateAccount } from "@/lib/accounts";
 
 function ProfileForm({ account, setAccount }) {
@@ -181,6 +182,47 @@ function PasswordForm({ account }) {
   );
 }
 
+// Ends every session of the account (other phones, computers, browsers) at once.
+function SessionsCard() {
+  const logout = useLogout();
+  const [busy, setBusy] = useState(false);
+  const [confirming, setConfirming] = useState(false);
+
+  async function handleLogoutEverywhere() {
+    setBusy(true);
+    try {
+      await logout({ everywhere: true });
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Card>
+      <CardContent className="flex flex-col gap-4 p-6">
+        <h2 className="text-lg font-bold text-[var(--color-text)]">Sessions</h2>
+        <p className="text-sm text-gray-600">
+          Vous pensez avoir laissé votre compte ouvert sur un autre appareil ? Déconnectez-vous partout en un clic.
+        </p>
+        {confirming ? (
+          <div className="flex flex-wrap items-center gap-3">
+            <Button type="button" onClick={handleLogoutEverywhere} disabled={busy} className="text-white">
+              {busy ? "Déconnexion…" : "Confirmer la déconnexion"}
+            </Button>
+            <Button type="button" variant="outline" onClick={() => setConfirming(false)} disabled={busy}>
+              Annuler
+            </Button>
+          </div>
+        ) : (
+          <Button type="button" variant="outline" onClick={() => setConfirming(true)} className="w-fit">
+            Se déconnecter de tous les appareils
+          </Button>
+        )}
+      </CardContent>
+    </Card>
+  );
+}
+
 export default function EspaceClientProfil() {
   return (
     <EspaceClientLayout title="Mon profil — Espace client">
@@ -188,6 +230,7 @@ export default function EspaceClientProfil() {
         <>
           <ProfileForm account={account} setAccount={setAccount} />
           <PasswordForm account={account} />
+          <SessionsCard />
         </>
       )}
     </EspaceClientLayout>

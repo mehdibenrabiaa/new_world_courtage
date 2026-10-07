@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
+import QuestionnaireHeader from "@/components/QuestionnaireHeader";
 import Head from "next/head";
-import Image from "next/image";
 import { useRouter } from "next/router";
-import { Phone, ChevronRight, FileText, Camera, ClipboardCheck } from "lucide-react";
+import { FileText, Camera, ClipboardCheck } from "lucide-react";
 import CarInsuranceForm from "@/components/CarInsuranceForm";
 import { Spinner } from "@/components/ui/spinner";
 import { fetchQuestionnaire, createLead } from "@/lib/api";
@@ -299,19 +299,7 @@ export default function GaragisteDevisPage() {
         <meta name="robots" content="noindex" />
       </Head>
 
-      <header className="sticky top-0 z-40 w-full bg-gray-200">
-        <div className="flex items-center justify-between px-4 lg:px-12 h-16">
-          <Image src="/logos/nwc-logo.svg" alt="New World Courtage" width={120} height={33} className="h-7 w-auto" />
-          <a
-            href="tel:+33745891865"
-            className="flex items-center gap-2 h-10 border border-[var(--color-brand)] hover:bg-[var(--color-brand)]/5 text-[var(--color-brand)] rounded-lg px-3.5 transition-colors"
-          >
-            <Phone size={15} className="shrink-0" />
-            <span className="text-sm font-semibold">07 45 89 18 65</span>
-            <ChevronRight size={14} className="shrink-0 opacity-70" />
-          </a>
-        </div>
-      </header>
+      <QuestionnaireHeader />
 
       <main className="min-h-screen bg-white">
         <div className="max-w-4xl mx-auto px-4 lg:px-6 pt-10 lg:pt-16 pb-40">

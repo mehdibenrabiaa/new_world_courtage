@@ -32,7 +32,7 @@ export default function CarInsuranceProcess() {
 
           {/* Header */}
           <div className="flex flex-col gap-5 mb-10 lg:mb-14 max-w-4xl mx-auto text-center">
-            <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
+            <h2 className={`text-[28px] sm:text-[34px] lg:text-[40px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
               Votre devis auto en <em className={`italic ${libreCaslon.className}`}>3 étapes.</em>
             </h2>
             <p className="text-base text-gray-600 leading-[26px] sm:leading-6">

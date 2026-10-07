@@ -13,11 +13,11 @@ export default function CarCalculatorSection({
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="rounded-xl overflow-hidden flex flex-col lg:flex-row min-h-[480px] bg-[var(--color-brand)]">
+        <div className="overflow-hidden flex flex-col lg:flex-row min-h-[480px] bg-[var(--color-brand)]">
 
           {/* Left — title (1/3) */}
           <div className="hidden lg:flex lg:w-[40%] px-8 py-10 lg:px-14 lg:py-14 items-start">
-            <h2 className={`text-[8vw] sm:text-[38px] lg:text-[clamp(26px,5.3vw_-_26px,46px)] leading-[1.1] text-white ${libreCaslon.className}`}>
+            <h2 className={`text-[28px] sm:text-[34px] lg:text-[40px] leading-[1.1] text-white ${libreCaslon.className}`}>
               {title}
             </h2>
           </div>
@@ -25,7 +25,7 @@ export default function CarCalculatorSection({
           {/* Right — content (2/3) */}
           <div className="lg:w-[60%] px-8 py-10 lg:px-14 lg:py-14 flex flex-col gap-6">
 
-            <div className="inline-flex items-start bg-white/10 border border-white/20 rounded-xl px-5 py-4 max-w-lg">
+            <div className="inline-flex items-start bg-white/10 border border-white/20 px-5 py-4 max-w-lg">
               <div className="flex flex-col gap-1">
                 <p className="text-sm font-semibold text-white">{badgeTitle}</p>
                 <p className="text-sm text-white leading-snug">

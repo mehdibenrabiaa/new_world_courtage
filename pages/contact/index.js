@@ -1,7 +1,8 @@
 import Head from "next/head";
-import { Phone, Mail, MapPin } from "lucide-react";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Card, CardContent } from "@/components/ui/card";
+import PhotoHero from "@/components/PhotoHero";
+import { Phone, Mail, MapPin, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { headingFont } from "@/lib/fonts";
 import ReadyCta from "@/components/ReadyCta";
 
 function WhatsAppIcon({ size = 26 }) {
@@ -20,6 +21,7 @@ const CONTACT_CARDS = [
     description: "Un conseiller vous répond directement pour toute question sur votre contrat ou votre devis.",
     value: "07 45 89 18 65",
     href: "tel:+33745891865",
+    action: "Appeler",
   },
   {
     Icon: WhatsAppIcon,
@@ -27,6 +29,8 @@ const CONTACT_CARDS = [
     description: "Écrivez-nous à tout moment, on vous répond dès que possible.",
     value: "07 74 59 53 29",
     href: "https://wa.me/33774595329",
+    action: "Écrire sur WhatsApp",
+    external: true,
   },
   {
     Icon: Mail,
@@ -34,6 +38,7 @@ const CONTACT_CARDS = [
     description: "Pour toute demande générale ou envoi de documents.",
     value: "contact@newworldcourtage.com",
     href: "mailto:contact@newworldcourtage.com",
+    action: "Envoyer un email",
   },
   {
     Icon: MapPin,
@@ -44,42 +49,33 @@ const CONTACT_CARDS = [
   },
 ];
 
-function PageBreadcrumb() {
-  return (
-    <Breadcrumb className="px-4 sm:px-8 lg:px-16 2xl:px-24 pt-6 pb-2">
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Contact</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
-function ContactCard({ Icon, title, description, value, href }) {
-  const content = (
-    <Card className="h-full shadow-none rounded-xl border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-150">
-      <CardContent className="p-6 flex flex-col gap-4">
-        <div className="w-12 h-12 rounded-full bg-[var(--color-brand)]/10 text-[var(--color-brand)] flex items-center justify-center shrink-0">
-          <Icon size={22} strokeWidth={1.8} />
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <h3 className="text-[17px] font-semibold text-[var(--color-text)]">{title}</h3>
-          <p className="text-[14px] text-gray-500 leading-relaxed">{description}</p>
-        </div>
-        <p className="text-[15px] font-medium text-[var(--color-text)] whitespace-pre-line">{value}</p>
-      </CardContent>
-    </Card>
+// Same look as the article cards (InfoCardsSection style2): white, soft shadow,
+// square icon tile, brand-blue action link pinned to the bottom.
+function ContactCard({ Icon, title, description, value, href, action, external }) {
+  const card = (
+    <div className="group flex h-full flex-col gap-4 rounded-[4px] bg-white p-7 shadow-[0_1px_4px_rgba(0,0,0,0.14)] transition-shadow duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.14)]">
+      <span className="flex size-12 shrink-0 items-center justify-center bg-[var(--color-brand)]/10 text-[var(--color-brand)]" aria-hidden="true">
+        <Icon size={22} strokeWidth={1.8} />
+      </span>
+      <div className="flex flex-col gap-1.5">
+        <h3 className="text-[20px] font-semibold text-[var(--color-text)]">{title}</h3>
+        <p className="text-[15px] leading-relaxed text-gray-600">{description}</p>
+      </div>
+      <p className="flex-1 whitespace-pre-line text-[16px] font-bold text-[var(--color-text)]">{value}</p>
+      {action && (
+        <span className="mt-2 flex items-center gap-2 text-[15px] font-bold text-[var(--color-brand)]">
+          <span className="group-hover:underline">{action}</span>
+          <ChevronRight size={20} strokeWidth={1.75} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1" />
+        </span>
+      )}
+    </div>
   );
 
-  if (!href) return content;
+  if (!href) return card;
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" className="block h-full">
-      {content}
+    <a href={href} {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="block h-full outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)] focus-visible:ring-offset-2">
+      {card}
     </a>
   );
 }
@@ -126,28 +122,36 @@ export default function ContactPage() {
       </Head>
 
       <main className="min-h-screen bg-white">
-        <PageBreadcrumb />
 
-        {/* Hero */}
-        <div className="bg-[var(--color-brand)] py-24 px-6 sm:px-10">
-          <div className="max-w-4xl mx-auto flex flex-col gap-3">
-            <h1 className="text-2xl sm:text-4xl font-bold text-white leading-tight">
-              Contactez-nous
-            </h1>
-            <p className="text-white/80 text-[15px] sm:text-base max-w-xl">
-              Une question, un devis, un suivi de dossier ? Nos conseillers agréés sont à votre écoute, quel que soit le canal que vous préférez.
-            </p>
-          </div>
-        </div>
+        <PhotoHero
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Contact" }]}
+          image="/sections/who-we-are.webp"
+          title={<>Contactez-<em>nous</em>.</>}
+          subtitle="Une question, un devis, un suivi de dossier ? Nos conseillers agréés sont à votre écoute, quel que soit le canal que vous préférez."
+        >
+          <Button size="lg" asChild className="bg-[#3b9bd8] text-white hover:bg-[#2c87c2]">
+            <a href="tel:+33745891865"><Phone size={17} aria-hidden="true" />07 45 89 18 65</a>
+          </Button>
+          <Button size="lg" variant="outline" asChild className="border-white/70 bg-transparent text-white shadow-none hover:bg-white/10 hover:text-white">
+            <a href="https://wa.me/33774595329" target="_blank" rel="noopener noreferrer"><WhatsAppIcon size={17} />WhatsApp</a>
+          </Button>
+        </PhotoHero>
 
-        {/* Contact cards */}
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-12 py-14">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-            {CONTACT_CARDS.map((card) => (
-              <ContactCard key={card.title} {...card} />
-            ))}
+        {/* Contact channels */}
+        <section className="w-full py-4">
+          <div className="px-4 lg:px-12 2xl:px-24">
+            <div className="bg-[var(--color-light)] px-4 py-10 sm:px-8 lg:px-14 lg:py-14">
+              <h2 className={`mb-10 text-center text-[28px] sm:text-[34px] lg:text-[40px] leading-[1.1] text-[var(--color-text)] ${headingFont.className}`}>
+                Comment souhaitez-vous <em className={headingFont.className}>nous joindre</em> ?
+              </h2>
+              <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2">
+                {CONTACT_CARDS.map((card) => (
+                  <ContactCard key={card.title} {...card} />
+                ))}
+              </div>
+            </div>
           </div>
-        </div>
+        </section>
 
         <ReadyCta />
       </main>

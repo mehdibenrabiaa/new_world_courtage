@@ -1,13 +1,22 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-.caslon {
-  letter-spacing: -1px;
+.heading-font {
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+
+/* Emphasised words in headings (formerly serif italics): the slant axis of the font itself,
+   without the browser adding a synthetic tilt on top. */
+.heading-font em,
+em.heading-font {
+  font-style: normal;
+  font-variation-settings: "slnt" -10;
 }
 
 :root {
-  --color-brand: #1961ae;
-  --color-brand-hover: rgb(1, 76, 138);
+  --color-brand: #062499;
+  --color-brand-hover: #041a73;
   --color-light: #f3f5f7;
   --color-jungle-green: #27ae7a;
   --color-blue-sky: #8fb8d4;
@@ -276,7 +285,7 @@
 @layer components {
   .cta-btn {
     background-color: var(--color-brand);
-    border-radius: var(--radius);
+    border-radius: 0;
   }
   .cta-btn:hover {
     background-color: var(--color-brand-hover);
@@ -289,17 +298,27 @@
 }
 ::-webkit-scrollbar-track {
   background: #f1f5f9;
+  border-radius: 0;
 }
 ::-webkit-scrollbar-thumb {
   background: #d1d5db;
   border: 4px solid #f1f5f9;
+  border-radius: 0;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
 }
-* {
-  scrollbar-width: auto;
-  scrollbar-color: #d1d5db #f1f5f9;
+::-webkit-scrollbar-corner {
+  background: #f1f5f9;
+}
+/* Standard scrollbar properties only where the square scrollbar above is not
+   supported (Firefox): in Chrome and Edge they would replace it with the
+   browser's own rounded one. */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #d1d5db #f1f5f9;
+  }
 }
 
 body {
@@ -314,4 +333,14 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   hyphens: none;
+}
+
+/* Endless partner-logo strip (components/Partners.js): the track holds the
+   list twice and slides by half its width. */
+@keyframes logo-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.logo-marquee {
+  animation: logo-marquee 35s linear infinite;
 }

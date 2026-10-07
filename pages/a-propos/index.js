@@ -1,57 +1,48 @@
 ﻿import Head from "next/head";
+import PhotoHero from "@/components/PhotoHero";
 import Link from "next/link";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Card } from "@/components/ui/card";
-import PageHero from "../../components/PageHero";
+import { ChevronRight, Handshake, Newspaper, Settings2, Phone } from "lucide-react";
+import { headingFont } from "@/lib/fonts";
 import SocialMedia from "../../components/SocialMedia";
 import AccentCardGrid from "../../components/AccentCardGrid";
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
-function PageBreadcrumb() {
-  return (
-    <Breadcrumb className={`${cx} pt-6 pb-2`}>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>À propos</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
 
 
 const NAV_ITEMS = [
-  { label: "Nos partenaires", href: "/a-propos/nos-partenaires/", icon: "/icons/handshake.svg" },
-  { label: "Nos communiqués", href: "/a-propos/nos-communiques/", icon: "/icons/document.svg" },
-  { label: "Fonctionnement", href: "/a-propos/fonctionnement/", icon: "/icons/function.svg" },
-  { label: "Contact", href: "/contact/", icon: "/icons/phone.svg" },
+  { label: "Nos partenaires", href: "/a-propos/nos-partenaires/", Icon: Handshake },
+  { label: "Nos communiqués", href: "/a-propos/nos-communiques/", Icon: Newspaper },
+  { label: "Fonctionnement", href: "/a-propos/fonctionnement/", Icon: Settings2 },
+  { label: "Contact", href: "/contact/", Icon: Phone },
 ];
 
+// Square tiles to the main about pages, in the same style as the partner tiles.
 function QuickNav() {
   return (
-    <div className="px-4 lg:px-12 2xl:px-24 relative z-10 -mt-20 pb-6">
-      <div className="bg-[var(--color-light)] rounded-xl px-4 py-4 flex flex-col gap-3 w-full lg:w-fit lg:mx-auto">
-        <p className="font-semibold text-[15px] sm:text-[16px] text-[var(--color-text)] whitespace-nowrap shrink-0">
-          Que souhaitez-vous explorer ?
-        </p>
-        <div className="flex flex-col lg:flex-row gap-2">
-          {NAV_ITEMS.map(({ label, href, icon }) => (
-            <Link key={href} href={href} className="lg:shrink-0">
-              <Card className="shadow-none rounded-xl w-full lg:w-[190px] lg:h-[130px] flex flex-row items-center lg:flex-col lg:justify-center gap-3 lg:gap-2 px-4 py-3 lg:px-3 lg:py-0 border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
-                <img src={icon} alt="" aria-hidden="true" className="shrink-0 w-8 h-8 lg:w-11 lg:h-11" />
-                <span className="flex-1 lg:flex-none text-[16px] font-medium text-[var(--color-text)] lg:text-center leading-tight">{label}</span>
-                <img src="/icons/chevron-right.svg" alt="" width={9} height={15} aria-hidden="true" className="lg:hidden shrink-0 opacity-40" />
-              </Card>
-            </Link>
+    <nav aria-label="Que souhaitez-vous explorer ?" className="px-4 lg:px-12 2xl:px-24 py-4">
+      <div className="bg-[var(--color-light)] px-4 py-8 sm:px-8 lg:px-14 lg:py-10">
+        <p className="mb-5 text-center text-[16px] font-bold text-[var(--color-text)]">Que souhaitez-vous explorer ?</p>
+        <ul className="mx-auto grid max-w-4xl grid-cols-2 gap-3 lg:grid-cols-4">
+          {NAV_ITEMS.map(({ label, href, Icon }) => (
+            <li key={href}>
+              <Link
+                href={href}
+                className="group flex h-full min-h-28 flex-col items-center justify-center gap-3 border border-gray-200 bg-white px-3 py-5 text-center transition-colors hover:border-[var(--color-brand)]"
+              >
+                <span aria-hidden="true" className="flex size-12 items-center justify-center bg-[var(--color-brand)]/10 text-[var(--color-brand)] transition-colors group-hover:bg-[var(--color-brand)] group-hover:text-white">
+                  <Icon size={24} strokeWidth={1.75} />
+                </span>
+                <span className="flex items-center gap-1 text-[15px] font-bold text-[var(--color-text)] group-hover:text-[var(--color-brand)]">
+                  {label}
+                  <ChevronRight size={15} aria-hidden="true" className="transition-transform group-hover:translate-x-0.5" />
+                </span>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
-    </div>
+    </nav>
   );
 }
 
@@ -93,7 +84,7 @@ export default function AProposPage() {
               "@type": "AboutPage",
               name: "À propos de New World Courtage",
               url: "https://www.newworldcourtage.fr/a-propos/",
-              description: "New World Courtage est un courtier en assurance indépendant immatriculé à l'ORIAS, spécialisé dans la comparaison d'assurances auto, habitation, santé et décennale.",
+              description: "New World Courtage est un courtier en assurance indépendant immatriculé à l'ORIAS, spécialisé dans la comparaison d'assurances auto, moto, taxi, VTC et garage.",
               publisher: {
                 "@type": "InsuranceAgency",
                 name: "New World Courtage",
@@ -123,21 +114,25 @@ export default function AProposPage() {
       </Head>
 
       <main>
-        <PageBreadcrumb />
-        <PageHero title="À propos de nous" image="/heroes/about-desktop.jpg" mobileImage="/heroes/about-mobile.jpg" imageAlt="L'équipe New World Courtage" titleWidth="lg:w-[50%]" />
+        <PhotoHero
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "À propos" }]}
+          image="/heroes/about-desktop.jpg"
+          title={<>À propos <em>de nous</em>.</>}
+          subtitle="Courtier en assurance indépendant, immatriculé à l'ORIAS, au service des particuliers et des professionnels."
+        />
         <QuickNav />
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 py-14 flex flex-col gap-12">
 
           {/* Intro */}
           <div className="flex flex-col gap-3 text-[15px] text-gray-600 leading-relaxed">
             <p>New World Courtage réinvente l&apos;expérience de l&apos;assurance en proposant une plateforme unique et intégrée. Désormais, les consommateurs peuvent comparer les offres des plus grands assureurs, bénéficier de conseils d&apos;experts impartiaux, souscrire à leurs polices et gérer l&apos;ensemble de leur portefeuille en toute simplicité.</p>
-            <p>Grâce à notre technologie propriétaire connectée aux leaders du marché (assurance vie, invalidité, habitation et auto), nous offrons un parcours numérique fluide et performant, tant pour les assurés que pour les compagnies d&apos;assurance.</p>
+            <p>Grâce à notre technologie propriétaire connectée aux leaders du marché (auto, moto, taxi, VTC et professionnels de l&apos;automobile), nous offrons un parcours numérique fluide et performant, tant pour les assurés que pour les compagnies d&apos;assurance.</p>
             <p>Depuis 2014, nos guides, nos outils digitaux et nos spécialistes ont accompagné des millions de personnes dans leurs démarches, totalisant plus de 200 milliards de dollars de capitaux assurés.</p>
           </div>
 
           {/* Ce qui nous distingue */}
           <section className="flex flex-col gap-4">
-            <h2 className="text-xl font-bold text-[#131212]">Ce qui nous distingue</h2>
+            <h2 className={`text-[24px] lg:text-[28px] leading-[1.15] text-[var(--color-text)] ${headingFont.className}`}>Ce qui nous distingue</h2>
             <div className="flex flex-col gap-5 text-[15px] text-gray-600 leading-relaxed pl-6 border-l-2 border-gray-100">
               {[
                 { heading: "Comparer les offres, simplement", body: "Avec nos outils modernes, comparez les devis de plusieurs grandes compagnies d'assurance côte à côte en quelques minutes. Vous avez déjà une couverture ? Nous pouvons vous aider à magasiner votre police pour trouver un tarif plus avantageux." },
@@ -154,7 +149,7 @@ export default function AProposPage() {
 
           {/* Comment nous gagnons notre argent */}
           <section className="flex flex-col gap-4">
-            <h2 className="text-xl font-bold text-[#131212]">Comment nous gagnons notre argent</h2>
+            <h2 className={`text-[24px] lg:text-[28px] leading-[1.15] text-[var(--color-text)] ${headingFont.className}`}>Comment nous gagnons notre argent</h2>
             <div className="flex flex-col gap-3 text-[15px] text-gray-600 leading-relaxed">
               <p>
                 Nous sommes un courtier en assurance indépendant : nous percevons une commission de la part des compagnies d&apos;assurance pour chaque vente réalisée. Ces commissions sont déjà intégrées dans le prix des polices d&apos;assurance, de sorte que vous ne payez rien de plus en passant par nous.
@@ -182,7 +177,7 @@ export default function AProposPage() {
 
           {/* Nos agréments */}
           <section className="flex flex-col gap-4">
-            <h2 className="text-xl font-bold text-[#131212]">Nos agréments</h2>
+            <h2 className={`text-[24px] lg:text-[28px] leading-[1.15] text-[var(--color-text)] ${headingFont.className}`}>Nos agréments</h2>
             <div className="flex flex-col gap-3 text-[15px] text-gray-600 leading-relaxed">
               <p>
                 Tout intermédiaire en assurance est tenu par la loi d&apos;être immatriculé auprès de l&apos;ORIAS dans chaque territoire où il exerce son activité. Vous pouvez consulter nos agréments{" "}

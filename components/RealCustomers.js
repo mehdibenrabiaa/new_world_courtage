@@ -1,19 +1,20 @@
 ﻿"use client";
 import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
 import { libreCaslon } from "@/lib/fonts";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import CtaButton from "@/components/CtaButton";
 
-const TESTIMONIALS = [
+export const TESTIMONIALS = [
   {
     title: "Un accueil patient et efficace",
-    quote: "Une excellente expérience avec New World Courtage ! Simple, efficace et à l'écoute, l'équipe a su répondre à mes attentes. Même sans maîtriser l'informatique, j'ai reçu une aide précieuse. Un grand merci à Loubna pour sa patience et son efficacité. Ne change surtout pas !",
+    quote: "Une excellente expérience avec New World Courtage ! Simple, efficace et à l'écoute, l'équipe a su répondre à mes attentes. Même sans maîtriser l'informatique, j'ai reçu une aide précieuse. Un grand merci à Loubna pour sa patience et son efficacité. Ne change surtout pas !",
     name: "Zaher",
     href: "https://www.trustpilot.com/users/6a54c4294024a440d9a2264d",
   },
   {
     title: "Professionnalisme et gentillesse",
-    quote: "Un service de qualité, merci pour votre professionnalisme, votre gentillesse et votre patience. Mille merci !",
+    quote: "Un service de qualité, merci pour votre professionnalisme, votre gentillesse et votre patience. Mille merci !",
     name: "Zakir Belmellat",
     href: "https://www.trustpilot.com/reviews/6a550174923278d56dc35097",
   },
@@ -30,7 +31,7 @@ const TESTIMONIALS = [
   },
   {
     title: "Je n'aurais pas trouvé mieux seul",
-    quote: "Je n'aurais jamais pensé trouver une meilleure offre aussi rapidement. Une aide précieuse du début à la fin. Merci à toute l'équipe !",
+    quote: "Je n'aurais jamais pensé trouver une meilleure offre aussi rapidement. Une aide précieuse du début à la fin. Merci à toute l'équipe !",
     name: "Sophie L.",
   },
   {
@@ -40,15 +41,17 @@ const TESTIMONIALS = [
   },
 ];
 
+export const TRUSTPILOT_URL = "https://www.trustpilot.com/review/newworldcourtage.com";
+
 const PER_PAGE = 3;
 
-function Stars() {
+export function Stars() {
   return (
     <img src="/logos/trustpilot-stars.svg" alt="5 étoiles Trustpilot" loading="lazy" className="h-5 w-auto" />
   );
 }
 
-function VerifiedBadge() {
+export function VerifiedBadge() {
   return (
     <div className="flex items-center gap-1.5">
       <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -60,28 +63,32 @@ function VerifiedBadge() {
   );
 }
 
-function CardInner({ title, quote, name }) {
+export function CardInner({ title, quote, name, verified = true }) {
   return (
     <>
       <div className="flex items-center justify-between mb-2">
         <Stars />
-        <VerifiedBadge />
+        {verified && <VerifiedBadge />}
       </div>
 
       <div>
         <div className="flex items-start gap-2">
           <img src="/icons/quotation-mark.svg" alt="" aria-hidden="true" loading="lazy" className="shrink-0 h-7 w-auto mt-0.5" />
-          <h3 className="text-[17px] font-bold text-[var(--color-text)] leading-snug">{title}</h3>
+          <h3 className="text-[19px] font-semibold text-[var(--color-text)] leading-snug">{title}</h3>
         </div>
-        <p className="text-[16px] text-black leading-relaxed mt-3">{quote}</p>
+        <p className="text-[15px] text-gray-700 leading-relaxed mt-3">{quote}</p>
       </div>
 
-      <p className="text-[14px] font-semibold text-[var(--color-text)] mt-auto pt-2 border-t border-gray-100">{name}</p>
+      <div className="mt-auto flex items-center gap-3 border-t border-gray-200 pt-4">
+        <span className="text-[15px] font-bold text-[var(--color-text)]">{name}</span>
+        <ChevronRight size={18} strokeWidth={1.75} aria-hidden="true" className="ml-auto text-[var(--color-brand)] transition-transform duration-200 group-hover:translate-x-1" />
+      </div>
     </>
   );
 }
 
-const CARD_CLASS = "bg-transparent rounded-[5px] p-6 flex flex-col gap-5 border border-[#e0e0e0]";
+// Same card look as the article cards: white, soft shadow that deepens on hover.
+export const CARD_CLASS = "group bg-white rounded-[4px] p-7 flex flex-col gap-5 shadow-[0_1px_4px_rgba(0,0,0,0.14)]";
 
 export default function RealCustomers() {
   const [page, setPage] = useState(0);
@@ -110,7 +117,7 @@ export default function RealCustomers() {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="relative rounded-[5px] bg-[#F0F4F8] px-4 py-10 lg:px-8 lg:py-14">
+        <div className="relative bg-[var(--color-light)] px-4 py-10 lg:px-8 lg:py-14">
 
           {/* Off-screen measurement grid — all 6 cards */}
           <div
@@ -127,7 +134,7 @@ export default function RealCustomers() {
 
           {/* Header */}
           <div className="flex flex-col gap-5 max-w-4xl mx-auto text-center mb-10 lg:mb-14">
-            <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
+            <h2 className={`text-[28px] sm:text-[34px] lg:text-[40px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
               <em className={`italic ${libreCaslon.className}`}>Vrais</em> clients, vraies histoires.
             </h2>
             <p className="text-base text-gray-600 leading-[26px] sm:leading-6">
@@ -137,33 +144,23 @@ export default function RealCustomers() {
 
           {/* Navigation — top right above cards */}
           <div className="flex items-center justify-end gap-3 mb-4">
-            <button
-              onClick={() => { setDirection("prev"); setPage(p => Math.max(0, p - 1)); }}
-              disabled={page === 0}
-              className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-              aria-label="Précédent"
-            >
+            <Button variant="outline" size="icon-lg" onClick={() => { setDirection("prev"); setPage(p => Math.max(0, p - 1)); }} disabled={page === 0} aria-label="Précédent">
               <ChevronLeft size={18} />
-            </button>
-            <button
-              onClick={() => { setDirection("next"); setPage(p => Math.min(totalPages - 1, p + 1)); }}
-              disabled={page === totalPages - 1}
-              className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
-              aria-label="Suivant"
-            >
+            </Button>
+            <Button variant="outline" size="icon-lg" onClick={() => { setDirection("next"); setPage(p => Math.min(totalPages - 1, p + 1)); }} disabled={page === totalPages - 1} aria-label="Suivant">
               <ChevronRight size={18} />
-            </button>
+            </Button>
           </div>
 
           {/* Visible cards */}
-          <div key={page} className={`grid grid-cols-1 md:grid-cols-3 gap-4 mb-8 ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}>
+          <div key={page} className={`grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 ${direction === "next" ? "slide-in-right" : "slide-in-left"}`}>
             {visible.map(({ title, quote, name, href }) => (
               <a
                 key={name}
                 href={href || "https://www.trustpilot.com/review/newworldcourtage.com"}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${CARD_CLASS} cursor-pointer transition-all duration-200 hover:shadow-md hover:scale-[1.02] max-w-[400px] mx-auto w-full`}
+                className={`${CARD_CLASS} w-full cursor-pointer transition-shadow duration-200 outline-none hover:shadow-[0_4px_16px_rgba(0,0,0,0.14)] focus-visible:ring-2 focus-visible:ring-[var(--color-brand)] focus-visible:ring-offset-2`}
                 style={isDesktop && minH ? { minHeight: minH } : undefined}
               >
                 <CardInner title={title} quote={quote} name={name} />

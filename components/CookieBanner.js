@@ -3,7 +3,7 @@ import { createPortal } from "react-dom";
 import * as Dialog from "@radix-ui/react-dialog";
 import Link from "next/link";
 import { X, BarChart2, Megaphone, Lock, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { headingFont } from "@/lib/fonts";
 import { getConsent, saveConsent } from "@/lib/consent";
 
 // ── Replace with your actual tracking IDs ────────────────────────────────────
@@ -56,20 +56,21 @@ function CookieIcon({ size = 22 }) {
   );
 }
 
-// ── Toggle switch ─────────────────────────────────────────────────────────────
-function Toggle({ checked, onChange, disabled = false }) {
+// ── Toggle switch (square, site style) ────────────────────────────────────────
+function Toggle({ checked, onChange, disabled = false, label }) {
   return (
     <button
       type="button"
       role="switch"
       aria-checked={checked}
+      aria-label={label}
       disabled={disabled}
       onClick={() => !disabled && onChange(!checked)}
-      className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-brand)] focus-visible:ring-offset-2 ${
-        disabled ? "cursor-not-allowed opacity-50" : "cursor-pointer"
-      } ${checked ? "bg-[var(--color-brand)]" : "bg-gray-200"}`}
+      className={`relative inline-flex h-6 w-11 shrink-0 items-center transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-brand)] ${
+        disabled ? "cursor-not-allowed opacity-60" : "cursor-pointer"
+      } ${checked ? "bg-[var(--color-brand)]" : "bg-gray-300"}`}
     >
-      <span className={`inline-block h-4 w-4 rounded-full bg-white shadow-sm transition-transform ${checked ? "translate-x-6" : "translate-x-1"}`} />
+      <span className={`inline-block size-4 bg-white transition-transform ${checked ? "translate-x-6" : "translate-x-1"}`} />
     </button>
   );
 }
@@ -93,54 +94,52 @@ const CATEGORIES = [
   },
 ];
 
-// ── Shared preferences panel (also used on /cookies/ page) ───────────────────
+// ── Preferences panel: intro, one ruled row per category, then the buttons ──
+const outlineBtn = "flex h-12 items-center justify-center border border-[var(--color-brand)] px-5 text-[15px] font-bold text-[var(--color-brand)] transition-colors hover:bg-[var(--color-light)] disabled:opacity-60";
+
 export function CookiePreferencesPanel({ analytics, marketing, setAnalytics, setMarketing, onSave, onAcceptAll, onRejectAll, onClose = () => {}, loading = null }) {
+  const spinner = <Loader2 size={16} className="animate-spin" aria-hidden="true" />;
   return (
-    <div className="flex flex-col gap-4">
-      <p className="text-base text-gray-500 leading-relaxed">
+    <div className="flex flex-col gap-5">
+      <p className="text-[15px] leading-relaxed text-gray-600">
         Choisissez les catégories de cookies que vous souhaitez autoriser. Votre choix sera conservé 13 mois.{" "}
-        <Link href="/confidentialite/" onClick={onClose} className="text-[var(--color-brand)] hover:underline">Politique de confidentialité</Link>
+        <Link href="/confidentialite/" onClick={onClose} className="text-[var(--color-brand)] underline-offset-2 hover:underline">Politique de confidentialité</Link>
       </p>
 
-      <div className="flex flex-col gap-3">
+      <ul className="divide-y divide-gray-200 border-y border-gray-200">
         {CATEGORIES.map(({ id, icon: Icon, label, description, providers, locked }) => {
           const checked = locked || (id === "analytics" ? analytics : marketing);
           const onChange = id === "analytics" ? setAnalytics : setMarketing;
           return (
-            <div key={id} className="flex gap-4 p-4 rounded-xl border border-gray-100 bg-gray-50">
-              <div className="flex-1 flex flex-col gap-1">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <Icon size={15} className="text-[var(--color-brand)] shrink-0" />
-                  <span className="text-base font-semibold text-[#131212]">{label}</span>
-                  {locked && (
-                    <span className="text-xs font-medium text-gray-400 border border-gray-200 rounded-full px-2 py-0.5 leading-none">
-                      Toujours actif
-                    </span>
-                  )}
+            <li key={id} className="flex gap-4 py-4">
+              <Icon size={18} aria-hidden="true" className="mt-0.5 shrink-0 text-[var(--color-brand)]" />
+              <div className="flex flex-1 flex-col gap-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[16px] font-semibold text-[var(--color-text)]">{label}</span>
+                  {locked && <span className="bg-[var(--color-light)] px-2 py-0.5 text-[12px] font-semibold text-gray-600">Toujours actif</span>}
                 </div>
-                <p className="text-sm text-gray-500 leading-relaxed mt-0.5">{description}</p>
-                <p className="text-xs text-gray-400 mt-1">Prestataires : {providers}</p>
+                <p className="text-[14px] leading-relaxed text-gray-600">{description}</p>
+                <p className="text-[13px] text-gray-500">Prestataires : {providers}</p>
               </div>
-              <div className="shrink-0 pt-0.5">
-                <Toggle checked={checked} onChange={onChange} disabled={locked} />
-              </div>
-            </div>
+              <Toggle checked={checked} onChange={onChange} disabled={locked} label={label} />
+            </li>
           );
         })}
-      </div>
+      </ul>
 
-      <div className="flex flex-col gap-2 pt-1">
-        <Button onClick={onSave} disabled={!!loading} className="cta-btn text-white w-full text-base font-semibold py-[12px] h-auto">
-          {loading === "save" ? <Loader2 size={16} className="animate-spin" /> : "Enregistrer mes préférences"}
-        </Button>
+      {/* Refuse and accept side by side with the same weight (CNIL). */}
+      <div className="flex flex-col gap-2">
         <div className="grid grid-cols-2 gap-2">
-          <Button onClick={onRejectAll} disabled={!!loading} variant="ghost" className="text-gray-500 hover:text-[#131212] text-base py-[12px] h-auto border border-gray-200">
-            {loading === "reject" ? <Loader2 size={16} className="animate-spin" /> : "Tout refuser"}
-          </Button>
-          <Button onClick={onAcceptAll} disabled={!!loading} variant="ghost" className="text-[var(--color-brand)] hover:text-[var(--color-brand-hover)] font-semibold text-base py-[12px] h-auto border border-gray-200">
-            {loading === "accept" ? <Loader2 size={16} className="animate-spin" /> : "Tout accepter"}
-          </Button>
+          <button type="button" onClick={onRejectAll} disabled={!!loading} className={outlineBtn}>
+            {loading === "reject" ? spinner : "Tout refuser"}
+          </button>
+          <button type="button" onClick={onAcceptAll} disabled={!!loading} className={outlineBtn}>
+            {loading === "accept" ? spinner : "Tout accepter"}
+          </button>
         </div>
+        <button type="button" onClick={onSave} disabled={!!loading} className="flex h-12 w-full items-center justify-center bg-[var(--color-brand)] px-5 text-[15px] font-bold text-white transition-colors hover:bg-[var(--color-brand-hover)] disabled:opacity-60">
+          {loading === "save" ? spinner : "Enregistrer mes préférences"}
+        </button>
       </div>
     </div>
   );
@@ -152,7 +151,7 @@ export default function CookieBanner() {
   const [visible, setVisible]       = useState(false);
   const [hasConsent, setHasConsent] = useState(false);
   const [prefsOpen, setPrefsOpen]   = useState(false);
-  const [analytics, setAnalytics]   = useState(true);
+  const [analytics, setAnalytics]   = useState(false); // opt-in only (CNIL)
   const [marketing, setMarketing]   = useState(false);
   const [loading, setLoading]       = useState(null);
   const [dragOffset, setDragOffset] = useState(0);
@@ -257,36 +256,34 @@ export default function CookieBanner() {
           <Dialog.Overlay className="fixed inset-0 z-[61] bg-black/40 sheet-overlay" />
 
           {/* Mobile: bottom sheet — Desktop: centered modal */}
-          <Dialog.Content className="modal-content fixed z-[62] inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center md:p-4">
+          <Dialog.Content aria-describedby={undefined} className="modal-content fixed z-[62] inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center md:p-4">
             <div
-              className="bg-white shadow-2xl w-full flex flex-col overflow-hidden rounded-t-2xl max-h-[88vh] md:rounded-[var(--radius)] md:max-w-md md:max-h-[90vh]"
+              className="bg-white shadow-2xl w-full flex flex-col overflow-hidden max-h-[88vh] md:max-w-md md:max-h-[90vh]"
               style={{ transform: dragOffset > 0 ? `translateY(${dragOffset}px)` : undefined, transition: dragOffset === 0 ? "transform 0.3s ease" : "none" }}
               onTouchStart={handleTouchStart}
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
             >
-              {/* Drag handle — mobile only */}
-              <div className="flex justify-center pt-3 pb-1 md:hidden shrink-0 cursor-grab active:cursor-grabbing">
-                <div className="w-10 h-1 rounded-full bg-gray-200" />
-              </div>
-
-              {/* Header */}
-              <div className="flex items-center justify-between px-4 py-4 md:px-6 md:py-5 border-b border-gray-100 shrink-0">
-                <Dialog.Title className="text-base font-semibold text-[#131212]">
-                  Gérer mes cookies
-                </Dialog.Title>
+              {/* Header — on mobile, dragging the sheet down also closes it */}
+              <div className="flex items-center justify-between bg-[var(--color-brand)] py-4 pl-6 pr-4 text-white shrink-0">
+                <div className="flex items-center gap-3">
+                  <CookieIcon size={22} />
+                  <Dialog.Title className={`text-[22px] leading-none ${headingFont.className}`}>
+                    Gérer mes <em className={headingFont.className}>cookies</em>
+                  </Dialog.Title>
+                </div>
                 <Dialog.Close asChild>
                   <button
-                    className="p-1.5 rounded-md hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600"
+                    className="flex size-9 items-center justify-center text-white/80 transition-colors hover:bg-white/10 hover:text-white"
                     aria-label="Fermer"
                   >
-                    <X size={18} />
+                    <X size={20} aria-hidden="true" />
                   </button>
                 </Dialog.Close>
               </div>
 
               {/* Content */}
-              <div className="flex-1 overflow-y-auto px-4 py-5 md:px-6 md:py-6">
+              <div className="flex-1 overflow-y-auto px-6 py-6">
                 <CookiePreferencesPanel
                   analytics={analytics}
                   marketing={marketing}

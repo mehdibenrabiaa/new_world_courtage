@@ -1,26 +1,27 @@
-import Image from "next/image";
 import Link from "next/link";
-import { Phone, ChevronRight } from "lucide-react";
+import { Phone } from "lucide-react";
+import SiteLogo from "@/components/SiteLogo";
 
-// The same minimal sticky header used by the devis wizards (see
+// The minimal sticky header used by the devis wizards (see
 // pages/assurance-pro-auto/garagiste/devis/index.js) — just the logo and the
-// phone CTA, no nav menu/footer, so there's nothing to distract from the
+// phone number, no nav menu/footer, so there's nothing to distract from the
 // task at hand. Reused as-is for the account pages (connexion, inscription,
-// espace client/partenaire...) for the same reason.
+// espace client/partenaire...) for the same reason. Styled like the main
+// navbar: white bar, logo cell, full-height brand-blue block.
 export default function QuestionnaireHeader() {
   return (
-    <header className="sticky top-0 z-40 w-full bg-gray-200">
-      <div className="flex items-center justify-between px-4 lg:px-12 h-16">
-        <Link href="/">
-          <Image src="/logos/nwc-logo.svg" alt="New World Courtage" width={120} height={33} className="h-7 w-auto" />
+    <header className="sticky top-0 z-40 h-16 w-full border-b border-gray-200 bg-white">
+      <div className="flex h-full items-stretch">
+        <Link href="/" className="flex shrink-0 items-center border-r border-gray-200 px-4 lg:px-12">
+          <SiteLogo className="h-9 w-auto" />
         </Link>
+        <div className="flex-1" />
         <a
           href="tel:+33745891865"
-          className="flex items-center gap-2 h-10 border border-[var(--color-brand)] hover:bg-[var(--color-brand)]/5 text-[var(--color-brand)] rounded-lg px-3.5 transition-colors"
+          className="flex items-center gap-2 bg-[var(--color-brand)] px-4 text-[15px] font-bold text-white transition-colors hover:bg-[var(--color-brand-hover)] sm:px-7"
         >
-          <Phone size={15} className="shrink-0" />
-          <span className="text-sm font-semibold">07 45 89 18 65</span>
-          <ChevronRight size={14} className="shrink-0 opacity-70" />
+          <Phone size={16} strokeWidth={2} aria-hidden="true" />
+          07 45 89 18 65
         </a>
       </div>
     </header>

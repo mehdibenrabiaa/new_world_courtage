@@ -260,7 +260,7 @@ function DocumentUploadPanel({ t, leadId, leadUploadToken, bookingDocs = [] }) {
                 </li>
               ))}
             </ul>
-            <label className={`mt-4 flex h-11 items-center justify-center gap-2 rounded-md border border-[var(--color-brand)] text-sm font-semibold text-[var(--color-brand)] transition-colors ${leadId && leadUploadToken && documentUploads.status !== "uploading" ? "cursor-pointer hover:bg-[var(--color-brand)]/5" : "cursor-not-allowed opacity-50"}`}>
+            <label className={`mt-4 flex h-12 items-center justify-center gap-2 border border-[var(--color-brand)] text-[15px] font-bold text-[var(--color-brand)] transition-colors ${leadId && leadUploadToken && documentUploads.status !== "uploading" ? "cursor-pointer hover:bg-[var(--color-brand)]/5" : "cursor-not-allowed opacity-50"}`}>
               {documentUploads.status === "uploading" ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
               {documentUploads.status === "uploading"
                 ? "Envoi..."
@@ -500,13 +500,13 @@ function BookingCalendarPanel({ t, leadId }) {
           <Separator className="flex-1" />
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
-          <Button variant="outline" size="sm" asChild className="gap-2 h-10 rounded-lg border-gray-200 text-gray-700 hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] hover:bg-transparent">
+          <Button variant="outline" size="sm" asChild className="gap-2 h-10 border-gray-200 text-gray-700 hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] hover:bg-transparent">
             <a href="tel:+33745891865">
               <Phone size={15} />
               07 45 89 18 65
             </a>
           </Button>
-          <Button variant="outline" size="sm" asChild className="gap-2 h-10 rounded-lg border-gray-200 text-gray-700 hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] hover:bg-transparent">
+          <Button variant="outline" size="sm" asChild className="gap-2 h-10 border-gray-200 text-gray-700 hover:border-[var(--color-brand)] hover:text-[var(--color-brand)] hover:bg-transparent">
             <a href="mailto:devis@newworldcourtage.com">
               <Mail size={15} />
               devis@newworldcourtage.com
@@ -609,6 +609,9 @@ function formatAnswerValue(step, value) {
     const nic = digits.slice(9);
     return nic ? `${siren} ${nic}` : siren;
   }
+  // Choice questions: show the option's label ("Moto"), not its stored value ("moto").
+  const idx = step.values?.indexOf(value) ?? -1;
+  if (idx >= 0 && step.options?.[idx]) return step.options[idx];
   return String(value);
 }
 

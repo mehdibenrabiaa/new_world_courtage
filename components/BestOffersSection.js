@@ -16,7 +16,7 @@ export default function BestOffersSection({
 
           {/* Header */}
           <div className="flex flex-col gap-4 mb-10 lg:mb-14 max-w-3xl mx-auto text-center">
-            <h2 className={`text-[8vw] sm:text-[36px] lg:text-[48px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
+            <h2 className={`text-[28px] sm:text-[34px] lg:text-[40px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
               {title.replace(titleItalic, "").trim()}{" "}
               <em className={`italic ${libreCaslon.className}`}>{titleItalic}</em>
             </h2>

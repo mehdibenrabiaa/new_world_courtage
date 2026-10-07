@@ -1,4 +1,6 @@
 import Head from "next/head";
+import PhotoHero from "@/components/PhotoHero";
+import { Check, CircleDashed, Clock } from "lucide-react";
 import Link from "next/link";
 import ReadyCta from "@/components/ReadyCta";
 
@@ -17,9 +19,27 @@ function Section({ id, title, children }) {
 
 function InfoBox({ children }) {
   return (
-    <div className="rounded-xl border border-blue-100 bg-blue-50 p-4 text-[14px] text-blue-900 leading-relaxed flex flex-col gap-2">
+    <div className="border-l-4 border-[var(--color-brand)] bg-[var(--color-light)] p-4 text-[14px] text-[var(--color-text)] leading-relaxed flex flex-col gap-2">
       {children}
     </div>
+  );
+}
+
+// Square status tags in the site palette; each status also has its own icon,
+// so the meaning doesn't rely on colour alone.
+const STATUS_STYLES = {
+  "Conforme": { Icon: Check, className: "bg-[var(--color-brand)] text-white" },
+  "Partiellement conforme": { Icon: CircleDashed, className: "bg-[var(--color-brand)]/10 text-[var(--color-brand)]" },
+  "En cours d'amélioration": { Icon: Clock, className: "border border-[var(--color-brand)] text-[var(--color-brand)]" },
+};
+
+function StatusBadge({ status }) {
+  const { Icon, className } = STATUS_STYLES[status] ?? STATUS_STYLES["Partiellement conforme"];
+  return (
+    <span className={`inline-flex items-center gap-1.5 whitespace-nowrap px-2.5 py-1 text-[12px] font-bold ${className}`}>
+      <Icon size={13} strokeWidth={2.5} aria-hidden="true" />
+      {status}
+    </span>
   );
 }
 
@@ -32,20 +52,15 @@ export default function Accessibilite() {
       </Head>
 
       <main className="min-h-screen bg-white">
+        <PhotoHero
+          tone="neutral"
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Accessibilité" }]}
+          image="/heroes/about-desktop.jpg"
+          mobileImage="/heroes/about-mobile.jpg"
+          title={<>Accessibilité &amp; <em>transparence</em></>}
+          subtitle={<>{"Notre engagement envers tous nos utilisateurs : un site accessible, une rémunération transparente et des données sécurisées."}<span className="mt-2 block text-[14px] text-white/70">Dernière mise à jour : {LAST_UPDATED}</span></>}
+        />
         <div className="max-w-5xl mx-auto">
-
-        {/* Hero */}
-        <div className="bg-[var(--color-brand)] py-14 px-6 sm:px-10">
-          <div className="max-w-4xl mx-auto flex flex-col gap-3">
-            <p className="text-sm text-white/90">Dernière mise à jour : {LAST_UPDATED}</p>
-            <h1 className="text-2xl sm:text-4xl font-bold text-white leading-tight">
-              Accessibilité &amp; transparence
-            </h1>
-            <p className="text-base text-white/90 leading-relaxed max-w-2xl">
-              Notre engagement envers tous nos utilisateurs : un site accessible, une rémunération transparente et des données sécurisées.
-            </p>
-          </div>
-        </div>
 
         {/* Content */}
         <div className="max-w-4xl mx-auto px-6 sm:px-10 py-14 flex flex-col gap-12">
@@ -65,7 +80,7 @@ export default function Accessibilite() {
             <p>
               Ce site est <strong className="text-[#131212]">partiellement conforme</strong> au Référentiel Général d'Amélioration de l'Accessibilité (RGAA 4.1). Certains contenus ou fonctionnalités peuvent présenter des lacunes en raison de contraintes techniques ou de la charge que leur correction représenterait pour une structure de notre taille.
             </p>
-            <div className="rounded-xl border border-gray-100 overflow-hidden">
+            <div className="border border-gray-200 overflow-hidden">
               <table className="w-full text-sm text-left">
                 <thead className="bg-gray-50 text-[#131212] font-semibold">
                   <tr>
@@ -84,15 +99,7 @@ export default function Accessibilite() {
                     <tr key={i}>
                       <td className="px-4 py-3">{item}</td>
                       <td className="px-4 py-3">
-                        <span className={`text-[12px] px-2 py-0.5 rounded-full font-medium ${
-                          status === "Conforme"
-                            ? "bg-green-100 text-green-800"
-                            : status === "En cours d'amélioration"
-                            ? "bg-orange-100 text-orange-800"
-                            : "bg-blue-100 text-blue-800"
-                        }`}>
-                          {status}
-                        </span>
+                        <StatusBadge status={status} />
                       </td>
                     </tr>
                   ))}
@@ -155,7 +162,7 @@ export default function Accessibilite() {
             <p>
               New World Courtage SAS est immatriculée à l'ORIAS (Organisme pour le Registre des Intermédiaires en Assurance) en qualité de <strong className="text-[#131212]">Courtier en Opérations d'Assurances (COA)</strong>.
             </p>
-            <div className="rounded-xl border border-gray-100 overflow-hidden">
+            <div className="border border-gray-200 overflow-hidden">
               <table className="w-full text-sm text-left">
                 <tbody className="divide-y divide-gray-100 text-gray-600">
                   {[

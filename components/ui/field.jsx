@@ -99,7 +99,7 @@ function FieldLabel({ className, ...props }) {
       data-slot="field-label"
       className={cn(
         "group/field-label peer/field-label flex w-fit gap-2 leading-snug group-data-[disabled=true]/field:opacity-50",
-        "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-md has-[>[data-slot=field]]:border [&>*]:data-[slot=field]:p-4",
+        "has-[>[data-slot=field]]:w-full has-[>[data-slot=field]]:flex-col has-[>[data-slot=field]]:rounded-none has-[>[data-slot=field]]:border [&>*]:data-[slot=field]:p-4",
         // An opaque near-white tint, not a translucent one — a translucent
         // bg reads fine over a white page but disappears wherever a card
         // like this sits on a solid colored section (e.g. GarageIdentityForm's

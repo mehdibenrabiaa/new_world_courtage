@@ -1,51 +1,12 @@
 import { useState } from "react";
+import PhotoHero from "@/components/PhotoHero";
 import Head from "next/head";
 import { libreCaslon } from "@/lib/fonts";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
 import { Button } from "@/components/ui/button";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
-function PageBreadcrumb() {
-  return (
-    <Breadcrumb className={`${cx} pt-6 pb-2`}>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/life-insurance/">Assurance vie</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Calculateur</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
-function Hero() {
-  return (
-    <div className="w-full py-4 px-4 lg:px-12 2xl:px-24">
-      <div className="flex overflow-hidden rounded-xl">
-        <div className="flex-1 bg-[var(--color-brand)] px-10 pt-20 lg:pt-[140px] pb-20 flex items-end">
-          <h1 className="text-[26px] lg:text-[33px] font-semibold leading-none text-white">
-            Calculateur d&apos;assurance vie
-          </h1>
-        </div>
-        <div className="hidden sm:block w-1/2 min-h-[260px] lg:min-h-[340px] relative">
-          <img
-            src="/finished_scrolling.jpg"
-            alt="Calculateur assurance vie"
-            className="absolute inset-0 w-full h-full object-cover object-center"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function Calculator() {
   const [age, setAge] = useState("");
@@ -87,7 +48,7 @@ function Calculator() {
               placeholder="Ex : 35"
               value={age}
               onChange={(e) => setAge(e.target.value)}
-              className="h-11 w-full rounded-lg border border-input px-4 text-sm text-[var(--color-text)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)]"
+              className="h-11 w-full rounded-none border border-input px-4 text-sm text-[var(--color-text)] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[var(--color-brand)]"
             />
           </div>
 
@@ -189,8 +150,12 @@ export default function LifeInsuranceCalculatorPage() {
       </Head>
 
       <main>
-        <PageBreadcrumb />
-        <Hero />
+        <PhotoHero
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Assurance vie", href: "/life-insurance/" }, { label: "Calculateur" }]}
+          image="/pages/calculator-desktop.jpg"
+          mobileImage="/pages/calculator-mobile.jpg"
+          title={<>Calculateur d&apos;<em>assurance vie</em>.</>}
+        />
         <Calculator />
       </main>
     </>

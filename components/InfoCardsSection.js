@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronRight, ChevronLeft, ImageOffIcon } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { libreCaslon } from "@/lib/fonts";
 import CtaButton from "@/components/CtaButton";
 
@@ -31,7 +32,7 @@ function CardImage({ src, alt, wrapperClassName, imgClassName }) {
 }
 
 function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imageVariant }) {
-  const titleClass = `leading-[1.2] text-[var(--color-text)] ${titleFont === "serif" ? libreCaslon.className : "font-bold"}`;
+  const titleClass = `leading-[1.2] text-[var(--color-text)] ${titleFont === "serif" ? libreCaslon.className : "font-semibold"}`;
 
   if (cardStyle === "style2") {
     const { image, imageAlt = "", title, description, href } = item;
@@ -39,32 +40,32 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
     const { Icon } = item;
     const imgHeader =
       imageVariant === "icon" && Icon ? (
-        <div className="w-full h-44 bg-[var(--color-light)] flex items-center justify-center shrink-0">
+        <div className="w-full h-52 bg-[var(--color-light)] flex items-center justify-center shrink-0">
           <Icon size={64} strokeWidth={1.2} className="text-[var(--color-brand)]" />
         </div>
       ) : imageVariant === "contain" ? (
         <CardImage
           src={image}
           alt={imageAlt}
-          wrapperClassName="w-full h-44 flex items-center justify-center p-6 shrink-0"
+          wrapperClassName="w-full h-52 flex items-center justify-center p-6 shrink-0"
           imgClassName="max-w-[90px] lg:max-w-[110px] max-h-full object-contain"
         />
       ) : Icon ? (
         <>
-          <div className="lg:hidden w-full h-44 bg-[var(--color-light)] flex items-center justify-center shrink-0">
+          <div className="lg:hidden w-full h-52 bg-[var(--color-light)] flex items-center justify-center shrink-0">
             <Icon size={64} strokeWidth={1.2} className="text-[var(--color-brand)]" />
           </div>
           {image ? (
-            <div className="hidden lg:block w-full h-44 shrink-0">
+            <div className="hidden lg:block w-full h-52 shrink-0">
               <CardImage
                 src={image}
                 alt={imageAlt}
-                wrapperClassName="w-full h-44 relative overflow-hidden"
+                wrapperClassName="w-full h-52 relative overflow-hidden"
                 imgClassName="absolute inset-0 w-full h-full object-cover"
               />
             </div>
           ) : (
-            <div className="hidden lg:block w-full h-44 bg-[var(--color-light)] flex items-center justify-center shrink-0">
+            <div className="hidden lg:flex w-full h-52 bg-[var(--color-light)] items-center justify-center shrink-0">
               <Icon size={64} strokeWidth={1.2} className="text-[var(--color-brand)]" />
             </div>
           )}
@@ -73,25 +74,26 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
         <CardImage
           src={image}
           alt={imageAlt}
-          wrapperClassName="w-full h-44 relative overflow-hidden shrink-0"
+          wrapperClassName="w-full h-52 relative overflow-hidden shrink-0"
           imgClassName="absolute inset-0 w-full h-full object-cover"
         />
       );
 
     const inner = (
-      <Card className="w-full max-w-none sm:max-w-[280px] mx-auto overflow-hidden h-full rounded-[5px] transition-shadow duration-200 hover:shadow-md group flex flex-col">
-        {imgHeader}
-        <CardContent className="p-5 flex flex-col gap-4 flex-1 min-h-[280px] lg:min-h-0">
+      <Card className="group flex h-full w-full flex-col gap-0 overflow-hidden rounded-[4px] border-0 bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.14)] transition-shadow duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.14)]">
+        <div className="overflow-hidden rounded-[2px]">{imgHeader}</div>
+        <CardContent className="flex flex-1 flex-col gap-3 px-4 pt-6 pb-3">
           {showSteps && (
-            <Badge className="w-8 h-8 p-0 flex items-center justify-center rounded-full bg-[var(--color-text)] border-transparent text-white text-sm">
+            <Badge className="w-8 h-8 p-0 flex items-center justify-center rounded-none bg-[var(--color-brand)] border-transparent text-white text-sm font-bold">
               {index + 1}
             </Badge>
           )}
-          <h3 className={`text-[23px] lg:text-[19px] ${titleClass}`}>{title}</h3>
-          <p className="text-[17px] lg:text-[15px] text-gray-600 leading-relaxed flex-1">{description}</p>
+          <h3 className={`text-[22px] lg:text-[24px] ${titleClass}`}>{title}</h3>
+          <p className="flex-1 text-[15px] leading-relaxed text-gray-700">{description}</p>
           {showLink && (
-            <div className="mt-8 flex items-center gap-1 text-[14px] font-semibold text-[var(--color-brand)] group-hover:underline">
-              En savoir plus <ChevronRight size={15} />
+            <div className="mt-8 flex items-center gap-2 text-[15px] font-bold text-[var(--color-brand)]">
+              <span className="group-hover:underline">Découvrir maintenant</span>
+              <ChevronRight size={20} strokeWidth={1.75} aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1" />
             </div>
           )}
         </CardContent>
@@ -103,13 +105,13 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
   // style1
   const { Icon, title, description, href } = item;
   const inner = (
-    <div className="group flex flex-col bg-[#f5f5f3] rounded-[5px] overflow-hidden transition-all duration-200 hover:shadow-md hover:scale-[1.02] h-full">
+    <div className="group flex flex-col bg-[#f5f5f3] overflow-hidden transition-shadow duration-200 hover:shadow-md h-full">
       <div className="w-full flex items-center justify-center pt-8 pb-4">
         <Icon size={120} strokeWidth={1} className="text-[var(--color-brand)]" />
       </div>
       <div className="flex flex-col flex-1 p-8">
         {showSteps && (
-          <Badge className="w-8 h-8 p-0 flex items-center justify-center rounded-full bg-[var(--color-text)] border-transparent text-white text-sm mb-4">
+          <Badge className="w-8 h-8 p-0 flex items-center justify-center rounded-none bg-[var(--color-brand)] border-transparent text-white text-sm font-bold mb-4">
             {index + 1}
           </Badge>
         )}
@@ -143,9 +145,9 @@ function GridLayout({ items, cols, maxWidth, ...rest }) {
 
 function ScrollLayout({ items, ...rest }) {
   return (
-    <div className="flex overflow-x-auto gap-4 pb-3 snap-x snap-mandatory [scrollbar-width:thin] [scrollbar-color:#d1d5db_transparent] [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full -mx-4 px-4 lg:-mx-14 lg:px-14">
+    <div className="flex overflow-x-auto gap-6 py-2 pb-4 snap-x snap-mandatory [scrollbar-width:thin] [scrollbar-color:#d1d5db_transparent] [&::-webkit-scrollbar]:h-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gray-300 [&::-webkit-scrollbar-thumb]:rounded-full -mx-4 px-4 lg:-mx-14 lg:px-14">
       {items.map((item, i) => (
-        <div key={i} className="flex-shrink-0 w-[300px] snap-start">
+        <div key={i} className="flex-shrink-0 w-[85%] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)] snap-start">
           <CardItem item={item} index={i} {...rest} />
         </div>
       ))}
@@ -165,12 +167,12 @@ function CarouselLayout({ items, perPage, ...rest }) {
   return (
     <div>
       <div className="flex items-center justify-end gap-3 mb-4">
-        <button onClick={prev} disabled={page === 0} className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors" aria-label="Précédent">
+        <Button variant="outline" size="icon-lg" onClick={prev} disabled={page === 0} aria-label="Précédent">
           <ChevronLeft size={18} />
-        </button>
-        <button onClick={next} disabled={page === totalPages - 1} className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center hover:bg-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors" aria-label="Suivant">
+        </Button>
+        <Button variant="outline" size="icon-lg" onClick={next} disabled={page === totalPages - 1} aria-label="Suivant">
           <ChevronRight size={18} />
-        </button>
+        </Button>
       </div>
       <div key={page} className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 ${dir === "next" ? "slide-in-right" : "slide-in-left"}`}>
         {visible.map((item, i) => <CardItem key={i} item={item} index={page * perPage + i} {...rest} />)}
@@ -197,13 +199,14 @@ export default function InfoCardsSection({
   ctaLabel = "",
   ctaHref = "/devis",
   maxWidth = "1140px",
+  id,
 }) {
   const cardProps = { cardStyle, showSteps, showLink, titleFont, imageVariant };
 
   const header = (title || titleItalic || subtitle) ? (
     <div className="text-center mb-12 flex flex-col gap-3 max-w-3xl mx-auto">
       {(title || titleItalic) && (
-        <h2 className={`text-[40px] sm:text-[55px] leading-[1.15] text-[var(--color-text)] ${libreCaslon.className}`}>
+        <h2 className={`text-[28px] sm:text-[34px] lg:text-[40px] leading-[1.15] text-[var(--color-text)] ${libreCaslon.className}`}>
           {title && <>{title} </>}
           {titleItalic && <em className={`italic ${libreCaslon.className}`}>{titleItalic}</em>}
         </h2>
@@ -237,9 +240,9 @@ export default function InfoCardsSection({
 
   if (withContainer) {
     return (
-      <section className="w-full py-4">
+      <section id={id} className="w-full py-4">
         <div className="px-4 lg:px-12 2xl:px-24">
-          <div className="rounded-xl bg-[var(--color-light)] px-4 py-10 sm:px-8 lg:px-14 lg:py-14 overflow-hidden">
+          <div className="bg-[var(--color-light)] px-4 py-10 sm:px-8 lg:px-14 lg:py-14 overflow-hidden">
             {header}
             {cards}
             {cta}
@@ -250,7 +253,7 @@ export default function InfoCardsSection({
   }
 
   return (
-    <section className="w-full py-16 px-4 sm:px-8 lg:px-16 2xl:px-24 overflow-hidden">
+    <section id={id} className="w-full py-16 px-4 sm:px-8 lg:px-16 2xl:px-24 overflow-hidden">
       {header}
       {cards}
       {cta}

@@ -1,39 +1,10 @@
 ﻿import Head from "next/head";
 import Link from "next/link";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import ArticleHero from "@/components/ArticleHero";
 import ArticleSection from "@/components/ArticleSection";
 import AccentCardGrid from "@/components/AccentCardGrid";
 import ReadyCta from "@/components/ReadyCta";
 
-const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
-
-function PageBreadcrumb() {
-  return (
-    <Breadcrumb className={`${cx} pt-6 pb-2`}>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <span>Articles</span>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Quelle couverture</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
 export default function QuelleCouverturePage() {
   return (
@@ -49,8 +20,6 @@ export default function QuelleCouverturePage() {
       </Head>
 
       <main className="bg-white">
-        <PageBreadcrumb />
-
         <ArticleHero
           category="Assurance taxi"
           categoryHref="/assurance-transport/taxi/"

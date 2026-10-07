@@ -1,10 +1,10 @@
 ﻿import Head from "next/head";
 import Hero from "../components/Hero";
+import InsuranceSolutions from "../components/InsuranceSolutions";
 import Testimonials from "../components/Testimonials";
 import Partners from "../components/Partners";
 import OurProcess from "../components/OurProcess";
-import RealCustomers from "../components/RealCustomers";
-import TrustPilot from "../components/TrustPilot";
+import { ReviewsMinimal } from "../components/RealCustomersVariants";
 import FinishedScrolling from "../components/FinishedScrolling";
 import FAQ from "../components/FAQ";
 
@@ -17,7 +17,7 @@ export default function Home() {
         </title>
         <meta
           name="description"
-          content="New World Courtage, votre courtier en assurance pour pros et particuliers. Comparez les meilleures offres en flotte & transport, construction, immobilier, santé et moto. Devis gratuit en quelques minutes."
+          content="New World Courtage, votre courtier en assurance pour pros et particuliers. Comparez les meilleures offres d'assurance auto, moto, taxi, VTC et garage. Devis gratuit en quelques minutes."
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://www.newworldcourtage.fr/" />
@@ -26,7 +26,7 @@ export default function Home() {
         <meta property="og:url" content="https://www.newworldcourtage.fr/" />
         <meta
           property="og:title"
-          content="Courtier en Assurance — Flotte, Construction, Immobilier & Santé | New World Courtage"
+          content="Courtier en Assurance — Auto, Moto, Taxi, VTC & Garage | New World Courtage"
         />
         <meta
           property="og:description"
@@ -57,7 +57,7 @@ export default function Home() {
               url: "https://www.newworldcourtage.fr",
               logo: "https://www.newworldcourtage.fr/hero.jpg",
               description:
-                "New World Courtage est un courtier en assurance indépendant. Comparez gratuitement les meilleures offres d'assurance auto, habitation, santé et décennale.",
+                "New World Courtage est un courtier en assurance indépendant. Comparez gratuitement les meilleures offres d'assurance auto, moto, taxi, VTC et garage.",
               telephone: "+33745891865",
               email: "contact@newworldcourtage.com",
               address: {
@@ -74,9 +74,10 @@ export default function Home() {
               priceRange: "Gratuit",
               knowsAbout: [
                 "Assurance Auto",
-                "Assurance Habitation",
-                "Assurance Santé",
-                "Assurance Décennale",
+                "Assurance Moto",
+                "Assurance Taxi",
+                "Assurance VTC",
+                "Assurance Garage",
               ],
             }),
           }}
@@ -89,9 +90,9 @@ export default function Home() {
         <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
           <Hero />
         </div>
+        <InsuranceSolutions />
         <Partners />
-        <TrustPilot />
-        <RealCustomers />
+        <ReviewsMinimal />
         <Testimonials />
         <OurProcess />
         <FinishedScrolling />

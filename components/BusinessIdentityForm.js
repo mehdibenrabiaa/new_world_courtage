@@ -136,7 +136,7 @@ export default function BusinessIdentityForm({ redirectTo = "/assurance-transpor
             type="text"
             value={name}
             onChange={e => { setName(e.target.value); clearError("name"); updateQuery({ name: e.target.value }); }}
-            placeholder="Ex : Ambulances Dupont"
+            placeholder="Ex : Taxis Dupont"
             className={inputCls("name")}
           />
           {errors.name && <FieldError errors={[{ message: errors.name }]} className="text-[#F2693D]" />}

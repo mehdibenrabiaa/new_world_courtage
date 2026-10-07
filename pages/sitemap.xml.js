@@ -3,14 +3,17 @@
 const PAGES = [
   { path: "/",                      changefreq: "weekly",  priority: "1.0" },
   { path: "/nos-assurances/",       changefreq: "weekly",  priority: "0.9" },
-  { path: "/assurance-transport/",      changefreq: "weekly",  priority: "0.9" },
-  { path: "/assurance-pro-auto/",    changefreq: "weekly",  priority: "0.9" },
-  { path: "/assurance-construction/",changefreq: "weekly",  priority: "0.9" },
-  { path: "/assurance-immobilier/",  changefreq: "weekly",  priority: "0.9" },
-  { path: "/assurance-moto/",        changefreq: "weekly",  priority: "0.9" },
-  { path: "/assurance-sante/",       changefreq: "weekly",  priority: "0.9" },
-  { path: "/about/",                changefreq: "monthly", priority: "0.5" },
-  { path: "/contact/",              changefreq: "monthly", priority: "0.5" },
+  { path: "/assurance-moto/",                     changefreq: "weekly",  priority: "0.9" },
+  { path: "/assurance-risques-aggraves/",         changefreq: "weekly",  priority: "0.8" },
+  { path: "/assurance-transport/",                changefreq: "weekly",  priority: "0.9" },
+  { path: "/assurance-transport/taxi/",           changefreq: "weekly",  priority: "0.9" },
+  { path: "/assurance-transport/chauffeur-vtc/",  changefreq: "weekly",  priority: "0.9" },
+  { path: "/assurance-pro-auto/garagiste/",       changefreq: "weekly",  priority: "0.9" },
+  { path: "/devis/",                              changefreq: "monthly", priority: "0.7" },
+  { path: "/a-propos/",                           changefreq: "monthly", priority: "0.5" },
+  { path: "/a-propos/nos-partenaires/",           changefreq: "monthly", priority: "0.5" },
+  { path: "/a-propos/avis-clients/",              changefreq: "monthly", priority: "0.5" },
+  { path: "/contact/",                            changefreq: "monthly", priority: "0.5" },
 ];
 
 function sitemap(pages) {

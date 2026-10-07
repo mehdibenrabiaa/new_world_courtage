@@ -1,6 +1,6 @@
 import Head from "next/head";
+import PhotoHero from "@/components/PhotoHero";
 import { useRouter } from "next/router";
-import PageHero from "@/components/PageHero";
 import CarCalculatorSection from "@/components/CarCalculatorSection";
 import GarageIdentityForm from "@/components/GarageIdentityForm";
 import PartnerLogos from "@/components/PartnerLogos";
@@ -9,14 +9,6 @@ import { PARTNERS } from "@/lib/partners";
 import InfoCardsSection from "@/components/InfoCardsSection";
 import FinishedScrolling from "@/components/FinishedScrolling";
 import { fetchGuideCardsByCategory } from "@/lib/api";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import { ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText } from "lucide-react";
 
 // Garagiste-specific: the site-wide PARTNERS list (minus Swiss Life) plus two
@@ -32,7 +24,6 @@ const GARAGISTE_PARTNERS = [
   PARTNERS_BY_ID.areas,
   PARTNERS_BY_ID.gan,
   PARTNERS_BY_ID.groupama,
-  { id: "wakam", name: "Wakam", src: "/partners/wakam.svg" },
 ];
 
 const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
@@ -46,39 +37,24 @@ const GUIDE_ICONS = [ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText
 const GUIDE_CARDS = [
   {
     Icon: ClipboardCheck,
-    title: "Comment souscrire une assurance garage ?",
-    description: "Vous pouvez souscrire directement auprès d'un assureur, via un agent ou en faisant appel à un courtier spécialisé comme New World Courtage pour comparer les offres du marché.",
-    href: "/assurance-pro-auto/comment-souscrire-assurance-garage/",
+    title: "Le guide complet de l'assurance garage",
+    description: "Garanties, obligations, prix : tout ce qu'il faut savoir pour bien choisir la couverture de votre garage.",
+    href: "/assurance-pro-auto/assurance-garage-guide-complet/",
   },
   {
     Icon: Umbrella,
-    title: "De quelle couverture ai-je besoin ?",
-    description: "Choisir la bonne couverture dépend de votre activité principale, de la valeur de votre flotte auto propre et du niveau de risque lié à votre atelier.",
-    href: "/assurance-pro-auto/quelle-couverture-assurance-garage/",
+    title: "Garantie des véhicules confiés",
+    description: "Ce qu'il faut absolument vérifier dans votre contrat pour couvrir les véhicules que vos clients vous confient.",
+    href: "/assurance-pro-auto/garantie-vehicules-confies-garage/",
   },
   {
     Icon: Scale,
-    title: "Comment choisir son assurance garage ?",
-    description: "Garanties, franchise, exclusions, tarif — notre équipe vous guide vers le contrat le plus adapté à votre activité de garagiste.",
-    href: "/assurance-pro-auto/comment-choisir-assurance-garage/",
+    title: "Combien coûte une assurance garage ?",
+    description: "Les prix moyens du marché et nos astuces pour payer moins cher sans sacrifier vos garanties.",
+    href: "/assurance-pro-auto/prix-assurance-garage/",
   },
 ];
 
-function PageBreadcrumb() {
-  return (
-    <Breadcrumb className={`${cx} pt-6 pb-2`}>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Assurance garage</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
 export async function getServerSideProps() {
   try {
@@ -123,30 +99,27 @@ export default function GaragistePage({ guideData }) {
       </Head>
 
       <main>
-        <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
-          <PageBreadcrumb />
-        </div>
-        <PageHero
+        <PhotoHero
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Assurance garage" }]}
           initialIndex={heroInitialIndex}
           autoRotate={!cameFromActivite}
           images={[
             // TODO: swap these placeholders for real photos per product once available.
             {
               image: "/heroes/garage-desktop.webp", mobileImage: "/heroes/garage-mobile.webp",
-              title: <>Votre assurance <em className="italic">Protect Garage</em> commence par un simple devis.</>,
+              title: <>L&apos;assurance des <em>garagistes</em>.</>,
             },
             {
               image: "/heroes/garage-convoyeur-desktop.webp", mobileImage: "/heroes/garage-convoyeur-mobile.webp",
-              title: <>Votre assurance <em className="italic">Convoyeurs</em> commence par un simple devis.</>,
+              title: <>L&apos;assurance des <em>convoyeurs</em>.</>,
             },
             {
               image: "/heroes/negociant-automobile-desktop.webp", mobileImage: "/heroes/negociant-automobile-mobile.webp",
-              title: <>Votre assurance <em className="italic">Négociants</em> commence par un simple devis.</>,
+              title: <>L&apos;assurance des <em>négociants automobiles</em>.</>,
             },
           ]}
           imageAlt="Assurance garage New World Courtage"
-          titlePosition="bottom"
-          titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[55px]"
+          subtitle="Un contrat adapté à votre activité, négocié auprès d'assureurs spécialistes de l'automobile."
         />
 
         <div className="px-4 lg:px-12 2xl:px-24 my-8">

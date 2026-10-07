@@ -1,16 +1,8 @@
 ﻿import Head from "next/head";
-import PageHero from "@/components/PageHero";
+import PhotoHero from "@/components/PhotoHero";
 import CarCalculatorSection from "@/components/CarCalculatorSection";
 import { ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText } from "lucide-react";
 import { fetchGuideCardsByCategory } from "@/lib/api";
-import {
-  Breadcrumb,
-  BreadcrumbList,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
 import Testimonials from "../../../components/Testimonials";
 import InfoCardsSection from "../../../components/InfoCardsSection";
 import FinishedScrolling from "../../../components/FinishedScrolling";
@@ -40,25 +32,6 @@ const GUIDE_CARDS = [
 
 const GUIDE_ICONS = [ClipboardCheck, Umbrella, Scale, BookOpen, Shield, FileText];
 
-function PageBreadcrumb() {
-  return (
-    <Breadcrumb className={`${cx} pt-6 pb-2`}>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/assurance-transport/">Flotte &amp; Transport</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Assurance taxi</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
 export async function getServerSideProps() {
   try {
@@ -91,16 +64,12 @@ export default function AssuranceTaxiPage({ guideData }) {
       </Head>
 
       <main>
-        <div style={{ width: '100vw', marginLeft: 'calc(-50vw + 50%)' }}>
-          <PageBreadcrumb />
-        </div>
-        <PageHero
+        <PhotoHero
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Taxi & VTC", href: "/assurance-transport/" }, { label: "Assurance taxi" }]}
           title={<>Le bon contrat d&apos;assurance taxi commence par un{" "}<em className="italic">simple devis.</em></>}
           image="/heroes/taxi-desktop.webp"
           mobileImage="/heroes/taxi-mobile.webp"
           imageAlt="Assurance taxi New World Courtage"
-          titlePosition="bottom"
-          titleClassName="!text-[7vw] sm:!text-[36px] lg:!text-[55px]"
         />
 
         <CarCalculatorSection redirectTo="/assurance-transport/taxi/devis/" />

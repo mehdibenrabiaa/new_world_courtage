@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { libreCaslon } from "@/lib/fonts";
+import { headingFont } from "@/lib/fonts";
+import PhotoHero from "@/components/PhotoHero";
 
 function initials(name) {
   if (!name) return "";
@@ -24,9 +25,17 @@ function BylineName({ label, name, href }) {
   );
 }
 
-// Reusable header/hero for articles & guides pages — category tag, serif
-// title, then a byline card (author/editor/reviewer, updated date, reading
-// time, expert-reviewed badge, editorial-standards disclaimer).
+// Hero photo for an article, picked from the product it belongs to.
+function defaultImages(categoryHref = "") {
+  if (categoryHref.includes("taxi")) return { image: "/heroes/taxi-desktop.webp", mobileImage: "/heroes/taxi-mobile.webp" };
+  if (categoryHref.includes("pro-auto") || categoryHref.includes("garag")) return { image: "/heroes/garage-desktop.webp", mobileImage: "/heroes/garage-mobile.webp" };
+  return { image: "/pages/driving-car.jpg" };
+}
+
+// Header for articles & guides (informational pages): the shared photo hero in its
+// neutral (black) tone with the title and breadcrumb, then the byline card
+// (author/editor/reviewer, updated date, reading time, expert-reviewed badge,
+// editorial-standards disclaimer) and the intro paragraph.
 export default function ArticleHero({
   category,
   categoryHref,
@@ -39,31 +48,25 @@ export default function ArticleHero({
   readingTime,
   expertReviewed = true,
   maxWidth = "52rem",
+  image,
+  mobileImage,
+  breadcrumb,
 }) {
-  const categoryClass = "text-sm font-semibold text-gray-500";
+  const images = image ? { image, mobileImage } : defaultImages(categoryHref);
+  const trail = breadcrumb ?? [
+    { label: "Accueil", href: "/" },
+    ...(category ? [{ label: category, href: categoryHref }] : []),
+    { label: title },
+  ];
 
   return (
     <header className="w-full">
+      <PhotoHero tone="neutral" breadcrumb={trail} title={title} {...images} />
+
       <div className="mx-auto px-4 sm:px-6 lg:px-12 pt-10 pb-8 flex flex-col gap-5" style={{ maxWidth }}>
 
-        {/* Category tag */}
-        {category && (
-          <div className="flex justify-start">
-            {categoryHref ? (
-              <Link href={categoryHref} className={categoryClass}>{category}</Link>
-            ) : (
-              <span className={categoryClass}>{category}</span>
-            )}
-          </div>
-        )}
-
-        {/* Title */}
-        <h1 className={`text-[28px] sm:text-[36px] lg:text-[45px] leading-[1.15] text-[var(--color-text)] ${libreCaslon.className}`}>
-          {title}
-        </h1>
-
         {/* Byline card */}
-        <div className="bg-[var(--color-light)] rounded-xl p-6 flex flex-col gap-5">
+        <div className="bg-[var(--color-light)] p-6 flex flex-col gap-5">
 
           {/* Row 1 — author (avatar + name), edited, reviewed */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -99,10 +102,10 @@ export default function ArticleHero({
             </div>
           )}
 
-          {/* Row 3 — filled expert-reviewed badge */}
+          {/* Row 3 — expert-reviewed badge */}
           {expertReviewed && (
-            <div className="inline-flex w-fit items-center gap-1.5 rounded-full bg-teal-50 text-teal-800 text-xs font-semibold px-3 py-1.5">
-              <CheckCircle2 size={14} />
+            <div className="inline-flex w-fit items-center gap-1.5 bg-[var(--color-brand)] text-white text-xs font-bold px-3 py-1.5">
+              <CheckCircle2 size={14} aria-hidden="true" />
               Vérifié par un expert
             </div>
           )}
@@ -113,9 +116,9 @@ export default function ArticleHero({
           </p>
         </div>
 
-        {/* Intro paragraph — serif, sits after the byline card */}
+        {/* Intro paragraph — sits after the byline card */}
         {intro && (
-          <p className={`text-2xl sm:text-[28px] leading-[1.2] text-[var(--color-text)] my-6 text-justify ${libreCaslon.className}`}>
+          <p className={`text-2xl sm:text-[28px] leading-[1.2] text-[var(--color-text)] my-6 ${headingFont.className}`}>
             {intro}
           </p>
         )}

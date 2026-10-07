@@ -1,4 +1,5 @@
 import Head from "next/head";
+import PhotoHero from "@/components/PhotoHero";
 import Link from "next/link";
 import ReadyCta from "@/components/ReadyCta";
 import ManageCookiesButton from "@/components/ManageCookiesButton";
@@ -85,17 +86,15 @@ export default function PrivacyPolicy() {
       </Head>
 
       <main className="min-h-screen bg-white">
+        <PhotoHero
+          tone="neutral"
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Confidentialité" }]}
+          image="/heroes/about-desktop.jpg"
+          mobileImage="/heroes/about-mobile.jpg"
+          title={<>Politique de <em>confidentialité</em></>}
+          subtitle={`Dernière mise à jour : ${LAST_UPDATED}`}
+        />
         <div className="max-w-5xl mx-auto">
-
-        {/* Hero */}
-        <div className="bg-[var(--color-brand)] py-24 px-6 sm:px-10">
-          <div className="max-w-4xl mx-auto flex flex-col gap-3">
-            <p className="text-sm text-white/90">Dernière mise à jour : {LAST_UPDATED}</p>
-            <h1 className="text-2xl sm:text-4xl font-bold text-white leading-tight">
-              Politique de confidentialité
-            </h1>
-          </div>
-        </div>
 
         {/* Content */}
         <div className="max-w-4xl mx-auto px-6 sm:px-10 py-14 flex flex-col gap-12">

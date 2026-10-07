@@ -1,68 +1,49 @@
 import Head from "next/head";
-import Link from "next/link";
+import PhotoHero from "@/components/PhotoHero";
 import { libreCaslon } from "@/lib/fonts";
-import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbLink, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb";
-import { Card } from "@/components/ui/card";
+import { PhotoCardGrid } from "@/components/InsuranceSolutions";
 
 const cx = "px-4 sm:px-8 lg:px-28 2xl:px-44";
 
 const CATEGORIES = [
-  { id: "flotte-transport", label: "Flotte & Transport", href: "/assurance-transport/devis/", icon: "/icons/truck.svg" },
-  { id: "pro-auto",         label: "Pro de l'automobile", href: "/assurance-pro-auto/",         icon: "/icons/car.svg" },
-  { id: "construction",     label: "Construction",         href: "/assurance-construction/",     icon: "/icons/building.svg" },
+  {
+    id: "auto-moto",
+    label: "Auto & Moto",
+    href: "/nos-assurances/#auto-moto",
+    image: "/pages/driving-car.jpg",
+    description: "Voiture, moto ou scooter… Comparez les offres et assurez votre véhicule au meilleur prix.",
+  },
+  {
+    id: "taxi-vtc",
+    label: "Taxi & VTC",
+    href: "/assurance-transport/",
+    image: "/heroes/taxi-desktop.webp",
+    description: "Artisans taxi et chauffeurs VTC… Une couverture adaptée au transport de personnes.",
+  },
+  {
+    id: "pro-auto",
+    label: "Pro de l'automobile",
+    href: "/assurance-pro-auto/garagiste/",
+    image: "/pages/garagist.webp",
+    description: "Garagistes, convoyeurs, négociants… Des garanties adaptées aux véhicules confiés et à votre atelier.",
+  },
 ];
 
-function PageBreadcrumb() {
-  return (
-    <Breadcrumb className={`${cx} pt-6 pb-2`}>
-      <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Accueil</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Devis gratuit</BreadcrumbPage>
-        </BreadcrumbItem>
-      </BreadcrumbList>
-    </Breadcrumb>
-  );
-}
 
-function Hero() {
-  return (
-    <div className={cx}>
-      <div className="bg-[var(--color-brand)] px-10 pt-20 lg:pt-[140px] pb-8 flex items-end">
-        <h1 className="text-[24px] lg:text-[30px] font-semibold leading-none text-white">
-          Devis gratuit
-        </h1>
-      </div>
-    </div>
-  );
-}
 
 function CategoryPicker() {
   return (
     <section className={`${cx} py-10 lg:py-14`}>
-      <div className="max-w-3xl mx-auto flex flex-col gap-8 text-center">
-        <div className="flex flex-col gap-4">
-          <h2 className={`text-[8vw] sm:text-[36px] lg:text-[44px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
-            Quelle assurance <em className={`italic ${libreCaslon.className}`}>recherchez-vous ?</em>
-          </h2>
-          <p className="text-[15px] text-gray-600 leading-relaxed">
-            Choisissez votre activité pour démarrer votre demande de devis gratuit et sans engagement.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {CATEGORIES.map(({ id, label, href, icon }) => (
-            <Link key={id} href={href}>
-              <Card className="shadow-none rounded-xl h-[150px] flex flex-col items-center justify-center gap-3 px-3 border border-gray-100 hover:border-gray-300 hover:bg-gray-50 transition-colors duration-150 cursor-pointer">
-                <img src={icon} alt="" width={42} height={42} aria-hidden="true" className="shrink-0 w-10 h-10" />
-                <span className="text-[15px] font-medium text-[var(--color-text)] text-center leading-tight">{label}</span>
-              </Card>
-            </Link>
-          ))}
-        </div>
+      <div className="mx-auto flex max-w-3xl flex-col gap-4 text-center">
+        <h2 className={`text-[28px] sm:text-[34px] lg:text-[40px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
+          Quelle assurance <em className={`italic ${libreCaslon.className}`}>recherchez-vous ?</em>
+        </h2>
+        <p className="text-[15px] text-gray-600 leading-relaxed">
+          Choisissez votre activité pour démarrer votre demande de devis gratuit et sans engagement.
+        </p>
+      </div>
+      <div className="mt-10 lg:mt-12">
+        <PhotoCardGrid items={CATEGORIES} />
       </div>
     </section>
   );
@@ -82,8 +63,12 @@ export default function DevisLandingPage() {
       </Head>
 
       <main>
-        <PageBreadcrumb />
-        <Hero />
+        <PhotoHero
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Devis gratuit" }]}
+          image="/pages/driving-car.jpg"
+          title={<>Devis <em>gratuit</em>.</>}
+          subtitle="Gratuit et sans engagement : choisissez votre activité et recevez les meilleures offres."
+        />
         <CategoryPicker />
       </main>
     </>

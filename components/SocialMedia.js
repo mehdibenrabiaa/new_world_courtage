@@ -31,7 +31,7 @@ export default function SocialMedia() {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="rounded-xl overflow-hidden flex flex-col lg:flex-row min-h-[480px]">
+        <div className="overflow-hidden flex flex-col lg:flex-row min-h-[480px]">
 
           {/* Left — image */}
           <div className="order-1 lg:w-[40%] h-[260px] lg:h-auto">
@@ -46,7 +46,7 @@ export default function SocialMedia() {
           <div className="order-2 lg:w-[60%] bg-[var(--color-light)] px-8 py-10 lg:px-14 lg:py-14 flex flex-col justify-between gap-10">
 
             <div className="flex flex-col gap-5">
-              <h2 className={`text-[8vw] sm:text-[42px] lg:text-[55px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
+              <h2 className={`text-[28px] sm:text-[34px] lg:text-[40px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
                 <span className="block">Suivez-nous</span>
                 <em className={`block italic ${libreCaslon.className}`}>sur les réseaux.</em>
               </h2>
