@@ -126,6 +126,7 @@ export default function GuidePage({ guide }) {
           category={guide.category}
           categoryHref={guide.category_href}
           title={guide.title}
+          subtitle={guide.subtitle}
           intro={guide.intro}
           author={{ name: guide.author_name, avatar: guide.author_avatar }}
           editor={{ name: guide.editor_name }}

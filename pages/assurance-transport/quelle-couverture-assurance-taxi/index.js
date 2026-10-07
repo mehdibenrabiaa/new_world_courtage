@@ -24,6 +24,7 @@ export default function QuelleCouverturePage() {
           category="Assurance taxi"
           categoryHref="/assurance-transport/taxi/"
           title="De quelle couverture ai-je besoin ?"
+          subtitle="Responsabilité civile, véhicule, conducteur, passagers : ce qu'il faut couvrir selon votre activité."
           intro="Choisir la bonne couverture dépend de la valeur de votre véhicule, de votre historique de sinistres et du niveau de risque lié à votre activité de chauffeur de taxi."
           author={{ name: "Loubna Moucharref", avatar: "/team/loubna-moucharref.jpeg" }}
           updatedDate="22 juillet 2026"

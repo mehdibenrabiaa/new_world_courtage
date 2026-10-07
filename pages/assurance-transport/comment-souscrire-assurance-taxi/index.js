@@ -24,6 +24,7 @@ export default function CommentSouscrirePage() {
           category="Assurance taxi"
           categoryHref="/assurance-transport/taxi/"
           title="Comment obtenir un devis d'assurance taxi ?"
+          subtitle="Les documents à préparer et les étapes pour être assuré rapidement."
           intro="Souscrire une assurance taxi demande de réunir quelques documents clés et de comparer les offres du marché — voici comment procéder étape par étape."
           author={{ name: "Loubna Moucharref", avatar: "/team/loubna-moucharref.jpeg" }}
           editor={{ name: "Anna Swartz" }}

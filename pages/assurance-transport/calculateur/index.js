@@ -20,7 +20,7 @@ export default function CarInsuranceCalculatorPage() {
 
       <main>
         <PhotoHero
-          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Assurance auto", href: "/assurance-auto/" }, { label: "Calculateur" }]} title={<>Calculez <em className="italic">rapidement</em> vos besoins en<br className="hidden lg:block" />assurance automobile.</>} image="/pages/calculator-desktop.jpg" imageAlt="Calculateur assurance auto" />
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Assurance auto", href: "/assurance-auto/" }, { label: "Calculateur" }]} title={<>Calculez votre <em>assurance auto</em>.</>} subtitle="Quelques informations sur vous et votre voiture suffisent : nous comparons les offres de nos assureurs partenaires et vous proposons la plus adaptée, gratuitement." image="/pages/calculator-desktop.jpg" imageAlt="Calculateur assurance auto" />
         <CarCalculatorSection redirectTo="/assurance-auto/devis/" />
         <CarInsuranceProcess />
       </main>

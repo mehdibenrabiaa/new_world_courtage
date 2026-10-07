@@ -24,6 +24,7 @@ export default function CommentChoisirPage() {
           category="Assurance taxi"
           categoryHref="/assurance-transport/taxi/"
           title="Comment choisir son assurance taxi ?"
+          subtitle="Nos conseils pour comparer les contrats et payer le juste prix."
           intro="Garanties, franchise, exclusions, tarif — voici les critères à comparer pour choisir le contrat le plus adapté à votre activité, et vous protéger au meilleur prix."
           author={{ name: "Loubna Moucharref", avatar: "/team/loubna-moucharref.jpeg" }}
           updatedDate="22 juillet 2026"

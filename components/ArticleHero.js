@@ -40,6 +40,7 @@ export default function ArticleHero({
   category,
   categoryHref,
   title,
+  subtitle,     // one line under the title, in the hero
   intro,
   author,       // { name, href, avatar }
   editor,       // { name, href }
@@ -61,7 +62,7 @@ export default function ArticleHero({
 
   return (
     <header className="w-full">
-      <PhotoHero tone="neutral" breadcrumb={trail} title={title} {...images} />
+      <PhotoHero tone="neutral" breadcrumb={trail} title={title} subtitle={subtitle} {...images} />
 
       <div className="mx-auto px-4 sm:px-6 lg:px-12 pt-10 pb-8 flex flex-col gap-5" style={{ maxWidth }}>
 

@@ -22,7 +22,7 @@ const CATEGORIES = [
   },
   {
     id: "pro-auto",
-    label: "Pro de l'automobile",
+    label: "Pro de l'auto",
     href: "/assurance-pro-auto/garagiste/",
     image: "/pages/garagist.webp",
     description: "Garagistes, convoyeurs, négociants… Des garanties adaptées aux véhicules confiés et à votre atelier.",
