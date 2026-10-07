@@ -5,12 +5,10 @@ import ArticleSection from "@/components/ArticleSection";
 import AccentCardGrid from "@/components/AccentCardGrid";
 import ReadyCta from "@/components/ReadyCta";
 import CtaButton from "@/components/CtaButton";
-import { fetchGuideBySlug } from "@/lib/api";
+import { guidePageProps } from "@/lib/api";
 
 export async function getServerSideProps({ params }) {
-  const guide = await fetchGuideBySlug(params.slug).catch(() => null);
-  if (!guide) return { notFound: true };
-  return { props: { guide } };
+  return guidePageProps("assurance-transport", params.slug);
 }
 
 

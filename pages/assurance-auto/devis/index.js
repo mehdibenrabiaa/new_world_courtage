@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { Car, Route, UserRound, History, ShieldCheck, ContactRound, ChevronLeft, ChevronRight, Cctv, Fence, ParkingMeter, SquareParking, Warehouse, Building2, Venus, Mars } from "lucide-react";
+import { Car, Route, UserRound, History, ShieldCheck, ContactRound, ChevronLeft, ChevronRight, CircleCheck, Loader2, Cctv, Fence, ParkingMeter, SquareParking, Warehouse, Building2, Venus, Mars } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Input } from "@/components/ui/input";
@@ -14,7 +14,8 @@ import FirstRegistrationQuestion from "@/components/FirstRegistrationQuestion";
 import CarBrandPicker from "@/components/CarBrandPicker";
 import ResponsiveFormSteps from "@/components/ResponsiveFormSteps";
 import QuestionnaireHeader from "@/components/QuestionnaireHeader";
-import { Field, FieldContent, FieldLabel, FieldTitle } from "@/components/ui/field";
+import { Field, FieldContent, FieldDescription, FieldLabel, FieldTitle } from "@/components/ui/field";
+import { createLead } from "@/lib/api";
 
 const FORM_SECTIONS = [
   { label: "Votre voiture", Icon: Car },
@@ -163,8 +164,19 @@ const INSURER_OPTIONS = [
   "MAAF", "MACIF", "MAIF", "Matmut", "MMA", "Société Générale (Sogessur)", "Thélem Assurances",
 ].map((label) => ({ value: label, label })).concat({ value: "other", label: "Autre" });
 
-// Last step that has questions so far — "Suivant" is hidden there.
-const LAST_BUILT_STEP = 3;
+const DESIRED_COVERAGE_OPTIONS = [
+  { value: "third_party", label: "Tiers", description: "La responsabilité civile obligatoire, au meilleur prix." },
+  { value: "third_party_plus", label: "Tiers étendu", description: "Le tiers, plus le vol, l'incendie et le bris de glace." },
+  { value: "comprehensive", label: "Tous risques", description: "Votre voiture couverte, même quand vous êtes responsable." },
+  { value: "advice", label: "Je ne sais pas", description: "Un conseiller vous aide à choisir." },
+];
+
+// The last step: "Suivant" becomes the button that sends the request.
+const LAST_BUILT_STEP = 5;
+
+const isFrenchPhone = (value) => /^0[1-9]\d{8}$/.test(value.replace(/[\s.-]/g, ""));
+const isEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value.trim());
+const labelOf = (options, value) => options.find((option) => option.value === value)?.label ?? value;
 
 const WORK_COUNTRIES = [
   { value: "FR", label: "France" },
@@ -292,6 +304,16 @@ export default function AssuranceAutoDevisPage() {
   const [currentlyInsured, setCurrentlyInsured] = useState("");
   const [currentCoverage, setCurrentCoverage] = useState("");
   const [previousInsurer, setPreviousInsurer] = useState("");
+  const [step3Attempted, setStep3Attempted] = useState(false);
+  const [desiredCoverage, setDesiredCoverage] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [step4Attempted, setStep4Attempted] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
+  const [step5Attempted, setStep5Attempted] = useState(false);
+  // idle | sending | sent | error
+  const [submitState, setSubmitState] = useState("idle");
   const answers = {
     vehicleChoice, searchMethod, registration, brand, model, customBrand, customModel, firstRegistration,
     professionalCategory, profession, vehicleUsage, workCountry, customWorkCountry, workCity, parkingCity,
@@ -300,6 +322,7 @@ export default function AssuranceAutoDevisPage() {
     maritalStatus, partnerHasLicense, partnerBirthDate, partnerLicenseDate, partnerInsuredElsewhere,
     hasChildrenUnder25, childrenCount, childBirthYears,
     previouslyInsured, currentlyInsured, currentCoverage, previousInsurer,
+    desiredCoverage, startDate, fullName, phone, email,
   };
   const answerSetters = {
     vehicleChoice: setVehicleChoice, searchMethod: setSearchMethod, registration: setRegistration, brand: setBrand,
@@ -315,6 +338,7 @@ export default function AssuranceAutoDevisPage() {
     hasChildrenUnder25: setHasChildrenUnder25, childrenCount: setChildrenCount, childBirthYears: setChildBirthYears,
     previouslyInsured: setPreviouslyInsured, currentlyInsured: setCurrentlyInsured,
     currentCoverage: setCurrentCoverage, previousInsurer: setPreviousInsurer,
+    desiredCoverage: setDesiredCoverage, startDate: setStartDate, fullName: setFullName, phone: setPhone, email: setEmail,
   };
   const [direction, setDirection] = useState("next");
   const stepRankRef = useRef(null);
@@ -438,8 +462,29 @@ export default function AssuranceAutoDevisPage() {
     : civility === "monsieur"
       ? "Êtes-vous actuellement assuré ?"
       : "Êtes-vous actuellement assuré(e) ?";
+  const step3Missing = [
+    ["previously-insured", previouslyInsured !== "", `previously-insured-${PREVIOUSLY_INSURED_OPTIONS[0].value}`],
+    ...(showCurrentlyInsured ? [["currently-insured", currentlyInsured !== "", "currently-insured-yes"]] : []),
+    ["current-coverage", currentCoverage !== "", `current-coverage-${CURRENT_COVERAGE_OPTIONS[0].value}`],
+    ["previous-insurer", previousInsurer !== "", "previous-insurer"],
+  ].find(([, filled]) => !filled) ?? null;
+  const step3Complete = step3Missing === null;
+  const step3Error = (key) => step3Attempted && step3Missing?.[0] === key ? "Veuillez répondre à cette question pour continuer." : null;
+  const step4Missing = [
+    ["desired-coverage", desiredCoverage !== "", `desired-coverage-${DESIRED_COVERAGE_OPTIONS[0].value}`],
+    ["start-date", isIsoDate(startDate), "start-date"],
+  ].find(([, filled]) => !filled) ?? null;
+  const step4Complete = step4Missing === null;
+  const step4Error = (key) => step4Attempted && step4Missing?.[0] === key ? "Veuillez répondre à cette question pour continuer." : null;
+  const step5Missing = [
+    ["full-name", isFilled(fullName), "full-name", "Veuillez indiquer votre nom et prénom."],
+    ["phone", isFrenchPhone(phone), "phone", "Veuillez saisir un numéro de téléphone valide (10 chiffres)."],
+    ["email", isEmail(email), "email", "Veuillez saisir une adresse e-mail valide."],
+  ].find(([, filled]) => !filled) ?? null;
+  const step5Complete = step5Missing === null;
+  const step5Error = (key) => step5Attempted && step5Missing?.[0] === key ? step5Missing[3] : null;
   // A step can only be reached once every earlier step is complete.
-  const maxStep = !vehicleComplete ? 0 : !step1Complete ? 1 : !step2Complete ? 2 : 3;
+  const maxStep = !vehicleComplete ? 0 : !step1Complete ? 1 : !step2Complete ? 2 : !step3Complete ? 3 : !step4Complete ? 4 : 5;
   const requestedStep = Math.min(Math.max(Number.parseInt(router.query.step, 10) || 0, 0), LAST_BUILT_STEP);
   const currentStep = hydrated ? Math.min(requestedStep, maxStep) : 0;
 
@@ -474,6 +519,16 @@ export default function AssuranceAutoDevisPage() {
       focusField(step2Missing[2]);
       return;
     }
+    if (step > currentStep && currentStep === 3 && !step3Complete) {
+      setStep3Attempted(true);
+      focusField(step3Missing[2]);
+      return;
+    }
+    if (step > currentStep && currentStep === 4 && !step4Complete) {
+      setStep4Attempted(true);
+      focusField(step4Missing[2]);
+      return;
+    }
     router.push({ pathname: router.pathname, query: { ...router.query, step: String(step) } }, undefined, { shallow: true, scroll: false });
     window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
   }
@@ -485,6 +540,112 @@ export default function AssuranceAutoDevisPage() {
   useEffect(() => {
     setStep2Attempted(false);
   }, [step2Missing?.[0]]);
+
+  useEffect(() => {
+    setStep3Attempted(false);
+  }, [step3Missing?.[0]]);
+
+  // The calculator's identity form hands over the name and phone in the URL:
+  // pre-fill the contact step with them unless the visitor already typed some.
+  useEffect(() => {
+    if (!router.isReady || !hydrated) return;
+    const { name, phone: phoneParam } = router.query;
+    if (typeof name === "string" && name.trim()) setFullName((current) => current || name.trim());
+    if (typeof phoneParam === "string" && phoneParam.trim()) setPhone((current) => current || phoneParam.trim());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.isReady, hydrated]);
+
+  useEffect(() => {
+    setStep4Attempted(false);
+  }, [step4Missing?.[0]]);
+
+  useEffect(() => {
+    setStep5Attempted(false);
+  }, [step5Missing?.[0]]);
+
+  // Every answer as a readable question/answer row on the lead (the CRM shows
+  // them in the lead's "Réponses" tab). Unanswered or hidden questions are skipped.
+  function buildLeadAnswers() {
+    const firstReg = firstRegistration.month && firstRegistration.year ? `${firstRegistration.month}/${firstRegistration.year}` : "";
+    const rows = [
+      ["vehicle_choice", "Quelle voiture souhaitez-vous assurer ?", labelOf(VEHICLE_OPTIONS, vehicleChoice)],
+      ["search_method", "Recherche du véhicule", labelOf(SEARCH_OPTIONS, searchMethod)],
+      ["registration", "Immatriculation", registration],
+      ["brand", "Marque", customBrand || brand],
+      ["model", "Modèle", customModel || model],
+      ["first_registration", "Première mise en circulation", firstReg],
+      ["professional_category", "Catégorie professionnelle", labelOf(PROFESSIONAL_CATEGORIES, professionalCategory)],
+      ["profession", "Profession", profession],
+      ["vehicle_usage", "Usage de la voiture", labelOf(VEHICLE_USAGE_OPTIONS, vehicleUsage)],
+      ["work_country", "Pays de travail", workCountry === "other" ? customWorkCountry : labelOf(WORK_COUNTRIES, workCountry)],
+      ["work_city", "Ville de travail", workCity],
+      ["parking_city", "Ville de stationnement", parkingCity],
+      ["night_parking", "Stationnement la nuit", labelOf(NIGHT_PARKING_OPTIONS, nightParking)],
+      ["annual_mileage", "Kilométrage annuel", labelOf(ANNUAL_MILEAGE_OPTIONS, annualMileage)],
+      ["usage_frequency", "Fréquence d'utilisation", labelOf(USAGE_FREQUENCY_OPTIONS, usageFrequency)],
+      ["previous_car_duration", "Durée de détention de la voiture précédente", labelOf(PREVIOUS_CAR_DURATION_OPTIONS, previousCarDuration)],
+      ["registration_holder", "Titulaire de la carte grise", labelOf(REGISTRATION_HOLDER_OPTIONS, registrationHolder)],
+      ["civility", "Civilité", labelOf(CIVILITY_OPTIONS, civility)],
+      ["birth_date", "Date de naissance", birthDate],
+      ["housing", "Logement", labelOf(HOUSING_OPTIONS, housing)],
+      ["home_insurance_offer", "Offre assurance habitation", labelOf(HOME_INSURANCE_OFFER_OPTIONS, homeInsuranceOffer)],
+      ["postal_address", "Adresse", postalAddress],
+      ["license_date", "Date d'obtention du permis", licenseDate],
+      ["license_type", "Type de permis", labelOf(LICENSE_TYPE_OPTIONS, licenseType)],
+      ["marital_status", "Situation familiale", labelOf(MARITAL_STATUS_OPTIONS, maritalStatus)],
+      ...(hasPartner ? [
+        ["partner_has_license", "Le conjoint a le permis", labelOf(YES_NO_OPTIONS, partnerHasLicense)],
+        ["partner_birth_date", "Date de naissance du conjoint", partnerBirthDate],
+        ["partner_license_date", "Date de permis du conjoint", partnerLicenseDate],
+        ["partner_insured_elsewhere", "Conjoint assuré ailleurs comme conducteur principal", labelOf(YES_NO_OPTIONS, partnerInsuredElsewhere)],
+      ] : []),
+      ["children_under_25", "Enfants de moins de 25 ans", labelOf(YES_NO_OPTIONS, hasChildrenUnder25)],
+      ...(hasChildrenUnder25 === "yes" ? [
+        ["children_count", "Nombre d'enfants", childrenCount],
+        ["children_birth_years", "Années de naissance des enfants", childBirthYears.slice(0, Number(childrenCount) || 0).filter(Boolean).join(", ")],
+      ] : []),
+      ["previously_insured", "A déjà assuré une voiture", labelOf(PREVIOUSLY_INSURED_OPTIONS, previouslyInsured)],
+      ...(showCurrentlyInsured ? [["currently_insured", "Actuellement assuré", labelOf(YES_NO_OPTIONS, currentlyInsured)]] : []),
+      ["current_coverage", "Couverture actuelle", labelOf(CURRENT_COVERAGE_OPTIONS, currentCoverage)],
+      ["previous_insurer", "Assureur actuel ou précédent", labelOf(INSURER_OPTIONS, previousInsurer)],
+      ["desired_coverage", "Formule souhaitée", labelOf(DESIRED_COVERAGE_OPTIONS, desiredCoverage)],
+      ["start_date", "Date de début souhaitée", startDate],
+    ];
+    return rows
+      .filter(([, , value]) => typeof value === "string" && value.trim() !== "")
+      .map(([catalog_key, question, value]) => ({ catalog_key, question, value }));
+  }
+
+  async function handleSubmit() {
+    if (!step5Complete) {
+      setStep5Attempted(true);
+      focusField(step5Missing[2]);
+      return;
+    }
+    setSubmitState("sending");
+    try {
+      await createLead({
+        type: "Assurance Auto",
+        name: fullName.trim(),
+        phone: phone.replace(/[\s.-]/g, ""),
+        email: email.trim(),
+        naissance: birthDate || undefined,
+        immat: registration || undefined,
+        permis: licenseDate ? licenseDate.slice(0, 4) : undefined,
+        source: router.pathname,
+        answers: buildLeadAnswers(),
+      });
+      setSubmitState("sent");
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+      } catch {
+        // Nothing to clean up when storage is unavailable.
+      }
+      window.scrollTo({ top: 0, behavior: "auto" });
+    } catch {
+      setSubmitState("error");
+    }
+  }
 
   // Slide direction comes from comparing steps, so browser Back/Forward
   // animates the right way too.
@@ -627,7 +788,17 @@ export default function AssuranceAutoDevisPage() {
             </div>
           )}
           <ResponsiveFormSteps sections={FORM_SECTIONS} currentStep={currentStep} />
-          <form noValidate onSubmit={(event) => { event.preventDefault(); if (currentStep < LAST_BUILT_STEP) goToStep(currentStep + 1); }}>
+          {submitState === "sent" ? (
+            <div className="mt-10 flex flex-col items-start gap-5 bg-[var(--color-light)] p-8 sm:p-12">
+              <CircleCheck size={40} className="text-[var(--color-brand)]" aria-hidden="true" />
+              <h1 className="text-[28px] leading-tight font-semibold text-[var(--color-text)]">Merci, votre demande est envoyée.</h1>
+              <p className="max-w-xl text-base leading-relaxed text-gray-600">
+                Un conseiller New World Courtage étudie votre profil et vous recontacte rapidement avec les meilleures offres pour votre voiture.
+              </p>
+              <a href="/" className="cta-btn inline-flex h-12 items-center px-6 text-[15px] font-bold text-white">Retour à l&apos;accueil</a>
+            </div>
+          ) : (
+          <form noValidate onSubmit={(event) => { event.preventDefault(); if (currentStep < LAST_BUILT_STEP) goToStep(currentStep + 1); else handleSubmit(); }}>
             <div hidden={currentStep !== 0} className={currentStep === 0 ? stepAnimation : undefined}>
             <p className="mb-4 text-sm text-gray-500">Tous les champs affichés sont obligatoires.</p>
             <fieldset className="min-w-0 bg-gray-100 p-6">
@@ -1518,6 +1689,7 @@ export default function AssuranceAutoDevisPage() {
                     </FieldLabel>
                   ))}
                 </div>
+                <ValidationError id="previously-insured" message={step3Error("previously-insured")} />
               </fieldset>
               {showCurrentlyInsured && (
               <fieldset className="conditional-field-reveal mt-6 min-w-0 bg-gray-100 p-6">
@@ -1551,6 +1723,7 @@ export default function AssuranceAutoDevisPage() {
                     </FieldLabel>
                   ))}
                 </div>
+                <ValidationError id="currently-insured" message={step3Error("currently-insured")} />
               </fieldset>
               )}
               {showCurrentCoverage && (
@@ -1585,6 +1758,7 @@ export default function AssuranceAutoDevisPage() {
                     </FieldLabel>
                   ))}
                 </div>
+                <ValidationError id="current-coverage" message={step3Error("current-coverage")} />
               </fieldset>
               )}
               {showPreviousInsurer && (
@@ -1604,7 +1778,82 @@ export default function AssuranceAutoDevisPage() {
                     {INSURER_OPTIONS.map(({ value, label }) => <SelectItem key={value} value={value}>{label}</SelectItem>)}
                   </SelectContent>
                 </Select>
+                <ValidationError id="previous-insurer" message={step3Error("previous-insurer")} />
               </div>
+              )}
+            </div>
+            <div hidden={currentStep !== 4} className={currentStep === 4 ? stepAnimation : undefined}>
+              <fieldset className="min-w-0 bg-gray-100 p-6">
+                <legend className="sr-only">Formule souhaitée</legend>
+                <p id="desired-coverage-question" className="mb-4 text-base font-semibold text-[var(--color-text)]">
+                  Quelle formule souhaitez-vous ?
+                </p>
+                <div role="radiogroup" aria-labelledby="desired-coverage-question" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  {DESIRED_COVERAGE_OPTIONS.map((option) => (
+                    <FieldLabel
+                      key={option.value}
+                      htmlFor={`desired-coverage-${option.value}`}
+                      className={`cursor-pointer transition-colors focus-within:ring-2 focus-within:ring-[var(--color-brand)] focus-within:ring-offset-2 ${
+                        desiredCoverage === option.value
+                          ? "border-[var(--color-brand)] bg-[var(--color-brand)]/5"
+                          : "bg-white hover:border-[var(--color-brand)]"
+                      }`}
+                    >
+                      <Field orientation="horizontal" className="min-h-20">
+                        <FieldContent>
+                          <FieldTitle>{option.label}</FieldTitle>
+                          <FieldDescription>{option.description}</FieldDescription>
+                        </FieldContent>
+                        <input
+                          id={`desired-coverage-${option.value}`}
+                          type="radio"
+                          name="desired_coverage"
+                          value={option.value}
+                          checked={desiredCoverage === option.value}
+                          onChange={() => setDesiredCoverage(option.value)}
+                          className="size-5 shrink-0 accent-[var(--color-brand)]"
+                        />
+                      </Field>
+                    </FieldLabel>
+                  ))}
+                </div>
+                <ValidationError id="desired-coverage" message={step4Error("desired-coverage")} />
+              </fieldset>
+              {desiredCoverage !== "" && (
+              <div className="conditional-field-reveal mt-6 bg-gray-100 p-6">
+                <label htmlFor="start-date" className="mb-2 block text-base font-semibold text-[var(--color-text)]">
+                  À partir de quand souhaitez-vous être assuré ?
+                </label>
+                <div className="sm:max-w-sm">
+                  <DatePickerInput id="start-date" value={startDate} onChange={setStartDate} theme="light" className="h-[50px] w-full bg-white" />
+                </div>
+                <ValidationError id="start-date" message={step4Error("start-date")} />
+              </div>
+              )}
+            </div>
+            <div hidden={currentStep !== 5} className={currentStep === 5 ? stepAnimation : undefined}>
+              <p className="mb-4 text-sm text-gray-500">Un conseiller vous recontacte avec les meilleures offres. Tous les champs sont obligatoires.</p>
+              <div className="flex flex-col gap-6 bg-gray-100 p-6">
+                <div>
+                  <label htmlFor="full-name" className="mb-2 block text-base font-semibold text-[var(--color-text)]">Nom et prénom</label>
+                  <Input id="full-name" autoComplete="name" value={fullName} onChange={(event) => setFullName(event.target.value)} placeholder="Ex : Jean Dupont" className="h-[50px] bg-white sm:max-w-md" {...fieldProps("full-name")} />
+                  <ValidationError id="full-name" message={step5Error("full-name")} />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="mb-2 block text-base font-semibold text-[var(--color-text)]">Téléphone</label>
+                  <Input id="phone" type="tel" inputMode="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="Ex : 06 12 34 56 78" className="h-[50px] bg-white sm:max-w-md" {...fieldProps("phone")} />
+                  <ValidationError id="phone" message={step5Error("phone")} />
+                </div>
+                <div>
+                  <label htmlFor="email" className="mb-2 block text-base font-semibold text-[var(--color-text)]">Adresse e-mail</label>
+                  <Input id="email" type="email" autoComplete="email" value={email} onChange={(event) => setEmail(event.target.value)} placeholder="exemple@email.com" className="h-[50px] bg-white sm:max-w-md" {...fieldProps("email")} />
+                  <ValidationError id="email" message={step5Error("email")} />
+                </div>
+              </div>
+              {submitState === "error" && (
+                <p role="alert" className="mt-4 text-sm text-[var(--color-error)]">
+                  Votre demande n&apos;a pas pu être envoyée. Vérifiez votre connexion et réessayez, ou appelez-nous au 07 45 89 18 65.
+                </p>
               )}
             </div>
             <div className="fixed bottom-0 right-0 lg:right-4 z-40 flex items-center p-4 bg-white">
@@ -1612,14 +1861,20 @@ export default function AssuranceAutoDevisPage() {
                 <Button type="button" variant="outline" disabled={currentStep === 0} onClick={() => goToStep(currentStep - 1)} className="h-12 px-5 gap-1">
                   <ChevronLeft size={16} aria-hidden="true" />Retour
                 </Button>
-                {currentStep < LAST_BUILT_STEP && (
+                {currentStep < LAST_BUILT_STEP ? (
                   <Button type="button" onClick={() => goToStep(currentStep + 1)} className="min-h-12 h-auto max-w-full whitespace-normal px-5 py-3 leading-5 cta-btn text-white font-semibold">
                     Suivant<ChevronRight size={16} aria-hidden="true" />
+                  </Button>
+                ) : (
+                  <Button type="button" onClick={handleSubmit} disabled={submitState === "sending"} className="min-h-12 h-auto max-w-full whitespace-normal px-5 py-3 leading-5 cta-btn text-white font-semibold">
+                    {submitState === "sending" ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : null}
+                    Recevoir mes offres<ChevronRight size={16} aria-hidden="true" />
                   </Button>
                 )}
               </ButtonGroup>
             </div>
           </form>
+          )}
         </div>
       </main>
     </>

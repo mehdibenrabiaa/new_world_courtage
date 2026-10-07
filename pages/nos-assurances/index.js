@@ -7,11 +7,11 @@ const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
 const AUTO_MOTO_CARDS = [
   {
-    image: "/pages/driving-car.jpg",
+    image: "/cards/auto.webp",
     imageAlt: "Assurance auto",
     title: "Assurance auto",
     description: "Comparez les offres pour votre voiture et trouvez la bonne couverture au meilleur prix.",
-    href: "/assurance-auto/devis/",
+    href: "/assurance-auto/",
   },
   {
     image: "/cards/moto.webp",

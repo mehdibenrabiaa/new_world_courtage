@@ -54,7 +54,7 @@ const CONTACT_CARDS = [
 // square icon tile, brand-blue action link pinned to the bottom.
 function ContactCard({ Icon, title, description, value, href, action, external }) {
   const card = (
-    <div className="group flex h-full flex-col gap-4 rounded-[4px] bg-white p-7 shadow-[0_1px_4px_rgba(0,0,0,0.14)] transition-shadow duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.14)]">
+    <div className="group flex h-full flex-col gap-4 bg-white p-7 shadow-[0_1px_4px_rgba(0,0,0,0.14)] transition-shadow duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.14)]">
       <span className="flex size-12 shrink-0 items-center justify-center bg-[var(--color-brand)]/10 text-[var(--color-brand)]" aria-hidden="true">
         <Icon size={22} strokeWidth={1.8} />
       </span>

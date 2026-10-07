@@ -4,13 +4,13 @@ export const NAV_ITEMS = [
   {
     id: 'auto-moto',
     label: 'Auto & Moto',
-    href: '/assurance-auto/devis/',
+    href: '/assurance-auto/',
     cta: { tagline: "Assurez votre voiture ou votre moto au meilleur prix", button: 'Devis gratuit', href: '/assurance-auto/devis/' },
     sections: [
       {
         heading: 'Particuliers',
         links: [
-          { label: 'Assurance auto', href: '/assurance-auto/devis/' },
+          { label: 'Assurance auto', href: '/assurance-auto/' },
           { label: 'Assurance moto', href: '/assurance-moto/' },
           { label: 'Assurance risques aggravés', href: '/assurance-risques-aggraves/' },
         ],

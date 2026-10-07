@@ -88,7 +88,7 @@ export function CardInner({ title, quote, name, verified = true }) {
 }
 
 // Same card look as the article cards: white, soft shadow that deepens on hover.
-export const CARD_CLASS = "group bg-white rounded-[4px] p-7 flex flex-col gap-5 shadow-[0_1px_4px_rgba(0,0,0,0.14)]";
+export const CARD_CLASS = "group bg-white p-7 flex flex-col gap-5 shadow-[0_1px_4px_rgba(0,0,0,0.14)]";
 
 export default function RealCustomers() {
   const [page, setPage] = useState(0);

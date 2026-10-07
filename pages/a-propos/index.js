@@ -1,7 +1,7 @@
 ﻿import Head from "next/head";
 import PhotoHero from "@/components/PhotoHero";
 import Link from "next/link";
-import { ChevronRight, Handshake, Newspaper, Settings2, Phone } from "lucide-react";
+import { ChevronRight, Handshake, Phone, Star, ShieldCheck } from "lucide-react";
 import { headingFont } from "@/lib/fonts";
 import SocialMedia from "../../components/SocialMedia";
 import AccentCardGrid from "../../components/AccentCardGrid";
@@ -12,8 +12,8 @@ const cx = "px-4 sm:px-8 lg:px-16 2xl:px-24";
 
 const NAV_ITEMS = [
   { label: "Nos partenaires", href: "/a-propos/nos-partenaires/", Icon: Handshake },
-  { label: "Nos communiqués", href: "/a-propos/nos-communiques/", Icon: Newspaper },
-  { label: "Fonctionnement", href: "/a-propos/fonctionnement/", Icon: Settings2 },
+  { label: "Avis clients", href: "/a-propos/avis-clients/", Icon: Star },
+  { label: "Nos assurances", href: "/nos-assurances/", Icon: ShieldCheck },
   { label: "Contact", href: "/contact/", Icon: Phone },
 ];
 

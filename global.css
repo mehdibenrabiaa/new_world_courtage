@@ -21,7 +21,8 @@ em.heading-font {
   --color-jungle-green: #27ae7a;
   --color-blue-sky: #8fb8d4;
   --color-blue-navy: #172436;
-  --radius: 5px;
+  /* Square corners everywhere (site theme). */
+  --radius: 0;
   --color-error: #F2693D;
   --color-text: #262626;
 
@@ -74,10 +75,12 @@ em.heading-font {
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: 6px;
+  --radius-sm: var(--radius);
+  --radius-md: var(--radius);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: var(--radius);
+  --radius-2xl: var(--radius);
+  --radius-3xl: var(--radius);
 }
 
 @keyframes nav-fade-in {

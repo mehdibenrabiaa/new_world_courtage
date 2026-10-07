@@ -80,8 +80,8 @@ function CardItem({ item, index, showSteps, showLink, titleFont, cardStyle, imag
       );
 
     const inner = (
-      <Card className="group flex h-full w-full flex-col gap-0 overflow-hidden rounded-[4px] border-0 bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.14)] transition-shadow duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.14)]">
-        <div className="overflow-hidden rounded-[2px]">{imgHeader}</div>
+      <Card className="group flex h-full w-full flex-col gap-0 overflow-hidden border-0 bg-white p-4 shadow-[0_1px_4px_rgba(0,0,0,0.14)] transition-shadow duration-200 hover:shadow-[0_4px_16px_rgba(0,0,0,0.14)]">
+        <div className="overflow-hidden">{imgHeader}</div>
         <CardContent className="flex flex-1 flex-col gap-3 px-4 pt-6 pb-3">
           {showSteps && (
             <Badge className="w-8 h-8 p-0 flex items-center justify-center rounded-none bg-[var(--color-brand)] border-transparent text-white text-sm font-bold">

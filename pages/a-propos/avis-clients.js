@@ -4,38 +4,32 @@ import { libreCaslon } from "@/lib/fonts";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import TrustPilot from "../../components/TrustPilot";
+import { TESTIMONIALS } from "../../components/RealCustomers";
 
 const cx = "px-4 sm:px-8 lg:px-28 2xl:px-44";
 
 
 
+// A real, published Trustpilot review (same source as the home page reviews),
+// linked to its original.
+const FEATURED_REVIEW = TESTIMONIALS.find((review) => review.name === "Mehdi EL");
+
 function FeaturedReview() {
+  const { title, quote, name, href } = FEATURED_REVIEW;
   return (
     <section className={`${cx} py-10 lg:py-14`}>
       <div className="max-w-3xl mx-auto flex flex-col gap-6">
         <div className="flex flex-col gap-0.5">
-          <p className="text-[17px] font-semibold text-[var(--color-text)]">Catherine D.</p>
-          <p className="text-[14px] text-gray-400">
-            Cliente depuis 2024 &middot; Lyon, Auvergne-Rhône-Alpes
-          </p>
+          <p className="text-[17px] font-semibold text-[var(--color-text)]">{name}</p>
+          <p className="text-[14px] text-gray-400">Avis publié sur Trustpilot</p>
         </div>
         <blockquote className="flex flex-col gap-3">
-          <p className="text-[20px] lg:text-[24px] leading-[1.4] text-[var(--color-text)]">
-            &ldquo;Je cherchais une assurance habitation depuis plusieurs semaines sans
-            trouver d&apos;offre adaptée à mon budget. L&apos;équipe de New World
-            Courtage a compris mes besoins dès le premier appel.&rdquo;
-          </p>
-          <p className="text-[16px] text-gray-500 leading-relaxed">
-            En moins de 48 heures, ils m&apos;ont présenté trois offres comparées,
-            clairement expliquées, avec les avantages et les limites de chacune.
-            J&apos;ai pu poser toutes mes questions sans me sentir pressée. Le
-            conseiller a été patient, professionnel et vraiment à l&apos;écoute.
-            J&apos;ai finalement souscrit une formule qui me protège bien mieux que
-            mon ancienne assurance, pour 20&nbsp;% moins cher. Je recommande sans
-            hésitation à toute personne qui souhaite gagner du temps et faire de
-            vraies économies.
-          </p>
+          <p className="text-[20px] lg:text-[24px] leading-[1.4] text-[var(--color-text)]">&ldquo;{title}&rdquo;</p>
+          <p className="text-[16px] text-gray-500 leading-relaxed">{quote}</p>
         </blockquote>
+        <a href={href} target="_blank" rel="noopener noreferrer" className="w-fit text-[15px] font-bold text-[var(--color-brand)] hover:underline">
+          Voir l&apos;avis sur Trustpilot
+        </a>
       </div>
     </section>
   );
@@ -115,7 +109,7 @@ function ExpertsSection() {
   return (
     <section className="w-full py-4">
       <div className="px-4 lg:px-12 2xl:px-24">
-        <div className="rounded-[20px] bg-[var(--color-light)] px-4 py-10 lg:px-8 lg:py-14">
+        <div className="bg-[var(--color-light)] px-4 py-10 lg:px-8 lg:py-14">
           <div className="flex flex-col gap-5 max-w-4xl mx-auto text-center mb-10 lg:mb-14">
             <h2 className={`text-[28px] sm:text-[34px] lg:text-[40px] leading-[1.1] text-[var(--color-text)] ${libreCaslon.className}`}>
               Ce que disent les <em className={`italic ${libreCaslon.className}`}>experts.</em>

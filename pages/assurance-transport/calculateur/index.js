@@ -15,13 +15,13 @@ export default function CarInsuranceCalculatorPage() {
           content="Estimez le coût de votre assurance auto en quelques clics. Calculateur gratuit pour comparer les offres selon votre profil."
         />
         <meta name="robots" content="index, follow" />
-        <link rel="canonical" href="https://new-world-courtage.vercel.app/assurance-auto/calculateur/" />
+        <link rel="canonical" href="https://www.newworldcourtage.fr/assurance-transport/calculateur/" />
       </Head>
 
       <main>
         <PhotoHero
           breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Assurance auto", href: "/assurance-auto/" }, { label: "Calculateur" }]} title={<>Calculez <em className="italic">rapidement</em> vos besoins en<br className="hidden lg:block" />assurance automobile.</>} image="/pages/calculator-desktop.jpg" imageAlt="Calculateur assurance auto" />
-        <CarCalculatorSection />
+        <CarCalculatorSection redirectTo="/assurance-auto/devis/" />
         <CarInsuranceProcess />
       </main>
     </>

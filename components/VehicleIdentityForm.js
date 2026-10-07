@@ -48,7 +48,7 @@ function clearStorage() {
   } catch {}
 }
 
-export default function VehicleIdentityForm({ redirectTo = "/assurance-transport/devis/" }) {
+export default function VehicleIdentityForm({ redirectTo = "/assurance-auto/devis/" }) {
   const router = useRouter();
 
   const [name,       setName]       = useState("");

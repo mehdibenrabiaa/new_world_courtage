@@ -47,19 +47,20 @@ const TONES = {
 };
 
 // Heights: "large" for the home page, "compact" (default) for inner pages so their
-// content starts within the first screen.
+// content starts within the first screen. The large hero never exceeds the screen
+// below the 87px desktop header, so its buttons stay visible on short laptop screens.
 const SIZES = {
   large: {
-    section: "lg:min-h-[640px]",
+    section: "lg:min-h-[min(640px,calc(100svh-87px))]",
     photo: "h-[300px] sm:h-[400px]",
-    panel: "lg:min-h-[640px] lg:py-16",
-    title: "text-[48px] sm:text-[58px] md:text-[64px] lg:text-[80px] xl:text-[86px] 2xl:text-[104px]",
+    panel: "lg:min-h-[min(640px,calc(100svh-87px))] lg:py-10",
+    title: "text-[48px] sm:text-[58px] md:text-[64px] lg:text-[72px] xl:text-[78px] 2xl:text-[94px]",
   },
   compact: {
     section: "lg:min-h-[460px]",
     photo: "h-[220px] sm:h-[300px]",
     panel: "lg:min-h-[460px] lg:pt-20 lg:pb-14",
-    title: "text-[40px] sm:text-[50px] md:text-[56px] lg:text-[64px] xl:text-[72px] 2xl:text-[84px]",
+    title: "text-[40px] sm:text-[50px] md:text-[56px] lg:text-[58px] xl:text-[64px] 2xl:text-[76px]",
   },
 };
 

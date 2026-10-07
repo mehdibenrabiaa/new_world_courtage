@@ -49,7 +49,7 @@ function clearStorage() {
   } catch {}
 }
 
-export default function BusinessIdentityForm({ redirectTo = "/assurance-transport/devis/" }) {
+export default function BusinessIdentityForm({ redirectTo = "/assurance-auto/devis/" }) {
   const router = useRouter();
 
   const [name,            setName]            = useState("");

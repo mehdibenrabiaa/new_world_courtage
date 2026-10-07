@@ -15,7 +15,7 @@ const CATEGORIES = [
   {
     id: "auto",
     label: "Auto",
-    href: "/assurance-auto/devis",
+    href: "/assurance-auto/",
     image: "/pages/driving-car.jpg",
     description: "Tiers, tous risques, assistance… Comparez les offres d'assurance auto et trouvez la formule adaptée à votre voiture et à votre budget.",
   },

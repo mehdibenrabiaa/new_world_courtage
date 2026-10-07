@@ -43,7 +43,7 @@ const GUIDE_LINKS = [
   {
     heading: "Auto & Moto",
     items: [
-      { label: "Assurance auto", href: "/assurance-auto/devis/" },
+      { label: "Assurance auto", href: "/assurance-auto/" },
       { label: "Assurance moto", href: "/assurance-moto/" },
       { label: "Assurance risques aggravés", href: "/assurance-risques-aggraves/" },
     ],
