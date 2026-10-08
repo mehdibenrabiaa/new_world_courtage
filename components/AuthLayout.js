@@ -15,8 +15,8 @@ const SECURITY_TIPS = [
   },
   {
     Icon: PhoneOff,
-    title: "Un appel vous demande vos coordonnées bancaires ?",
-    text: "Raccrochez et rappelez-nous vous-même au 07 45 89 18 65 avant de communiquer quoi que ce soit.",
+    title: "Une assurance proposée par téléphone ?",
+    text: "Ne payez aucune cotisation avant d'avoir reçu un contrat écrit. En cas de doute, rappelez-nous au 07 45 89 18 65.",
   },
   {
     Icon: ShieldAlert,
