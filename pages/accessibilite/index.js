@@ -55,8 +55,8 @@ export default function Accessibilite() {
         <PhotoHero
           tone="neutral"
           breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Accessibilité" }]}
-          image="/heroes/about-desktop.jpg"
-          mobileImage="/heroes/about-mobile.jpg"
+          image="/heroes/about-desktop.webp"
+          mobileImage="/heroes/about-mobile.webp"
           title={<>Accessibilité &amp; <em>transparence</em></>}
           subtitle={<>{"Notre engagement envers tous nos utilisateurs : un site accessible, une rémunération transparente et des données sécurisées."}<span className="mt-2 block text-[14px] text-white/70">Dernière mise à jour : {LAST_UPDATED}</span></>}
         />

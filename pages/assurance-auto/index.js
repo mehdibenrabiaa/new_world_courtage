@@ -8,10 +8,10 @@ export default function AssuranceAutoPage() {
   return (
     <>
       <Head>
-        <title>Assurance Auto — New World Courtage</title>
+        <title>Assurance Automobile — New World Courtage</title>
         <meta
           name="description"
-          content="Comparez les meilleures offres d'assurance auto. Obtenez un devis gratuit en quelques minutes, au même prix que chez l'assureur."
+          content="Comparez les meilleures offres d'assurance automobile. Obtenez un devis gratuit en quelques minutes, au même prix que chez l'assureur."
         />
         <meta name="robots" content="index, follow" />
         <link rel="canonical" href="https://www.newworldcourtage.fr/assurance-auto/" />
@@ -19,8 +19,8 @@ export default function AssuranceAutoPage() {
 
       <main>
         <PhotoHero
-          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Assurance auto" }]}
-          title={<>L&apos;assurance <em>auto</em>.</>}
+          breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Assurance automobile" }]}
+          title={<>L&apos;assurance <em>automobile</em>.</>}
           subtitle="Comparez les offres de nos assureurs partenaires et assurez votre voiture au meilleur prix, sans frais."
           image="/heroes/auto-desktop.webp"
           mobileImage="/heroes/auto-mobile.webp"
@@ -29,8 +29,8 @@ export default function AssuranceAutoPage() {
 
         <CarCalculatorSection
           redirectTo="/assurance-auto/devis/"
-          title={<>Recevez votre devis d&apos;assurance auto <em>gratuitement.</em></>}
-          subtitle="Votre devis assurance auto au même prix que chez l'assureur, tout simplement."
+          title={<>Recevez votre devis d&apos;assurance automobile <em>gratuitement.</em></>}
+          subtitle="Votre devis assurance automobile au même prix que chez l'assureur, tout simplement."
         />
 
         <Testimonials
@@ -38,8 +38,8 @@ export default function AssuranceAutoPage() {
           image="/pages/auto-driver.webp"
           imageAlt="Conducteur au volant face à la mer"
           label="Garanties"
-          heading="Ce que peut couvrir votre"
-          headingItalic="assurance auto."
+          heading="Ce peut couvrir votre"
+          headingItalic="assurance automobile."
           description="Selon la formule choisie, du tiers au tous risques, votre contrat protège votre voiture, vos passagers et votre responsabilité. Nos conseillers vous aident à choisir le bon niveau."
           points={[
             "Responsabilité civile obligatoire",

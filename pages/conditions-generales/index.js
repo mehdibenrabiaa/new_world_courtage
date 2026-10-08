@@ -30,8 +30,8 @@ export default function ConditionsGenerales() {
         <PhotoHero
           tone="neutral"
           breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Conditions générales" }]}
-          image="/heroes/about-desktop.jpg"
-          mobileImage="/heroes/about-mobile.jpg"
+          image="/heroes/about-desktop.webp"
+          mobileImage="/heroes/about-mobile.webp"
           title={<>Conditions générales <em>d&apos;utilisation</em></>}
           subtitle={`Dernière mise à jour : ${LAST_UPDATED}`}
         />

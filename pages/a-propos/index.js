@@ -116,7 +116,7 @@ export default function AProposPage() {
       <main>
         <PhotoHero
           breadcrumb={[{ label: "Accueil", href: "/" }, { label: "À propos" }]}
-          image="/heroes/about-desktop.jpg"
+          image="/heroes/about-desktop.webp"
           title={<>À propos <em>de nous</em>.</>}
           subtitle="Courtier en assurance indépendant, immatriculé à l'ORIAS, au service des particuliers et des professionnels."
         />

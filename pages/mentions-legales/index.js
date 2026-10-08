@@ -39,8 +39,8 @@ export default function MentionsLegales() {
         <PhotoHero
           tone="neutral"
           breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Mentions légales" }]}
-          image="/heroes/about-desktop.jpg"
-          mobileImage="/heroes/about-mobile.jpg"
+          image="/heroes/about-desktop.webp"
+          mobileImage="/heroes/about-mobile.webp"
           title={<>Mentions <em>légales</em></>}
           subtitle={`Dernière mise à jour : ${LAST_UPDATED}`}
         />

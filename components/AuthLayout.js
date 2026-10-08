@@ -112,7 +112,7 @@ export default function AuthLayout({ children }) {
         </main>
 
         <aside className="relative hidden flex-1 overflow-hidden lg:block" aria-label="Bienvenue">
-          <img src="/heroes/nos-assurances-desktop.webp" alt="" className="absolute inset-0 h-full w-full object-cover object-center" />
+          <img src="/heroes/nos-assurances-desktop.webp" alt="" className="absolute inset-0 h-full w-full object-cover object-top" />
           <div className="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/25 to-transparent" aria-hidden="true" />
           <p className="relative pt-10 text-center text-[20px] font-medium uppercase tracking-wide text-white">Bienvenue</p>
           <SecurityTips />

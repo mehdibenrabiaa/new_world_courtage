@@ -93,6 +93,7 @@ export default function NosAssurancesPage() {
         <PhotoHero
           breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Nos assurances" }]}
           title={<>Nos <em>assurances</em>.</>}
+          subtitle="Comparez nos offres et trouvez la meilleure couverture au meilleur prix."
           image="/heroes/nos-assurances-desktop.webp"
           mobileImage="/heroes/nos-assurances-mobile.webp"
           imageAlt="Assurance professionnelle New World Courtage"

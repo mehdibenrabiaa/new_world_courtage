@@ -38,7 +38,7 @@ export default function AssuranceVtcPage() {
           image="/pages/vtc-driver.webp"
           imageAlt="Chauffeur VTC souriant avec un passager"
           label="Garanties"
-          heading="Ce que peut couvrir votre"
+          heading="Ce peut couvrir votre"
           headingItalic="assurance VTC."
           description="Le transport de personnes à titre onéreux exige une assurance adaptée. Nos conseillers comparent les offres pour trouver les garanties dont votre activité a besoin."
           points={[

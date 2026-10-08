@@ -89,8 +89,8 @@ export default function PrivacyPolicy() {
         <PhotoHero
           tone="neutral"
           breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Confidentialité" }]}
-          image="/heroes/about-desktop.jpg"
-          mobileImage="/heroes/about-mobile.jpg"
+          image="/heroes/about-desktop.webp"
+          mobileImage="/heroes/about-mobile.webp"
           title={<>Politique de <em>confidentialité</em></>}
           subtitle={`Dernière mise à jour : ${LAST_UPDATED}`}
         />

@@ -10,7 +10,7 @@ export const NAV_ITEMS = [
       {
         heading: 'Particuliers',
         links: [
-          { label: 'Assurance auto', href: '/assurance-auto/' },
+          { label: 'Assurance automobile', href: '/assurance-auto/' },
           { label: 'Assurance moto', href: '/assurance-moto/' },
           { label: 'Assurance risques aggravés', href: '/assurance-risques-aggraves/' },
         ],

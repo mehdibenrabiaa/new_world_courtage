@@ -125,7 +125,8 @@ export default function ContactPage() {
 
         <PhotoHero
           breadcrumb={[{ label: "Accueil", href: "/" }, { label: "Contact" }]}
-          image="/sections/who-we-are.webp"
+          image="/heroes/contactez-nous-desktop.webp"
+          mobileImage="/heroes/contactez-nous-mobile.webp"
           title={<>Contactez-<em>nous</em>.</>}
           subtitle="Une question, un devis, un suivi de dossier ? Nos conseillers agréés sont à votre écoute, quel que soit le canal que vous préférez."
         >
