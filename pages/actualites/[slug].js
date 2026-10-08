@@ -9,11 +9,10 @@ import CtaButton from "@/components/CtaButton";
 import { guidePageProps } from "@/lib/api";
 
 export async function getServerSideProps({ params }) {
-  return guidePageProps("assurance-transport", params.slug);
+  return guidePageProps("actualites", params.slug);
 }
 
-
-// A guide's CTA href is authored relative to the domain root (e.g. "assurance-transport/taxi"),
+// A guide's CTA href is authored relative to the domain root (e.g. "assurance-auto"),
 // with or without a leading slash — normalize to always resolve from root, never relative to the
 // current page. Absolute URLs pass through untouched.
 function toRootPath(href) {
@@ -22,6 +21,10 @@ function toRootPath(href) {
   return `/${href}`;
 }
 
+// Same block renderer as pages/assurance-pro-auto/[slug].js and
+// pages/assurance-transport/[slug].js — kept local rather than shared since
+// each guide template already duplicates this, and splitting it out isn't
+// asked for here.
 function Block({ block }) {
   if (block.type === "section") {
     return (
@@ -104,14 +107,9 @@ function Block({ block }) {
   return null;
 }
 
-export default function GuidePage({ guide, relatedGuides }) {
-  // getServerSideProps already returns notFound when the fetch fails, so
-  // this should never render without a guide from a normal SSR request --
-  // but a client-side transition to this route can briefly re-render the
-  // page shell before the new page's data has arrived, and this crashed
-  // instead of just skipping that one frame.
+export default function ArticlePage({ guide, relatedGuides }) {
   if (!guide) return null;
-  const canonical = `https://www.newworldcourtage.fr/assurance-transport/${guide.slug}/`;
+  const canonical = `https://www.newworldcourtage.fr/actualites/${guide.slug}/`;
 
   return (
     <>
@@ -144,10 +142,10 @@ export default function GuidePage({ guide, relatedGuides }) {
             ))}
 
             <p className="text-[15px] text-gray-600 leading-relaxed">
-              Vous voulez comparer les offres adaptées à votre situation ?{" "}
+              Une question sur votre assurance ?{" "}
               <Link href="/contact/" className="text-[var(--color-brand)] hover:underline">Contactez nos conseillers</Link>{" "}
               ou{" "}
-              <Link href="/assurance-transport/" className="text-[var(--color-brand)] hover:underline">obtenez votre devis gratuit</Link>.
+              <Link href="/nos-assurances/" className="text-[var(--color-brand)] hover:underline">découvrez toutes nos assurances</Link>.
             </p>
           </div>
 

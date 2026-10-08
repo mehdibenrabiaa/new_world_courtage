@@ -2,7 +2,7 @@
 import Link from 'next/link'
 import * as NavMenu from '@radix-ui/react-navigation-menu'
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet'
-import { Menu, X, Phone, Mail, ChevronLeft, ChevronRight, Eye, Lock, LogOut, UserRound } from 'lucide-react'
+import { Menu, X, Phone, Mail, ChevronLeft, ChevronRight, Eye, Lock, LogOut, UserRound, Newspaper } from 'lucide-react'
 
 function WhatsAppIcon({ size = 15 }) {
   return (
@@ -21,6 +21,7 @@ import AccountMenu, { LogoutNotice, accountLinks, firstName, useAccount, useLogo
 const TOP_LEFT_LINKS = [
   { label: 'À propos', href: '/a-propos/' },
   { label: 'Nos assurances', href: '/nos-assurances/' },
+  { label: 'Actualités', href: '/actualites/' },
 ]
 const TOP_RIGHT_LINKS = [
   { label: 'Accessibilité', href: '/accessibilite/', Icon: Eye },
@@ -150,6 +151,7 @@ function MobilePanel({ item, onBack, onClose }) {
 const DRAWER_LINKS = [
   { label: 'À propos', href: '/a-propos/' },
   { label: 'Nos assurances', href: '/nos-assurances/' },
+  { label: 'Actualités', href: '/actualites/', Icon: Newspaper },
   { label: 'Accessibilité', href: '/accessibilite/', Icon: Eye },
   { label: 'Contact', href: '/contact/', Icon: Mail },
 ]

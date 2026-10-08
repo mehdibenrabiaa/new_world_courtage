@@ -3,6 +3,7 @@ import Link from "next/link";
 import ArticleHero from "@/components/ArticleHero";
 import ArticleSection from "@/components/ArticleSection";
 import AccentCardGrid from "@/components/AccentCardGrid";
+import ArticleSidebar from "@/components/ArticleSidebar";
 import ReadyCta from "@/components/ReadyCta";
 import CtaButton from "@/components/CtaButton";
 import { guidePageProps } from "@/lib/api";
@@ -103,7 +104,7 @@ function Block({ block }) {
   return null;
 }
 
-export default function GuidePage({ guide }) {
+export default function GuidePage({ guide, relatedGuides }) {
   // getServerSideProps already returns notFound when the fetch fails, so
   // this should never render without a guide from a normal SSR request --
   // but a client-side transition to this route can briefly re-render the
@@ -136,17 +137,21 @@ export default function GuidePage({ guide }) {
           expertReviewed={Boolean(guide.reviewer_name)}
         />
 
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-12 pb-14 flex flex-col gap-10">
-          {guide.blocks.map((block) => (
-            <Block key={block.id} block={block} />
-          ))}
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-12 pb-14 flex flex-col lg:flex-row lg:items-start gap-10 lg:gap-14">
+          <div className="min-w-0 flex-1 max-w-3xl flex flex-col gap-10">
+            {guide.blocks.map((block) => (
+              <Block key={block.id} block={block} />
+            ))}
 
-          <p className="text-[15px] text-gray-600 leading-relaxed">
-            Vous voulez comparer les offres adaptées à votre situation ?{" "}
-            <Link href="/contact/" className="text-[var(--color-brand)] hover:underline">Contactez nos conseillers</Link>{" "}
-            ou{" "}
-            <Link href="/assurance-pro-auto/garagiste/" className="text-[var(--color-brand)] hover:underline">obtenez votre devis gratuit</Link>.
-          </p>
+            <p className="text-[15px] text-gray-600 leading-relaxed">
+              Vous voulez comparer les offres adaptées à votre situation ?{" "}
+              <Link href="/contact/" className="text-[var(--color-brand)] hover:underline">Contactez nos conseillers</Link>{" "}
+              ou{" "}
+              <Link href="/assurance-pro-auto/garagiste/" className="text-[var(--color-brand)] hover:underline">obtenez votre devis gratuit</Link>.
+            </p>
+          </div>
+
+          <ArticleSidebar related={relatedGuides} />
         </div>
 
         <ReadyCta />
